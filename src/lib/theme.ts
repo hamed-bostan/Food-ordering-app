@@ -1,12 +1,11 @@
-import { createTheme } from "@mui/material/styles";
+"use client";
 
-const theme = createTheme({
-  direction: "rtl",
-  palette: {
-    mode: "light",
-    primary: {
-      main: "#1976d2",
-    },
+import { createTheme, ThemeOptions } from "@mui/material/styles";
+
+const theme: ThemeOptions = createTheme({
+  direction: "rtl", // Enables RTL globally
+  typography: {
+    fontFamily: "var(--font-custom)", // Use the CSS variable from global.css
   },
 });
 

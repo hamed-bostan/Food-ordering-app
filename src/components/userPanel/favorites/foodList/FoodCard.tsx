@@ -1,0 +1,64 @@
+"use client";
+
+import Image from "next/image";
+import { Favorite, Star } from "@mui/icons-material";
+import formatToPersianStyle from "@/lib/formattedPrice";
+import discountPrice from "@/lib/discountPrice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { Product } from "@/lib/api";
+
+type FoodCardProps = {
+  item: Product;
+};
+
+export default function FoodCard({ item }: FoodCardProps) {
+  return (
+    <div className="border border-[#CBCBCB] rounded-sm overflow-hidden md:rounded-lg">
+      <DisplayingImage image={item.image} title={item.title} />
+      <OfferDetails item={item} />
+    </div>
+  );
+}
+
+type FoodImageProps = Pick<Product, "image" | "title">;
+
+function DisplayingImage({ image, title }: FoodImageProps) {
+  return (
+    <Image
+      src={image}
+      alt={title}
+      width={110}
+      height={110}
+      className="h-24 w-full object-cover md:h-36"
+    />
+  );
+}
+
+function OfferDetails({ item }: FoodCardProps) {
+  const { id, title, price, discount } = item;
+  const discountedPrice = formatToPersianStyle(discountPrice(price, discount));
+
+  const dispatch = useDispatch();
+
+  // Access the cart from Redux store
+  const cartItems = useSelector((state: RootState) => state.cart.selectedItems);
+  const isAddedToCart = cartItems.some((item) => item.id === id); // Check if the item is in the cart
+
+  return (
+    <div className="grid grid-cols-[1fr_auto] p-2 gap-y-2 md:gap-y-3 md:p-3 text-[#353535] text-xs md:text-sm h-32 md:h-40">
+      <h3 className="md:font-semibold">{title}</h3>
+      <Favorite
+        sx={{ color: "#C30000", fontSize: { xs: 16, md: 18 } }}
+        className="cursor-pointer mr-auto col-start-2"
+      />
+      <div className="flex items-center gap-x-1 row-start-2">
+        <Star sx={{ color: "#F4B740", fontSize: { xs: 16, md: 18 } }} />
+        <span className="md:hidden">5</span>
+      </div>
+      <span className="mr-auto flex self-center row-start-2 ">
+        {discountedPrice} تومان
+      </span>
+    </div>
+  );
+}

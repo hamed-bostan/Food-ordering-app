@@ -1,10 +1,9 @@
-import { TextField } from "@mui/material";
+import Landing from "@/components/landing";
 
 export default function Home() {
   return (
     <>
-      <div>سلام</div>
-      <TextField id="outlined-basic" label="Outlined" variant="outlined" />
+      <Landing />
     </>
   );
 }
