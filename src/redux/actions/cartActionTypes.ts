@@ -1,8 +1,0 @@
-export enum CartActionTypes {
-  ADD_ITEM = "ADD_ITEM",
-  REMOVE_ITEM = "REMOVE_ITEM",
-  INCREASE = "INCREASE",
-  DECREASE = "DECREASE",
-  CHECKOUT = "CHECKOUT",
-  CLEAR = "CLEAR",
-}

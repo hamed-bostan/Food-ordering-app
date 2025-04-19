@@ -1,5 +1,4 @@
 import { useSelector, useDispatch } from "react-redux";
-import { clear } from "@/redux/actions/cartAction";
 import formatToPersianStyle from "@/lib/formattedPrice";
 import { useCheckoutTab } from "@/context/CheckoutTabContext";
 import ItemsOverviewMobile from "./itemsOverviewMobile";
@@ -10,6 +9,7 @@ import {
   DeleteOutlined,
 } from "@mui/icons-material";
 import { RootState } from "@/redux/store";
+import { clear } from "@/redux/reducers/cartSlice";
 
 export default function CartSummary() {
   const dispatch = useDispatch();
@@ -58,7 +58,7 @@ export default function CartSummary() {
         hasBorder && "border border-[#CBCBCB] rounded-lg p-4"
       }`}
     >
-      <div className="hidden md:flex justify-between mb-3">
+      <div className="justify-between hidden mb-3 md:flex">
         <span className="text-base">سبد خرید ({itemsCounter})</span>
         <DeleteOutlined
           onClick={handleClearCart}
@@ -86,7 +86,7 @@ export default function CartSummary() {
         <span>هزینه ارسال</span>
         <span className="text-[#717171]">0 تومان</span>
       </div>
-      <div className="flex gap-x-2 mb-3">
+      <div className="flex mb-3 gap-x-2">
         <div>
           <ReportGmailerrorredOutlined
             fontSize="small"

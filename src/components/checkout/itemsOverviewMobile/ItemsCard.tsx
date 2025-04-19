@@ -1,10 +1,10 @@
 import QuantitySelector from "@/components/common/QuantitySelector";
 import { useDispatch, useSelector } from "react-redux";
-import { increase, decrease, removeItem } from "@/redux/actions/cartAction";
 import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
 import { Product } from "@/lib/api";
 import { RootState } from "@/redux/store";
+import { decrease, increase, removeItem } from "@/redux/reducers/cartSlice";
 
 type ItemsCardProps = {
   foodItem: Product;
@@ -23,9 +23,9 @@ export default function ItemsCard({ foodItem }: ItemsCardProps) {
 
   const index = selectedItems.findIndex((item) => item.id === foodItem.id);
 
-  const handleIncrease = () => dispatch(increase(id));
-  const handleDecrease = () => dispatch(decrease(id));
-  const handleRemove = () => dispatch(removeItem(id));
+  const handleIncrease = () => dispatch(increase({ id }));
+  const handleDecrease = () => dispatch(decrease({ id }));
+  const handleRemove = () => dispatch(removeItem({ id }));
 
   const discountedPricePerItem = discountPrice(price, discount); // Price of a single item
 
