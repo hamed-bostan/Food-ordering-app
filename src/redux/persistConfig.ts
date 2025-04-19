@@ -1,5 +1,3 @@
-// persistConfig.ts
-
 import storage from "redux-persist/lib/storage"; // Default local storage for web
 
 const persistConfig = {

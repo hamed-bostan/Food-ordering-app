@@ -1,5 +1,3 @@
-// types.ts
-
 import { CartState } from "./reducers/cartSlice";
 import { AddressState } from "./reducers/addressSlice";
 

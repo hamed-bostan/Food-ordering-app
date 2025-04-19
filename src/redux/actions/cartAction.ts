@@ -1,5 +1,3 @@
-// cartAction.ts
-
 import { CartActionTypes } from "./cartActionTypes";
 import { Product } from "@/lib/api";
 
