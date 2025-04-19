@@ -1,4 +1,5 @@
 import { TextField, TextFieldProps } from "@mui/material";
+import { forwardRef } from "react";
 type InputProps = TextFieldProps & {
   label: string;
   labelColor?: string;
@@ -6,14 +7,17 @@ type InputProps = TextFieldProps & {
   borderColor?: string;
 };
 
-export default function Input({
-  label,
-  labelColor = "#717171",
-  textColor = "#353535",
-  borderColor = "#CBCBCB",
-  sx = {},
-  ...props
-}: InputProps) {
+const Input = forwardRef(function Input(
+  {
+    label,
+    labelColor = "#717171",
+    textColor = "#353535",
+    borderColor = "#CBCBCB",
+    sx = {},
+    ...props
+  }: InputProps,
+  ref
+) {
   return (
     <TextField
       fullWidth
@@ -37,7 +41,10 @@ export default function Input({
         },
         ...sx, // Allow custom styles to override default styles
       }}
+      inputRef={ref}
       {...props}
     />
   );
-}
+});
+
+export default Input;

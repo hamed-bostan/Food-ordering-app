@@ -2,6 +2,9 @@ import HeaderDesktop from "../header/HeaderDesktop";
 import Input from "@/components/ui/Input";
 import CustomButton from "@/components/ui/CustomButton";
 import EditIcon from "@mui/icons-material/Edit";
+import { useForm } from "react-hook-form";
+import { User } from "@/types/user";
+import { updateUser } from "@/api/user/updateUser";
 
 export default function Profile() {
   return (
@@ -13,17 +16,52 @@ export default function Profile() {
 }
 
 function UserInformationForm() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<User>({
+    defaultValues: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone_number: "",
+      birth_date: "",
+      display_name: "",
+    },
+  });
+
+  const onSubmit = async (data: User) => {
+    try {
+      await updateUser(data);
+      alert("اطلاعات ذخیره شد!");
+    } catch (err) {
+      console.error(err);
+      alert("خطایی رخ داد.");
+    }
+  };
+
   return (
-    <>
-      <div className="grid grid-cols-1 gap-y-4 mb-5 md:grid-cols-2 md:gap-x-4 md:mb-7 md:gap-y-5">
-        <Input label="نام" />
-        <Input label="نام خانوادگی" />
-        <Input label="آدرس ایمیل" />
-        <Input label="شماره تماس" />
-        <Input label="تاریخ تولد (اختیاری)" />
-        <Input label="نام نمایشی" />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="grid grid-cols-1 mb-5 gap-y-4 md:grid-cols-2 md:gap-x-4 md:mb-7 md:gap-y-5">
+        <Input label="نام" {...register("first_name", { required: true })} />
+        <Input
+          label="نام خانوادگی"
+          {...register("last_name", { required: true })}
+        />
+        <Input label="آدرس ایمیل" {...register("email", { required: true })} />
+        <Input
+          label="شماره تماس"
+          {...register("phone_number", { required: true })}
+        />
+        <Input label="تاریخ تولد (اختیاری)" {...register("birth_date")} />
+        <Input
+          label="نام نمایشی"
+          {...register("display_name", { required: true })}
+        />
       </div>
       <CustomButton
+        type="submit"
         startIcon={<EditIcon />}
         variant="outlined"
         sx={{
@@ -37,6 +75,6 @@ function UserInformationForm() {
       >
         ویرایش اطلاعات شخصی
       </CustomButton>
-    </>
+    </form>
   );
 }
