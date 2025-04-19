@@ -51,15 +51,6 @@ const cartSlice = createSlice({
       state.checkout = false;
     },
 
-    removeItem: (state, action: PayloadAction<{ id: number }>) => {
-      state.selectedItems = state.selectedItems.filter(
-        (item) => item.id !== action.payload.id
-      );
-      const totals = sumItems(state.selectedItems);
-      state.itemsCounter = totals.itemsCounter;
-      state.totalPrice = totals.totalPrice;
-    },
-
     increase: (state, action: PayloadAction<{ id: number }>) => {
       const item = state.selectedItems.find(
         (item) => item.id === action.payload.id
@@ -79,6 +70,15 @@ const cartSlice = createSlice({
       }
       state.selectedItems = state.selectedItems.filter(
         (item) => item.quantity > 0
+      );
+      const totals = sumItems(state.selectedItems);
+      state.itemsCounter = totals.itemsCounter;
+      state.totalPrice = totals.totalPrice;
+    },
+
+    removeItem: (state, action: PayloadAction<{ id: number }>) => {
+      state.selectedItems = state.selectedItems.filter(
+        (item) => item.id !== action.payload.id
       );
       const totals = sumItems(state.selectedItems);
       state.itemsCounter = totals.itemsCounter;
