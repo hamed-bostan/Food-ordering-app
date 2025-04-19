@@ -1,6 +1,6 @@
 // types.ts
 
-import { CartState } from "./reducers/cartReducer";
+import { CartState } from "./reducers/cartSlice";
 import { AddressState } from "./reducers/addressSlice";
 
 export type RootState = {

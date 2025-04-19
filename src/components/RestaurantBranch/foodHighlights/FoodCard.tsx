@@ -4,11 +4,12 @@ import Image from "next/image";
 import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem } from "@/redux/actions/cartAction";
+// import { addItem } from "@/redux/actions/cartAction";
 import CustomButton from "@/components/ui/CustomButton";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import { Product } from "@/lib/api";
 import { RootState } from "@/redux/store";
+import { addItem } from "@/redux/reducers/cartSlice";
 
 type ProductItemProps = {
   item: Product;
@@ -31,7 +32,7 @@ function DisplayingImage({ item }: ProductItemProps) {
       alt={title}
       width={110}
       height={110}
-      className="h-28 w-full object-cover md:h-36"
+      className="object-cover w-full h-28 md:h-36"
     />
   );
 }
@@ -54,14 +55,14 @@ function OfferDetails({ item }: ProductItemProps) {
 
   return (
     <div className="col-span-2 row-span-3 grid grid-cols-2 p-2 pt-1 text-[#353535] text-xs gap-y-1 md:text-sm md:gap-y-2 md:p-3 h-32 md:h-40">
-      <h3 className="col-span-full text-center text-sm md:text-base md:font-semibold">
+      <h3 className="text-sm text-center col-span-full md:text-base md:font-semibold">
         {title}
       </h3>
       <FavoriteBorderOutlinedIcon
         sx={{ color: "#ADADAD", fontSize: 18, cursor: "pointer" }}
       />
       {discount && (
-        <div className="flex gap-x-1 items-center mr-auto w-full">
+        <div className="flex items-center w-full mr-auto gap-x-1">
           <span className="text-[#ADADAD] line-through">
             {formatToPersianStyle(price)}
           </span>
@@ -70,7 +71,7 @@ function OfferDetails({ item }: ProductItemProps) {
           </span>
         </div>
       )}
-      <div className="flex gap-x-1 items-center col-start-1 row-start-3">
+      <div className="flex items-center col-start-1 row-start-3 gap-x-1">
         <img
           src="/assets/images/icons/star-rate-fill.svg"
           alt="like icon"
@@ -78,7 +79,7 @@ function OfferDetails({ item }: ProductItemProps) {
         />
         <span>5</span>
       </div>
-      <span className="mr-auto row-start-3 col-start-2">
+      <span className="col-start-2 row-start-3 mr-auto">
         {discountedPrice} تومان
       </span>
       <CustomButton

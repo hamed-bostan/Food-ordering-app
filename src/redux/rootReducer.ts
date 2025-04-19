@@ -1,9 +1,6 @@
-// rootReducer.ts
-
 import { combineReducers } from "redux";
-import cartReducer, { CartState } from "./reducers/cartReducer";
+import cartReducer, { CartState } from "./reducers/cartSlice";
 import addressReducer, { AddressState } from "./reducers/addressSlice";
-// import { RootState } from "./types"; // Import RootState
 
 const rootReducer = combineReducers({
   cart: cartReducer,
