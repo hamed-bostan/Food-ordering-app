@@ -5,5 +5,5 @@ export type User = {
   email: string;
   phone_number: string;
   // birth_date?: string;
-  display_name: string;
+  // display_name: string;
 };

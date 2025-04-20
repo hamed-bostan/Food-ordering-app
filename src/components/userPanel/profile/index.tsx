@@ -26,8 +26,6 @@ function UserInformationForm() {
       last_name: "",
       email: "",
       phone_number: "",
-      // birth_date: "",
-      display_name: "",
     },
   });
 
@@ -53,11 +51,6 @@ function UserInformationForm() {
         <Input
           label="شماره تماس"
           {...register("phone_number", { required: true })}
-        />
-        {/* <Input label="تاریخ تولد (اختیاری)" {...register("birth_date")} /> */}
-        <Input
-          label="نام نمایشی"
-          {...register("display_name", { required: true })}
         />
       </div>
       <CustomButton
