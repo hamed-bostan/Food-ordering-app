@@ -1,16 +1,19 @@
 import supabase from "@/lib/supabase";
 import { NextResponse } from "next/server";
 
-export async function PUT(req: Request) {
+export async function POST(req: Request) {
   const data = await req.json();
 
   const { error } = await supabase
-    .from("users")
-    .update(data)
-    .eq("email", data.email); // or however you're identifying the user
+    .from("user_profiles") // replace with your actual table name
+    .insert([data]);
 
-  if (error)
+  if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 
-  return NextResponse.json({ message: "Success" });
+  return NextResponse.json(
+    { message: "User added successfully" },
+    { status: 200 }
+  );
 }

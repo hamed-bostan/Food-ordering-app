@@ -4,7 +4,7 @@ import CustomButton from "@/components/ui/CustomButton";
 import EditIcon from "@mui/icons-material/Edit";
 import { useForm } from "react-hook-form";
 import { User } from "@/types/user";
-import { updateUser } from "@/api/user/updateUser";
+import { addUser } from "@/api/user/addUser";
 
 export default function Profile() {
   return (
@@ -26,14 +26,14 @@ function UserInformationForm() {
       last_name: "",
       email: "",
       phone_number: "",
-      birth_date: "",
+      // birth_date: "",
       display_name: "",
     },
   });
 
   const onSubmit = async (data: User) => {
     try {
-      await updateUser(data);
+      await addUser(data);
       alert("اطلاعات ذخیره شد!");
     } catch (err) {
       console.error(err);
@@ -54,7 +54,7 @@ function UserInformationForm() {
           label="شماره تماس"
           {...register("phone_number", { required: true })}
         />
-        <Input label="تاریخ تولد (اختیاری)" {...register("birth_date")} />
+        {/* <Input label="تاریخ تولد (اختیاری)" {...register("birth_date")} /> */}
         <Input
           label="نام نمایشی"
           {...register("display_name", { required: true })}
@@ -73,7 +73,7 @@ function UserInformationForm() {
           "&:hover": { color: "#fff", backgroundColor: "#417F56" },
         }}
       >
-        ویرایش اطلاعات شخصی
+        اضافه کردن اطلاعات شخصی
       </CustomButton>
     </form>
   );

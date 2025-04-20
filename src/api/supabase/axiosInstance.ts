@@ -1,9 +1,16 @@
 import axios from "axios";
 
-const supabaseUrl: string = process.env.SUPABASE_URL as string;
-// const supabaseKey: string = process.env.SUPABASE_KEY as string;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export const axiosInstance = axios.create({
   baseURL: `${supabaseUrl}/rest/v1`,
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    apikey: supabaseKey!,
+    Authorization: `Bearer ${supabaseKey!}`,
+    "Content-Type": "application/json",
+  },
 });
+
+console.log(axiosInstance.defaults.baseURL);
+
