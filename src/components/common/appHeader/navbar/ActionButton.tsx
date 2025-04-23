@@ -82,7 +82,7 @@ function UserMenuPopover() {
       ) : (
         <Link
           href="/api/auth/signin?callbackUrl=/userPanel"
-          className="bg-[#E5F2E9] p-2 box-content rounded-sm cursor-pointer flex"
+          className="bg-[#E5F2E9] w-8 h-8 rounded-sm cursor-pointer flex justify-center items-center"
         >
           <Person2Outlined fontSize="small" sx={{ color: "#417F56" }} />
         </Link>
@@ -108,7 +108,7 @@ function UserMenuPopover() {
                 <Link
                   onClick={handleClose}
                   href={item.href}
-                  className="flex items-center text-xs gap-x-1 py-2 cursor-pointer w-fit"
+                  className="flex items-center py-2 text-xs cursor-pointer gap-x-1 w-fit"
                 >
                   <item.icon sx={{ color: "#353535", fontSize: 18 }} />
                   <span className="text-[#353535]">{item.label}</span>
