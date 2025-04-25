@@ -22,8 +22,6 @@ function DisplayingImage({ branch }: BranchItemProps) {
   return (
     <div className="relative h-20 col-span-1 row-span-2 transition-all duration-300 md:h-40 lg:h-52 md:row-span-1 md:group-hover:h-36 lg:group-hover:h-44">
       <Image
-        width={300}
-        height={300}
         src={branch.image}
         alt={branch.title}
         className="object-cover w-full h-full"
