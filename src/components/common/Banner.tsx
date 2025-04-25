@@ -16,13 +16,7 @@ export default function Banner({
 }: BannerProps) {
   return (
     <div className={`relative h-44 mb-6 md:h-48 ${styleContainer}`}>
-      <Image
-        src={imageSrc}
-        alt={text}
-        width={2500}
-        height={400}
-        className="object-cover w-full h-full"
-      />
+      <Image src={imageSrc} alt={text} className="object-cover w-full h-full" />
       <span className="absolute top-1/2 right-1/2 text-[#E5F2E9] -translate-y-1/2 translate-x-1/2 text-nowrap md:text-xl">
         {text}
       </span>
