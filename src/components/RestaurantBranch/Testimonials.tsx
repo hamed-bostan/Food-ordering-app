@@ -1,15 +1,19 @@
 "use client";
 
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import image1 from "@/assets/images/avatars/01.png";
+import image2 from "@/assets/images/avatars/02.png";
+import image3 from "@/assets/images/avatars/03.png";
+import image4 from "@/assets/images/avatars/04.png";
 
 type Testimonial = {
   id: number;
-  image: string;
+  image: StaticImageData;
   name: string;
   date: string;
   comment: string;
@@ -18,7 +22,7 @@ type Testimonial = {
 const testimonialDetails: Testimonial[] = [
   {
     id: 1,
-    image: "/assets/images/avatars/01.png",
+    image: image1,
     name: "محمد محمدی",
     date: "۲۳ اسفند ۱۴۰۱",
     comment:
@@ -26,7 +30,7 @@ const testimonialDetails: Testimonial[] = [
   },
   {
     id: 2,
-    image: "/assets/images/avatars/02.png",
+    image: image2,
     name: "آرزو حسن زاده",
     date: "۲۳ اسفند ۱۴۰۱",
     comment:
@@ -34,7 +38,7 @@ const testimonialDetails: Testimonial[] = [
   },
   {
     id: 3,
-    image: "/assets/images/avatars/03.png",
+    image: image3,
     name: "حسین حسینی",
     date: "۲۳ اسفند ۱۴۰۱",
     comment:
@@ -42,7 +46,7 @@ const testimonialDetails: Testimonial[] = [
   },
   {
     id: 4,
-    image: "/assets/images/avatars/04.png",
+    image: image4,
     name: "فرزانه رمضانی",
     date: "۲۳ اسفند ۱۴۰۱",
     comment:
@@ -50,7 +54,7 @@ const testimonialDetails: Testimonial[] = [
   },
   {
     id: 5,
-    image: "/assets/images/avatars/01.png",
+    image: image1,
     name: "سجاد رحیمی",
     date: "۲۳ اسفند ۱۴۰۱",
     comment:
@@ -58,7 +62,7 @@ const testimonialDetails: Testimonial[] = [
   },
   {
     id: 6,
-    image: "/assets/images/avatars/02.png",
+    image: image2,
     name: "آنا عسگری",
     date: "۲۳ اسفند ۱۴۰۱",
     comment:
@@ -90,16 +94,16 @@ export default function Testimonials() {
                 alt={`Profile image of ${item.name}`}
                 width={80}
                 height={80}
-                className="mb-1 w-14 h-14 block mx-auto md:w-20 md:h-20 md:mb-2"
+                className="block mx-auto mb-1 w-14 h-14 md:w-20 md:h-20 md:mb-2"
               />
-              <p className="col-span-full row-span-3 col-start-2 pr-3 pt-2 text-justify md:p-4">
+              <p className="col-start-2 row-span-3 pt-2 pr-3 text-justify col-span-full md:p-4">
                 {item.comment}
               </p>
               <span className="text-[#717171] text-center md:mb-1">
                 {item.name}
               </span>
               <span className="text-[#717171] text-center">{item.date}</span>
-              <div className="flex gap-x-1 justify-end items-center col-start-2 md:gap-x-2">
+              <div className="flex items-center justify-end col-start-2 gap-x-1 md:gap-x-2">
                 <img
                   src="/assets/images/icons/star-rate.svg"
                   alt="star rate icon"
