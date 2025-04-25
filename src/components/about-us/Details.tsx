@@ -1,4 +1,5 @@
 import Image from "next/image";
+import image1 from "@/assets/images/bannerImages/banner-09.jpg";
 
 export default function Details() {
   return (
@@ -12,11 +13,9 @@ export default function Details() {
           مشتریان بوده است.
         </p>
         <Image
-          width={200}
-          height={150}
-          src="/assets/images/bannerImages/banner-09.jpg"
+          src={image1}
           alt="About us image"
-          className="rounded-md col-span-1 h-full w-full object-cover object-center md:row-span-2 2xl:h-5/6"
+          className="object-cover object-center w-full h-full col-span-1 rounded-md md:row-span-2 2xl:h-5/6"
         />
         <p className="col-span-2 text-justify md:col-span-1">
           دراین خصوص ترخینه همیشه در تلاش بوده تا در طی این زمان‌ها کیفیت غذاهای

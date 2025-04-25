@@ -1,8 +1,13 @@
+import { StaticImageData } from "next/image";
 import BranchCard from "./BranchCard";
+import image1 from "@/assets/images/branchImages/branch-01.jpg";
+import image2 from "@/assets/images/branchImages/branch-02.jpg";
+import image3 from "@/assets/images/branchImages/branch-03.jpg";
+import image4 from "@/assets/images/branchImages/branch-04.jpg";
 
 export type Branch = {
   id: number;
-  image: string;
+  image: StaticImageData;
   title: string;
   address: string;
   phoneNumber: string;
@@ -12,7 +17,7 @@ export type Branch = {
 const branchesData: Branch[] = [
   {
     id: 1,
-    image: "/assets/images/branchImages/branch-01.jpg",
+    image: image1,
     title: "شعبه اکباتان",
     address: "شهرک اکباتان، فاز ۳، مجتمع تجاری کوروش، طبقه سوم",
     phoneNumber: "۰۲۱-۵۴۸۹۱۲۵۰-۵۱",
@@ -20,7 +25,7 @@ const branchesData: Branch[] = [
   },
   {
     id: 2,
-    image: "/assets/images/branchImages/branch-02.jpg",
+    image: image2,
     title: "شعبه چالوس",
     address: "چالوس، خیابان ۱۷ شهریور، بعد کوچه کوروش، جنب داروخانه",
     phoneNumber: "۰۲۱-۵۴۸۹۱۲۵۲-۵۳",
@@ -28,7 +33,7 @@ const branchesData: Branch[] = [
   },
   {
     id: 3,
-    image: "/assets/images/branchImages/branch-03.jpg",
+    image: image3,
     title: "شعبه اقدسیه",
     address: "خیابان اقدسیه ، نرسیده به میدان خیام، پلاک ۸",
     phoneNumber: "۰۲۱-۵۴۸۹۱۲۵۴-۵۵",
@@ -36,7 +41,7 @@ const branchesData: Branch[] = [
   },
   {
     id: 4,
-    image: "/assets/images/branchImages/branch-04.jpg",
+    image: image4,
     title: "شعبه ونک",
     address: "میدان ونک، خیابان فردوسی، نبش کوچه نیلوفر، پلاک ۲۶",
     phoneNumber: "۰۲۱-۵۴۸۹۱۲۵۶-۵۷",
@@ -46,7 +51,7 @@ const branchesData: Branch[] = [
 
 export default function BranchList() {
   return (
-    <div className="px-5 py-6 container mx-auto lg:px-10 2xl:px-28">
+    <div className="container px-5 py-6 mx-auto lg:px-10 2xl:px-28">
       <div className="flex flex-col gap-y-7">
         {branchesData.map((item) => (
           <BranchCard data={item} key={item.id} />
