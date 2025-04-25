@@ -1,4 +1,5 @@
 import Image from "next/image";
+import svg1 from "@/assets/images/icons/expand-desktop.svg";
 import { FullscreenOutlined, ArrowBackOutlined } from "@mui/icons-material";
 import Link from "next/link";
 import CustomButton from "../../ui/CustomButton";
@@ -19,13 +20,13 @@ export default function BranchItem({ branch }: BranchItemProps) {
 
 function DisplayingImage({ branch }: BranchItemProps) {
   return (
-    <div className="relative col-span-1 row-span-2 h-20 md:h-40 lg:h-52 md:row-span-1 md:group-hover:h-36 lg:group-hover:h-44 transition-all duration-300">
+    <div className="relative h-20 col-span-1 row-span-2 transition-all duration-300 md:h-40 lg:h-52 md:row-span-1 md:group-hover:h-36 lg:group-hover:h-44">
       <Image
         width={300}
         height={300}
         src={branch.image}
         alt={branch.title}
-        className="w-full h-full object-cover"
+        className="object-cover w-full h-full"
       />
       <div className="hidden md:block absolute inset-0 bg-[#181818] opacity-0 group-hover:opacity-65 transition-opacity duration-300 z-20"></div>
       <FullscreenOutlined
@@ -35,9 +36,9 @@ function DisplayingImage({ branch }: BranchItemProps) {
       <Image
         width={40}
         height={40}
-        src="/assets/images/icons/expand-desktop.svg"
+        src={svg1}
         alt="expand icon"
-        className="hidden absolute top-1/2 left-1/2 w-12 h-12 -translate-x-1/2 -translate-y-1/2 z-30 md:group-hover:block cursor-pointer"
+        className="absolute z-30 hidden w-12 h-12 -translate-x-1/2 -translate-y-1/2 cursor-pointer top-1/2 left-1/2 md:group-hover:block"
       />
     </div>
   );
@@ -45,14 +46,14 @@ function DisplayingImage({ branch }: BranchItemProps) {
 
 function DisplayingDetails({ branch }: BranchItemProps) {
   return (
-    <div className="p-2 col-span-1 row-span-2 text-center md:row-span-1 md:py-4">
+    <div className="col-span-1 row-span-2 p-2 text-center md:row-span-1 md:py-4">
       <h3 className="text-sm font-medium text-[#353535] row-span-1 mb-1 md:mb-3 md:text-lg md:font-semibold">
         {branch.title}
       </h3>
       <p className="text-xs text-[#717171] row-span-1 md:text-sm md:mb-4">
         {branch.address}
       </p>
-      <div className="w-fit mx-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div className="mx-auto transition-opacity duration-300 opacity-0 w-fit group-hover:opacity-100">
         <Link href="/branch">
           <CustomButton
             variant="outlined"
