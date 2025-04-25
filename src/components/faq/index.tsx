@@ -4,6 +4,7 @@ import Banner from "../common/Banner";
 import { useState } from "react";
 import ContentSection from "./ContentSection";
 import { tabDetails } from "../../lib/faq";
+import image1 from "@/assets/images/bannerImages/banner-10.jpg"
 
 type ActiveTab = "faq" | "rules" | "privacyPolicy";
 
@@ -17,7 +18,7 @@ export default function FAQ() {
   return (
     <>
       <Banner
-        imageSrc="/assets/images/bannerImages/banner-10.jpg"
+        imageSrc={image1}
         text="سوالات متداول از ترخینه"
         isButton={false}
       />

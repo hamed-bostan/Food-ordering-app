@@ -4,17 +4,18 @@ import Consultation from "./Consultation";
 import Highlights from "./Highlights";
 import Privilege from "./Privilege";
 import RequestForm from "./requestForm";
+import image1 from "@/assets/images/bannerImages/banner-06.jpg";
 
 export default function Franchise() {
   return (
     <div className="hidden md:block">
       <Banner
         styleContainer="md:mb-0"
-        imageSrc="/assets/images/bannerImages/banner-06.jpg"
+        imageSrc={image1}
         text="همین الان به خانواده بزرگ ترخینه بپیوندید!"
         isButton={false}
       />
-      <div className="px-10 2xl:px-28 container">
+      <div className="container px-10 2xl:px-28">
         <Highlights />
         <Divider />
         <Privilege />

@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MobileDrawerProps, NavigationListProps } from "./types";
+import image1 from "@/assets/images/bannerImages/banner-11.jpg";
 
 export default function MobileDrawer({
   navigationItems,
@@ -23,7 +24,7 @@ export default function MobileDrawer({
           <Image
             width={300}
             height={200}
-            src="/assets/images/bannerImages/banner-11.jpg"
+            src={image1}
             alt="Banner image"
             className="w-full h-full"
           />
@@ -57,7 +58,7 @@ function NavigationList({ item, isLast, handleClose }: NavigationListProps) {
       <Link
         onClick={handleClose}
         href={item.path}
-        className="flex items-center gap-x-1 py-2"
+        className="flex items-center py-2 gap-x-1"
       >
         {item.image && (
           <Image
