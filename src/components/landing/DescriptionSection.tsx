@@ -7,6 +7,8 @@ import {
   EventNoteOutlined,
   SvgIconComponent,
 } from "@mui/icons-material";
+import Image from "next/image";
+import image1 from "@/assets/images/bannerImages/banner-02.jpg";
 
 type CardItem = {
   id: number;
@@ -39,7 +41,14 @@ const cardItems: CardItem[] = [
 
 export default function DescriptionSection() {
   return (
-    <section className="bg-[url('/assets/images/bannerImages/banner-02.jpg')] bg-cover bg-center px-5 py-4 md:h-80 md:grid md:grid-cols-2 md:place-items-center lg:gap-x-10 lg:px-10 2xl:px-28">
+    <section className="relative px-5 py-4 md:h-80 md:grid md:grid-cols-2 md:place-items-center lg:gap-x-10 lg:px-10 2xl:px-28">
+      <Image
+        src={image1}
+        alt="description background"
+        fill
+        className="object-cover object-center -z-10"
+        priority
+      />
       <DescriptionDetails />
       <CardSection data={cardItems} />
     </section>
@@ -91,7 +100,7 @@ function CardSection({ data }: CardSectionProps) {
           className="flex flex-col items-center gap-y-1 md:gap-y-3 text-[#FFFFFF]"
         >
           <item.icon sx={{ fontSize: { xs: 23, md: 28 } }} />
-          <span className="text-center block text-xs md:text-sm">
+          <span className="block text-xs text-center md:text-sm">
             {item.text}
           </span>
         </div>

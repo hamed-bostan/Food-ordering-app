@@ -32,6 +32,7 @@ export default function BranchList() {
             <Image
               src={src}
               alt={`Carousel image ${index + 1}`}
+              priority
               className="object-cover w-full h-44 md:h-60"
             />
           </SwiperSlide>

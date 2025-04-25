@@ -21,13 +21,7 @@ export default function MobileDrawer({
     <Drawer anchor="left" open={isDrawerOpen} onClose={handleClose}>
       <div className="w-64 h-full">
         <div className="relative">
-          <Image
-            width={300}
-            height={200}
-            src={image1}
-            alt="Banner image"
-            className="w-full h-full"
-          />
+          <Image src={image1} alt="Banner image" className="w-full h-full" />
           <IconButton
             onClick={handleClose}
             sx={{ color: "#fff", position: "absolute", top: 4, right: 4 }}

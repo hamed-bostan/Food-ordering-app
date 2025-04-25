@@ -16,8 +16,7 @@ export default function BranchCard({ data }: BranchCardProps) {
         <Image
           src={image}
           alt={title}
-          width={400}
-          height={400}
+          priority
           className="object-cover w-full h-28 md:h-52"
         />
         <div className="hidden md:block absolute inset-0 bg-[#181818] opacity-0 group-hover:opacity-65 transition-opacity duration-300 z-20"></div>
