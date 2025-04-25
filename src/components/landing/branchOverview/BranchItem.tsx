@@ -24,6 +24,8 @@ function DisplayingImage({ branch }: BranchItemProps) {
       <Image
         src={branch.image}
         alt={branch.title}
+        priority
+        placeholder="blur"
         className="object-cover w-full h-full"
       />
       <div className="hidden md:block absolute inset-0 bg-[#181818] opacity-0 group-hover:opacity-65 transition-opacity duration-300 z-20"></div>
