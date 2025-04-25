@@ -1,6 +1,9 @@
 import { Divider } from "@mui/material";
 import Image from "next/image";
 import WalletOutlinedIcon from "@mui/icons-material/WalletOutlined";
+import image1 from "@/assets/images/bank/bank-saman.jpg";
+import image2 from "@/assets/images/bank/bank-melat.jpg";
+import image3 from "@/assets/images/bank/bank-parsian.jpg";
 
 export default function OnlinePayment() {
   return (
@@ -10,25 +13,19 @@ export default function OnlinePayment() {
         <span className="text-sm">درگاه پرداخت</span>
       </div>
       <Divider className="md:hidden" />
-      <div className="flex gap-x-2 pt-4 mb-2 justify-center md:justify-start md:pt-0">
+      <div className="flex justify-center pt-4 mb-2 gap-x-2 md:justify-start md:pt-0">
         <Image
-          src="/assets/images/bank/bank-saman.jpg"
-          width={50}
-          height={50}
+          src={image1}
           alt="bank image"
           className="w-20 h-20 lg:w-28 lg:h-28"
         />
         <Image
-          src="/assets/images/bank/bank-melat.jpg"
-          width={50}
-          height={50}
+          src={image2}
           alt="bank image"
           className="w-20 h-20 lg:w-28 lg:h-28"
         />
         <Image
-          src="/assets/images/bank/bank-parsian.jpg"
-          width={50}
-          height={50}
+          src={image3}
           alt="bank image"
           className="w-20 h-20 lg:w-28 lg:h-28"
         />
