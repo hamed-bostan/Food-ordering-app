@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { userMenuItems } from "../common/UserMenuItems";
 import { Divider } from "@mui/material";
+import image1 from "@/assets/images/avatars/01.png";
 
 type SidebarProps = {
   setActiveTab: (index: number) => void;
@@ -21,9 +22,9 @@ export default function Sidebar({ setActiveTab, activeTab }: SidebarProps) {
 
 function UserInformation() {
   return (
-    <div className="flex gap-x-5 items-center mb-2">
+    <div className="flex items-center mb-2 gap-x-5">
       <Image
-        src="/assets/images/avatars/01.png"
+        src={image1}
         width={100}
         height={100}
         alt="user avatar"
@@ -39,7 +40,7 @@ function UserInformation() {
 
 function SidebarMenu({ setActiveTab, activeTab }: SidebarProps) {
   return (
-    <div className="flex flex-col gap-y-2 mt-2">
+    <div className="flex flex-col mt-2 gap-y-2">
       {userMenuItems.map((item, index) => (
         <div
           onClick={() => setActiveTab(item.tabIndex)}
