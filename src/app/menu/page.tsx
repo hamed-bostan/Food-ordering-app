@@ -1,5 +1,5 @@
 import RestaurantMenu from "@/components/RestaurantMenu";
 
-export default function page() {
+export default function RestaurantMenuPage() {
   return <RestaurantMenu />;
 }

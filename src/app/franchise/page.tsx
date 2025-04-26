@@ -1,5 +1,5 @@
 import Franchise from "@/components/franchise";
 
-export default function page() {
+export default function FranchisePage() {
   return <Franchise />;
 }

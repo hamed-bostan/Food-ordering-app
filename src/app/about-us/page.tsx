@@ -1,5 +1,5 @@
 import AboutUs from "@/components/about-us";
 
-export default function page() {
+export default function AboutUsPage() {
   return <AboutUs />;
 }

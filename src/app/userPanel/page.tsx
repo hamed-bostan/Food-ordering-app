@@ -1,5 +1,5 @@
 import UserPanel from "@/components/userPanel";
 
-export default function page() {
+export default function UserPanelPage() {
   return <UserPanel />;
 }

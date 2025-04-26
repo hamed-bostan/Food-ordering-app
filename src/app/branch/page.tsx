@@ -1,5 +1,5 @@
 import RestaurantBranch from "@/components/RestaurantBranch";
 
-export default function page() {
+export default function RestaurantBranchPage() {
   return <RestaurantBranch />;
 }
