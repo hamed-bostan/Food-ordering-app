@@ -2,7 +2,7 @@ import MenuSection from "./MenuSection";
 import DescriptionSection from "./DescriptionSection";
 import Banner from "../common/Banner";
 import BranchOverview from "./branchOverview";
-import image1 from "@/assets/images/bannerImages/banner-01.jpg"
+import image1 from "@/assets/images/bannerImages/banner-01.webp"
 
 export default function index() {
   return (

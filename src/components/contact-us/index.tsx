@@ -1,6 +1,6 @@
 import Banner from "../common/Banner";
 import BranchList from "./BranchList";
-import image1 from "@/assets/images/bannerImages/banner-08.jpg";
+import image1 from "@/assets/images/bannerImages/banner-08.webp";
 
 export default function ContactUs() {
   return (

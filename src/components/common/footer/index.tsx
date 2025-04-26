@@ -1,7 +1,7 @@
 import Image from "next/image";
 import ContactForm from "./ContactForm";
 import Navigation from "./Navigation";
-import image1 from "@/assets/images/bannerImages/banner-03.jpg";
+import image1 from "@/assets/images/bannerImages/banner-03.webp";
 
 export default function Footer() {
   return (

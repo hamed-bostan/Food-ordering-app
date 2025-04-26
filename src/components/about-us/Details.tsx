@@ -1,5 +1,5 @@
 import Image from "next/image";
-import image1 from "@/assets/images/bannerImages/banner-09.jpg";
+import image1 from "@/assets/images/bannerImages/banner-09.webp";
 
 export default function Details() {
   return (

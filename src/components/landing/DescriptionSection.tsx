@@ -8,7 +8,7 @@ import {
   SvgIconComponent,
 } from "@mui/icons-material";
 import Image from "next/image";
-import image1 from "@/assets/images/bannerImages/banner-02.jpg";
+import image1 from "@/assets/images/bannerImages/banner-02.webp";
 
 type CardItem = {
   id: number;

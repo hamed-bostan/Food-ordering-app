@@ -4,7 +4,7 @@ import Consultation from "./Consultation";
 import Highlights from "./Highlights";
 import Privilege from "./Privilege";
 import RequestForm from "./requestForm";
-import image1 from "@/assets/images/bannerImages/banner-06.jpg";
+import image1 from "@/assets/images/bannerImages/banner-06.webp";
 
 export default function Franchise() {
   return (
