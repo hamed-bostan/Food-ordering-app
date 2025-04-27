@@ -1,5 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import twitterIcon from "@/assets/images/icons/twitter.svg";
+import instagramIcon from "@/assets/images/icons/instagram.svg";
+import telegramIcon from "@/assets/images/icons/telegram.svg";
 
 type FooterLink = {
   id: number;
@@ -23,18 +26,18 @@ const footerLinks: FooterLink[] = [
 ];
 
 const footerIcons: FooterIcon[] = [
-  { id: 1, image: "/assets/images/icons/twitter.svg" },
-  { id: 2, image: "/assets/images/icons/instagram.svg" },
-  { id: 3, image: "/assets/images/icons/telegram.svg" },
+  { id: 1, image: twitterIcon },
+  { id: 2, image: instagramIcon },
+  { id: 3, image: telegramIcon },
 ];
 
 export default function Navigation() {
   return (
     <div className="col-span-2 md:col-span-1 grid grid-cols-2 grid-rows-5 text-[#EDEDED]">
-      <span className="text-sm mb-2 md:text-base md:mb-3 md:font-medium">
+      <span className="mb-2 text-sm md:text-base md:mb-3 md:font-medium">
         دسترسی آسان
       </span>
-      <span className="text-sm mb-2 md:text-base md:mb-3 md:font-medium">
+      <span className="mb-2 text-sm md:text-base md:mb-3 md:font-medium">
         شعبه های ترخینه
       </span>
       {footerLinks.map((item, index) => (
@@ -50,7 +53,7 @@ export default function Navigation() {
           </span>
         </Link>
       ))}
-      <div className="flex gap-x-2 row-start-5">
+      <div className="flex row-start-5 gap-x-2">
         {footerIcons.map((item) => (
           <Image
             key={item.id}
@@ -58,7 +61,7 @@ export default function Navigation() {
             alt="social media icons"
             width={20}
             height={20}
-            className="w-4 h-4 md:w-5 md:h-5 cursor-pointer"
+            className="w-4 h-4 cursor-pointer md:w-5 md:h-5"
           />
         ))}
       </div>

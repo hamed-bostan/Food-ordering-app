@@ -1,6 +1,7 @@
 import Checkbox from "@mui/material/Checkbox";
 import CustomButton from "@/components/ui/CustomButton";
 import Image from "next/image";
+import uploadIcon from "@/assets/images/icons/upload-image.svg";
 
 export default function FacilityProperty() {
   return (
@@ -93,7 +94,7 @@ function PropertyImages() {
       <span className="text-[#717171] mb-1 block">تصاویر ملک</span>
       <div className="flex flex-col gap-y-2 border-2 border-[#CBCBCB] rounded-sm items-center w-full min-h-32 justify-center">
         <Image
-          src="/assets/images/icons/upload-image.svg"
+          src={uploadIcon}
           alt="upload image icon"
           width={50}
           height={50}

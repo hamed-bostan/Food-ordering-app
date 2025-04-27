@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import CustomButton from "../ui/CustomButton";
 import { Branch } from "./BranchList";
+import expandDesktopIcon from "@/assets/images/icons/expand-desktop.svg";
 
 type BranchCardProps = {
   data: Branch;
@@ -23,7 +24,7 @@ export default function BranchCard({ data }: BranchCardProps) {
         <Image
           width={40}
           height={40}
-          src="/assets/images/icons/expand-desktop.svg"
+          src={expandDesktopIcon}
           alt="expand icon"
           className="absolute z-30 hidden w-12 h-12 -translate-x-1/2 -translate-y-1/2 cursor-pointer top-1/2 left-1/2 md:group-hover:block"
         />

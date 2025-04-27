@@ -1,4 +1,5 @@
 import Image from "next/image";
+import franchiseIcon from "@/assets/images/icons/franchise-icon.svg";
 
 type PrivilegeDetail = {
   id: number;
@@ -19,16 +20,16 @@ const PrivilegeDetails: PrivilegeDetail[] = [
 export default function Privilege() {
   return (
     <div className="py-9">
-      <h2 className="font-bold text-center mb-6">مزیت دریافت نمایندگی</h2>
-      <div className="grid grid-cols-2 mx-auto max-w-2xl gap-y-4">
+      <h2 className="mb-6 font-bold text-center">مزیت دریافت نمایندگی</h2>
+      <div className="grid max-w-2xl grid-cols-2 mx-auto gap-y-4">
         {PrivilegeDetails.map((item) => (
           <div key={item.id} className="flex items-center gap-x-1 ">
             <Image
-              src="/assets/images/icons/franchise-icon.svg"
+              src={franchiseIcon}
               alt="franchise icon"
               width={25}
               height={25}
-              className="h-4 w-4"
+              className="w-4 h-4"
             />
             <span className="text-nowrap">{item.text}</span>
           </div>

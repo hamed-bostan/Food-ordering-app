@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import CustomButton from "../ui/CustomButton";
 import { useAddressDialog } from "../../context/AddressDialogContext";
+import svgIcon from "@/assets/images/icons/empty-icon.svg";
 
 type EmptyStateMessageProps = {
   text: string;
@@ -23,11 +24,11 @@ export default function EmptyStateMessage({
   return (
     <div className="relative border border-[#CBCBCB] rounded-lg min-h-96">
       <Image
-        src="/assets/images/icons/empty-icon.svg"
+        src={svgIcon}
         alt="empty icon"
         width={100}
         height={100}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-64 md:h-64"
+        className="absolute w-48 h-48 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 md:w-64 md:h-64"
       />
       <p className="text-nowrap text-[#717171] text-xs absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:text-sm lg:text-base">
         {text}

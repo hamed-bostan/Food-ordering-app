@@ -10,6 +10,7 @@ import image1 from "@/assets/images/avatars/01.png";
 import image2 from "@/assets/images/avatars/02.png";
 import image3 from "@/assets/images/avatars/03.png";
 import image4 from "@/assets/images/avatars/04.png";
+import starRateIcon from "@/assets/images/icons/star-rate.svg"
 
 type Testimonial = {
   id: number;
@@ -104,8 +105,8 @@ export default function Testimonials() {
               </span>
               <span className="text-[#717171] text-center">{item.date}</span>
               <div className="flex items-center justify-end col-start-2 gap-x-1 md:gap-x-2">
-                <img
-                  src="/assets/images/icons/star-rate.svg"
+                <Image
+                  src={starRateIcon}
                   alt="star rate icon"
                   className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5"
                 />

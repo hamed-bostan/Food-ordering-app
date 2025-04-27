@@ -4,27 +4,33 @@ import { useState } from "react";
 import MobileDrawer from "./MobileDrawer";
 import Navbar from "./navbar";
 import { NavigationItem } from "./types";
+import homeIcon from "@/assets/images/icons/home.svg";
+import arrowDownIcon from "@/assets/images/icons/arrow-down.svg";
+import menuBoardIcon from "@/assets/images/icons/menu-board.svg";
+import homeHashtagIcon from "@/assets/images/icons/home-hashtag.svg";
+import profileUserIcon from "@/assets/images/icons/profile-2user.svg";
+import callCallingIcon from "@/assets/images/icons/call-calling.svg";
 
 const navigationItems: NavigationItem[] = [
   {
     id: 1,
     text: "صفحه اصلی",
     path: "/",
-    image: "/assets/images/icons/home.svg",
+    image: homeIcon,
   },
   {
     id: 2,
     text: "شعبه",
-    icon: "/assets/images/icons/arrow-down.svg",
+    icon: arrowDownIcon,
     path: "/branch",
-    image: "/assets/images/icons/menu-board.svg",
+    image: menuBoardIcon,
   },
   {
     id: 3,
     text: "منو",
-    icon: "/assets/images/icons/arrow-down.svg",
+    icon: arrowDownIcon,
     path: "/menu",
-    image: "/assets/images/icons/home-hashtag.svg",
+    image: homeHashtagIcon,
   },
   {
     id: 4,
@@ -35,13 +41,13 @@ const navigationItems: NavigationItem[] = [
     id: 5,
     text: "درباره ما",
     path: "/about-us",
-    image: "/assets/images/icons/profile-2user.svg",
+    image: profileUserIcon,
   },
   {
     id: 6,
     text: "تماس با ما",
     path: "/contact-us",
-    image: "/assets/images/icons/call-calling.svg",
+    image: callCallingIcon,
   },
 ];
 

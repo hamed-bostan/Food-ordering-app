@@ -1,5 +1,5 @@
 import Image from "next/image";
-import svg1 from "@/assets/images/icons/expand-desktop.svg";
+import expandDesktopIcon from "@/assets/images/icons/expand-desktop.svg";
 import { FullscreenOutlined, ArrowBackOutlined } from "@mui/icons-material";
 import Link from "next/link";
 import CustomButton from "../../ui/CustomButton";
@@ -36,7 +36,7 @@ function DisplayingImage({ branch }: BranchItemProps) {
       <Image
         width={40}
         height={40}
-        src={svg1}
+        src={expandDesktopIcon}
         alt="expand icon"
         className="absolute z-30 hidden w-12 h-12 -translate-x-1/2 -translate-y-1/2 cursor-pointer top-1/2 left-1/2 md:group-hover:block"
       />

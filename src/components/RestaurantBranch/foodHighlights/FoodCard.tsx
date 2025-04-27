@@ -10,6 +10,7 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import { Product } from "@/lib/api";
 import { RootState } from "@/redux/store";
 import { addItem } from "@/redux/reducers/cartSlice";
+import starRateFillIcon from "@/assets/images/icons/star-rate-fill.svg";
 
 type ProductItemProps = {
   item: Product;
@@ -72,11 +73,7 @@ function OfferDetails({ item }: ProductItemProps) {
         </div>
       )}
       <div className="flex items-center col-start-1 row-start-3 gap-x-1">
-        <img
-          src="/assets/images/icons/star-rate-fill.svg"
-          alt="like icon"
-          className="w-4 h-4"
-        />
+        <Image src={starRateFillIcon} alt="like icon" className="w-4 h-4" />
         <span>5</span>
       </div>
       <span className="col-start-2 row-start-3 mr-auto">
