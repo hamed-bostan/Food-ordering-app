@@ -13,7 +13,7 @@ export default function Navbar({ navigationItems, handleOpen }: NavbarProps) {
   return (
     <div className="flex items-center justify-between px-5 py-4 md:py-9 lg:px-10 2xl:px-28">
       <Menu handleOpen={handleOpen} />
-      <Logo size="h-8" />
+      <Logo />
 
       <DesktopNavigation navigationItems={navigationItems} />
       <ActionButton />
