@@ -18,8 +18,8 @@ export default function FoodList({ filter, title, products }: FoodListProps) {
         </h3>
       )}
       <div className="grid grid-cols-1 mb-6 gap-y-3 md:grid-cols-2 md:gap-5">
-        {filteredFood.map((foodItem, index) => {
-          return <FoodCard foodItem={foodItem} key={index} />;
+        {filteredFood.map((foodItem) => {
+          return <FoodCard foodItem={foodItem} key={foodItem.id} />;
         })}
       </div>
     </>
