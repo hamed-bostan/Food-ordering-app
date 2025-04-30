@@ -3,14 +3,14 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { Product } from "@/lib/api";
+import { ProductType } from "@/hooks/useProducts";
 
 type FoodListProps = {
   title: string;
   filter: string;
   containerStyle?: string;
   titleStyle?: string;
-  products: Product[];
+  products: ProductType[];
 };
 
 export default function FoodList({
