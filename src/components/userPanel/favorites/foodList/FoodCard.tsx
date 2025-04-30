@@ -6,10 +6,10 @@ import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { Product } from "@/lib/api";
+import { ProductType } from "@/hooks/useProducts";
 
 type FoodCardProps = {
-  item: Product;
+  item: ProductType;
 };
 
 export default function FoodCard({ item }: FoodCardProps) {
@@ -21,7 +21,7 @@ export default function FoodCard({ item }: FoodCardProps) {
   );
 }
 
-type FoodImageProps = Pick<Product, "image" | "title">;
+type FoodImageProps = Pick<ProductType, "image" | "title">;
 
 function DisplayingImage({ image, title }: FoodImageProps) {
   return (
@@ -30,7 +30,7 @@ function DisplayingImage({ image, title }: FoodImageProps) {
       alt={title}
       width={110}
       height={110}
-      className="h-24 w-full object-cover md:h-36"
+      className="object-cover w-full h-24 md:h-36"
     />
   );
 }
@@ -50,13 +50,13 @@ function OfferDetails({ item }: FoodCardProps) {
       <h3 className="md:font-semibold">{title}</h3>
       <Favorite
         sx={{ color: "#C30000", fontSize: { xs: 16, md: 18 } }}
-        className="cursor-pointer mr-auto col-start-2"
+        className="col-start-2 mr-auto cursor-pointer"
       />
-      <div className="flex items-center gap-x-1 row-start-2">
+      <div className="flex items-center row-start-2 gap-x-1">
         <Star sx={{ color: "#F4B740", fontSize: { xs: 16, md: 18 } }} />
         <span className="md:hidden">5</span>
       </div>
-      <span className="mr-auto flex self-center row-start-2 ">
+      <span className="flex self-center row-start-2 mr-auto ">
         {discountedPrice} تومان
       </span>
     </div>

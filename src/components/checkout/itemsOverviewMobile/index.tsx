@@ -1,10 +1,10 @@
 import ItemsCard from "./ItemsCard";
 import { useCheckoutTab } from "@/context/CheckoutTabContext";
-import { Product } from "@/lib/api";
+import { ProductType } from "@/hooks/useProducts";
 import { Divider } from "@mui/material";
 
 type ItemsOverviewMobileProps = {
-  selectedItems: Product[];
+  selectedItems: ProductType[];
   containerStyle?: string;
 };
 

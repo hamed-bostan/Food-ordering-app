@@ -2,12 +2,12 @@ import QuantitySelector from "@/components/common/QuantitySelector";
 import { useDispatch, useSelector } from "react-redux";
 import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
-import { Product } from "@/lib/api";
 import { RootState } from "@/redux/store";
 import { decrease, increase, removeItem } from "@/redux/reducers/cartSlice";
+import { ProductType } from "@/hooks/useProducts";
 
 type ItemsCardProps = {
-  foodItem: Product;
+  foodItem: ProductType;
 };
 
 export default function ItemsCard({ foodItem }: ItemsCardProps) {

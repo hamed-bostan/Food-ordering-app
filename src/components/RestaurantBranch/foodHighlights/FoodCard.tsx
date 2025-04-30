@@ -7,13 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 // import { addItem } from "@/redux/actions/cartAction";
 import CustomButton from "@/components/ui/CustomButton";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
-import { Product } from "@/lib/api";
 import { RootState } from "@/redux/store";
 import { addItem } from "@/redux/reducers/cartSlice";
 import starRateFillIcon from "@/assets/images/icons/star-rate-fill.svg";
+import { ProductType } from "@/hooks/useProducts";
 
 type ProductItemProps = {
-  item: Product;
+  item: ProductType;
 };
 
 export default function FoodCard({ item }: ProductItemProps) {

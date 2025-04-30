@@ -10,12 +10,12 @@ import {
 import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
 import CustomButton from "@/components/ui/CustomButton";
-import { Product } from "@/lib/api";
 import { RootState } from "@/redux/store";
 import { addItem } from "@/redux/reducers/cartSlice";
+import { ProductType } from "@/hooks/useProducts";
 
 type FoodCardProps = {
-  foodItem: Product; // The product type
+  foodItem: ProductType; // The product type
 };
 
 export default function FoodCard({ foodItem }: FoodCardProps) {
@@ -28,7 +28,7 @@ export default function FoodCard({ foodItem }: FoodCardProps) {
 }
 
 // first way for just using some of the types
-type FoodImageProps = Pick<Product, "image" | "title">;
+type FoodImageProps = Pick<ProductType, "image" | "title">;
 
 function FoodImage({ image, title }: FoodImageProps) {
   return (
@@ -43,7 +43,7 @@ function FoodImage({ image, title }: FoodImageProps) {
 }
 
 // second way for just using some of the types
-function FoodDetails({ foodItem }: { foodItem: Product }) {
+function FoodDetails({ foodItem }: { foodItem: ProductType }) {
   const { id, title, description, price, discount } = foodItem;
 
   const discountedPrice = formatToPersianStyle(discountPrice(price, discount));

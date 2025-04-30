@@ -2,10 +2,10 @@ import { useSelector } from "react-redux";
 import ItemsDesktop from "./itemsDesktop";
 import ItemsMobile from "@/components/checkout/itemsOverviewMobile";
 import { RootState } from "@/redux/store";
-import { Product } from "@/lib/api";
+import { ProductType } from "@/hooks/useProducts";
 
 // Extend Product to include quantity from CartItem
-export type FullCartProduct = Product & {
+export type FullCartProduct = ProductType & {
   quantity: number;
 };
 

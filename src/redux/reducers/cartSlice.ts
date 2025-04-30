@@ -1,8 +1,8 @@
+import { ProductType } from "@/hooks/useProducts";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Product } from "@/lib/api";
 
 // CartItem extends Product by adding quantity
-export type CartItem = Product & { quantity: number };
+export type CartItem = ProductType & { quantity: number };
 
 // Define cart state
 export type CartState = {
@@ -38,7 +38,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addItem: (state, action: PayloadAction<Product>) => {
+    addItem: (state, action: PayloadAction<ProductType>) => {
       const exists = state.selectedItems.find(
         (item) => item.id === action.payload.id
       );

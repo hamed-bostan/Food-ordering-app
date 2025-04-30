@@ -1,10 +1,10 @@
+import { ProductType } from "@/hooks/useProducts";
 import { Dispatch, SetStateAction } from "react";
-import { Product } from "@/lib/api";
 
 export type FoodCategoriesListProps = {
   setSelectedCategory: Dispatch<SetStateAction<string>>;
   selectedCategory: string;
-  products: Product[];
+  products: ProductType[];
 };
 
 export type FoodCategoriesCardProps = {
