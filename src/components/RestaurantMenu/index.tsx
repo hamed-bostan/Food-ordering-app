@@ -6,8 +6,8 @@ import FoodCategoriesList from "./FoodCategoriesList";
 import Foods from "./foods";
 import FoodTypesList from "./FoodTypesList";
 import CheckoutButton from "./CheckoutButton";
-import { useProducts } from "@/hooks/useProducts";
 import image1 from "@/assets/images/bannerImages/banner-05.webp";
+import { useProducts } from "@/hooks/useProducts";
 
 export default function RestaurantMenu() {
   const { products, loading, error } = useProducts();

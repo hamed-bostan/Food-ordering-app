@@ -1,16 +1,16 @@
-import supabase from "@/lib/supabase";
 import { NextResponse } from "next/server";
+import { connectDB } from "@/lib/mongoose";
+import Product from "@/models/Product";
 
-export async function GET(): Promise<NextResponse> {
+export async function GET() {
   try {
-    const { data, error } = await supabase.from("products").select("*");
-
-    if (error) throw error;
-
-    return NextResponse.json(data);
-  } catch (error: unknown) {
+    await connectDB();
+    const products = await Product.find();
+    return NextResponse.json(products);
+  } catch (error) {
+    console.error("Failed to fetch products:", error);
     return NextResponse.json(
-      { message: "Error fetching products" },
+      { error: "Failed to fetch products" },
       { status: 500 }
     );
   }

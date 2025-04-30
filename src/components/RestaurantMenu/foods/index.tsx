@@ -1,9 +1,9 @@
+import { ProductType } from "@/hooks/useProducts";
 import FoodList from "./FoodList";
-import { Product } from "@/lib/api";
 
 type FoodsProps = {
   selectedCategory: string;
-  products: Product[];
+  products: ProductType[];
   loading: boolean;
   error: string | null;
 };

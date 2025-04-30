@@ -1,10 +1,10 @@
+import { ProductType } from "@/hooks/useProducts";
 import FoodCard from "./FoodCard";
-import { Product } from "@/lib/api";
 
 type FoodListProps = {
   filter: string;
   title?: string;
-  products: Product[];
+  products: ProductType[];
 };
 
 export default function FoodList({ filter, title, products }: FoodListProps) {
@@ -17,9 +17,9 @@ export default function FoodList({ filter, title, products }: FoodListProps) {
           {title}
         </h3>
       )}
-      <div className="grid grid-cols-1 gap-y-3 mb-6 md:grid-cols-2 md:gap-5">
-        {filteredFood.map((foodItem) => {
-          return <FoodCard foodItem={foodItem} key={foodItem.id} />;
+      <div className="grid grid-cols-1 mb-6 gap-y-3 md:grid-cols-2 md:gap-5">
+        {filteredFood.map((foodItem, index) => {
+          return <FoodCard foodItem={foodItem} key={index} />;
         })}
       </div>
     </>
