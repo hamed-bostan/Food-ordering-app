@@ -16,6 +16,7 @@
     "@reduxjs/toolkit": "^2.7.0",
     "@supabase/supabase-js": "^2.49.4",
     "axios": "^1.8.4",
+    "kavenegar": "^1.1.4",
     "leaflet": "^1.9.4",
     "mongoose": "^8.14.1",
     "next": "15.3.1",
