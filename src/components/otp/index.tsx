@@ -15,7 +15,7 @@ const schema = z.object({
     .string()
     .min(11, "شماره باید ۱۱ رقم باشد")
     .regex(/^09\d{9}$/, "شماره موبایل معتبر نیست"),
-  otp: z.string().length(6, "کد تایید باید ۶ رقم باشد").optional(), // OTP validation is optional at first
+  otp: z.string().length(5, "کد تایید باید ۵ رقم باشد").optional(), // OTP validation is optional at first
 });
 
 type FormData = z.infer<typeof schema>;
@@ -51,7 +51,8 @@ export default function Otp() {
     }
 
     // If OTP is being sent
-    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString(); // Renamed variable
+    const generatedOtp = Math.floor(10000 + Math.random() * 90000).toString();
+
     try {
       const { data } = await axios.post("/api/auth/send-otp", {
         phone,

@@ -70,8 +70,8 @@ export default function VerifyCodeForm() {
           name="otp"
           control={control}
           render={({ field }) => (
-            <div className="flex gap-4">
-              {Array.from({ length: 6 }).map((_, index) => (
+            <div className="flex gap-4" dir="ltr">
+              {Array.from({ length: 5 }).map((_, index) => (
                 <input
                   key={index}
                   ref={(el) => {
@@ -83,7 +83,7 @@ export default function VerifyCodeForm() {
                   value={field.value[index] || ""}
                   onChange={(e) => handleChange(e, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
-                  className="h-8 text-lg text-center border border-[#717171] rounded w-[3.125rem]"
+                  className="h-8 text-center border border-[#717171] rounded w-[3.125rem]"
                 />
               ))}
             </div>
