@@ -5,12 +5,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef } from "react";
 import CustomButton from "../ui/CustomButton";
+import axios from "axios";
 
 const otpSchema = z.object({
   otp: z
     .string()
-    .length(6, "کد باید ۶ رقم باشد")
-    .regex(/^\d{6}$/, "فقط عدد مجاز است"),
+    .length(5, "کد باید ۵ رقم باشد")
+    .regex(/^\d{5}$/, "فقط عدد مجاز است"),
 });
 
 type OtpFormData = z.infer<typeof otpSchema>;
@@ -29,8 +30,22 @@ export default function VerifyCodeForm() {
 
   const inputsRef = useRef<HTMLInputElement[]>([]);
 
-  const onSubmit = (data: OtpFormData) => {
-    console.log("✅ OTP submitted:", data.otp);
+  const onSubmit = async (data: OtpFormData) => {
+    try {
+      const response = await axios.post("/api/auth/verify-otp", {
+        phone: localStorage.getItem("phone"), // make sure to store phone in localStorage when sending OTP
+        otp: data.otp,
+      });
+
+      if (response.data.success) {
+        console.log("✅ OTP is valid");
+        // redirect to profile update or dashboard
+      } else {
+        console.error("❌ Invalid OTP");
+      }
+    } catch (err) {
+      console.error("❌ OTP verification failed", err);
+    }
   };
 
   const handleChange = (
