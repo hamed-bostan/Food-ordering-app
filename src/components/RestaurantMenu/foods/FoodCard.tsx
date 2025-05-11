@@ -1,7 +1,6 @@
 "use client";
 
 import { useDispatch, useSelector } from "react-redux";
-// import { addItem } from "@/redux/actions/cartAction";
 import Image from "next/image";
 import {
   FavoriteBorderOutlined,
@@ -12,7 +11,7 @@ import discountPrice from "@/lib/discountPrice";
 import CustomButton from "@/components/ui/CustomButton";
 import { RootState } from "@/redux/store";
 import { addItem } from "@/redux/reducers/cartSlice";
-import { ProductType } from "@/hooks/useProducts";
+import { ProductType } from "@/lib/productApi";
 
 type FoodCardProps = {
   foodItem: ProductType; // The product type
