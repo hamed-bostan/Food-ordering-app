@@ -1,11 +1,20 @@
-import { useProducts } from "@/hooks/useProducts";
+import { useQuery } from "@tanstack/react-query";
 import FoodCard from "./FoodCard";
+import { getProducts } from "@/lib/productApi";
 
 export default function FoodList() {
-  const { products, loading, error } = useProducts();
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
 
-  if (loading) return <div>در حال بارگزاری ...</div>;
-  if (error) return <div>{error}</div>;
+  if (isLoading) return <div>در حال بارگزاری ...</div>;
+  if (isError) return <div>{(error as Error).message}</div>;
 
   return (
     <div className="grid grid-cols-2 gap-x-4 gap-y-5 lg:grid-cols-3 md:gap-y-6">
