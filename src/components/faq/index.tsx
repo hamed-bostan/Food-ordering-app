@@ -3,8 +3,8 @@
 import Banner from "../common/Banner";
 import { useState } from "react";
 import ContentSection from "./ContentSection";
-import { tabDetails } from "../../lib/faq";
 import image1 from "@/assets/images/bannerImages/banner-10.webp"
+import {tabDetails} from "@/lib/faq";
 
 type ActiveTab = "faq" | "rules" | "privacyPolicy";
 
