@@ -5,6 +5,7 @@ import SessionProviderWrapper from "@/components/common/SessionProviderWrapper";
 import ThemeRegistry from "@/components/common/ThemeRegistry";
 import AppHeader from "@/components/common/appHeader";
 import { ReactNode } from "react";
+import QueryProvider from "@/components/common/QueryProvider";
 
 export const metadata = {
   title: "Food ordering app",
@@ -25,9 +26,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <ThemeRegistry>
           <SessionProviderWrapper>
             <ProviderWrapper>
-              <AppHeader />
-              <main>{children}</main>
-              <Footer />
+              <QueryProvider>
+                <AppHeader />
+                <main>{children}</main>
+                <Footer />
+              </QueryProvider>
             </ProviderWrapper>
           </SessionProviderWrapper>
         </ThemeRegistry>

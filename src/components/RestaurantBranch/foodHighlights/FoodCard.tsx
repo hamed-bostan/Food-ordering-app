@@ -4,13 +4,12 @@ import Image from "next/image";
 import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
 import { useDispatch, useSelector } from "react-redux";
-// import { addItem } from "@/redux/actions/cartAction";
 import CustomButton from "@/components/ui/CustomButton";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import { RootState } from "@/redux/store";
 import { addItem } from "@/redux/reducers/cartSlice";
 import starRateFillIcon from "@/assets/images/icons/star-rate-fill.svg";
-import { ProductType } from "@/hooks/useProducts";
+import { ProductType } from "@/lib/productApi";
 
 type ProductItemProps = {
   item: ProductType;

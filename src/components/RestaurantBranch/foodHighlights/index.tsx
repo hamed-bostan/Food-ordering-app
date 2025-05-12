@@ -1,13 +1,22 @@
 "use client";
 
-import { useProducts } from "@/hooks/useProducts";
 import FoodList from "./FoodList";
+import { useQuery } from "@tanstack/react-query";
+import { getProducts } from "@/lib/productApi";
 
 export default function FoodHighlights() {
-  const { products, loading, error } = useProducts();
+  const {
+    data: products = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
 
-  if (loading) return <div>در حال بارگزاری ...</div>;
-  if (error) return <div>{error}</div>;
+  if (isLoading) return <div>در حال بارگزاری ...</div>;
+  if (isError) return <div>{(error as Error).message}</div>;
 
   return (
     <>

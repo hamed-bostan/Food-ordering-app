@@ -1,4 +1,4 @@
-import { ProductType } from "@/hooks/useProducts";
+import { ProductType } from "@/lib/productApi";
 import FoodCard from "./FoodCard";
 
 type FoodListProps = {

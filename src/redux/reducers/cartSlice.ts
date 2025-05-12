@@ -1,4 +1,4 @@
-import { ProductType } from "@/hooks/useProducts";
+import { ProductType } from "@/lib/productApi";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // CartItem extends Product by adding quantity

@@ -4,7 +4,7 @@ import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
 import { RootState } from "@/redux/store";
 import { decrease, increase, removeItem } from "@/redux/reducers/cartSlice";
-import { ProductType } from "@/hooks/useProducts";
+import { ProductType } from "@/lib/productApi";
 
 type ItemsCardProps = {
   foodItem: ProductType;

@@ -1,6 +1,6 @@
 import ItemsCard from "./ItemsCard";
 import { useCheckoutTab } from "@/context/CheckoutTabContext";
-import { ProductType } from "@/hooks/useProducts";
+import { ProductType } from "@/lib/productApi";
 import { Divider } from "@mui/material";
 
 type ItemsOverviewMobileProps = {
