@@ -66,10 +66,10 @@ type BranchListContainerProps = {
 
 function BranchListContainer({ branches }: BranchListContainerProps) {
   return (
-    <div className="flex flex-col gap-y-3 md:grid md:grid-cols-2 md:gap-5 xl:grid-cols-4">
+    <ul className="flex flex-col gap-y-3 md:grid md:grid-cols-2 md:gap-5 xl:grid-cols-4 list-none">
       {branches.map((branch) => (
         <BranchItem branch={branch} key={branch.id} />
       ))}
-    </div>
+    </ul>
   );
 }
