@@ -59,15 +59,15 @@ function DisplayingImage({ branch }: BranchItemProps) {
 
 function DisplayingDetails({ branch }: BranchItemProps) {
   return (
-    <div className="col-span-1 row-span-2 p-2 text-center md:row-span-1 md:py-4">
+    <article className="col-span-1 row-span-2 p-2 text-center md:row-span-1 md:py-4">
       <h3 className="text-sm font-medium text-[#353535] row-span-1 mb-1 md:mb-3 md:text-lg md:font-semibold">
         {branch.title}
       </h3>
-      <p className="text-xs text-[#717171] row-span-1 md:text-sm md:mb-4">
+      <address className="not-italic text-xs text-[#717171] row-span-1 md:text-sm md:mb-4">
         {branch.address}
-      </p>
+      </address>
       <div className="mx-auto transition-opacity duration-300 opacity-0 w-fit group-hover:opacity-100">
-        <Link href="/branch">
+        <Link href="/branch" aria-label={`View ${branch.title} branch page`}>
           <CustomButton
             variant="outlined"
             endIcon={
@@ -95,6 +95,6 @@ function DisplayingDetails({ branch }: BranchItemProps) {
           </CustomButton>
         </Link>
       </div>
-    </div>
+    </article>
   );
 }
