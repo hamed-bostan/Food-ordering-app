@@ -10,7 +10,7 @@ import image1 from "@/assets/images/avatars/01.png";
 import image2 from "@/assets/images/avatars/02.png";
 import image3 from "@/assets/images/avatars/03.png";
 import image4 from "@/assets/images/avatars/04.png";
-import starRateIcon from "@/assets/images/icons/star-rate.svg"
+import starRateIcon from "@/assets/images/icons/star-rate.svg";
 
 type Testimonial = {
   id: number;
@@ -70,12 +70,13 @@ const testimonialDetails: Testimonial[] = [
       "از با صفا بودن شعبه اکباتان هر چی بگم کم گفتم. بهترین غذاهای گیاهی عمرمو اینجا خوردم. از مدیریت شعبه اکباتان رستوران‌های ترخینه واقعا تشکر میکنم. ",
   },
 ];
+
 export default function Testimonials() {
   return (
     <div className="px-5 py-6 lg:py-7 lg:px-10 2xl:px-28 mt-10 md:mt-[3.75rem] lg:mt-20">
-      <span className="block text-center font-bold text-[#353535] mb-3 text-sm md:text-base md:mb-4">
+      <h2 className="block text-center font-bold text-[#353535] mb-3 text-sm md:text-base md:mb-4">
         نظرات کاربران
-      </span>
+      </h2>
       <Swiper
         modules={[Navigation, Pagination]}
         spaceBetween={20}
@@ -89,7 +90,7 @@ export default function Testimonials() {
       >
         {testimonialDetails.map((item, index) => (
           <SwiperSlide key={index}>
-            <div className="border border-[#CBCBCB] rounded-sm grid grid-cols-[auto_1fr] p-4 text-xs text-[#353535] lg:text-sm">
+            <article className="border border-[#CBCBCB] rounded-sm grid grid-cols-[auto_1fr] p-4 text-xs text-[#353535] lg:text-sm">
               <Image
                 src={item.image}
                 alt={`Profile image of ${item.name}`}
@@ -100,19 +101,17 @@ export default function Testimonials() {
               <p className="col-start-2 row-span-3 pt-2 pr-3 text-justify col-span-full md:p-4">
                 {item.comment}
               </p>
-              <span className="text-[#717171] text-center md:mb-1">
-                {item.name}
-              </span>
-              <span className="text-[#717171] text-center">{item.date}</span>
-              <div className="flex items-center justify-end col-start-2 gap-x-1 md:gap-x-2">
+              <p className="text-[#717171] text-center md:mb-1">{item.name}</p>
+              <p className="text-[#717171] text-center">{item.date}</p>
+              <figure className="flex items-center justify-end col-start-2 gap-x-1 md:gap-x-2">
                 <Image
                   src={starRateIcon}
                   alt="star rate icon"
                   className="w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5"
                 />
-                <span className="text-sm lg:text-base">3</span>
-              </div>
-            </div>
+                <output className="text-sm lg:text-base">3</output>
+              </figure>
+            </article>
           </SwiperSlide>
         ))}
       </Swiper>
