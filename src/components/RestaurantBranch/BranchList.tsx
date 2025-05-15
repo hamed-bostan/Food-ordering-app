@@ -50,7 +50,6 @@ export default function BranchList() {
           ❯
         </button>
       </Swiper>
-      W
     </section>
   );
 }
