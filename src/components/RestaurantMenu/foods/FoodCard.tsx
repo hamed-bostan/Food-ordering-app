@@ -19,10 +19,10 @@ type FoodCardProps = {
 
 export default function FoodCard({ foodItem }: FoodCardProps) {
   return (
-    <div className="min-h-24 grid grid-cols-[auto_1fr_1fr] grid-rows-3 border border-[#CBCBCB] rounded-sm overflow-hidden md:hover:shadow-md md:min-h-32 lg:rounded-lg">
+    <>
       <FoodImage {...foodItem} />
       <FoodDetails foodItem={foodItem} />
-    </div>
+    </>
   );
 }
 
