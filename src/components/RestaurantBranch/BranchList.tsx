@@ -37,17 +37,20 @@ export default function BranchList() {
             />
           </SwiperSlide>
         ))}
-        <button className="absolute z-10 text-xl text-white -translate-y-1/2 custom-prev top-1/2 right-4"
-                aria-label="Previous slide"
+        <button
+          className="absolute z-10 text-xl text-white -translate-y-1/2 custom-prev top-1/2 right-4"
+          aria-label="Previous slide"
         >
           ❮
         </button>
-        <button className="absolute z-10 text-xl text-white -translate-y-1/2 custom-next top-1/2 left-4"
-                aria-label="Next slide"
+        <button
+          className="absolute z-10 text-xl text-white -translate-y-1/2 custom-next top-1/2 left-4"
+          aria-label="Next slide"
         >
           ❯
         </button>
       </Swiper>
+      W
     </section>
   );
 }

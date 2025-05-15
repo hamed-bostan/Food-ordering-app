@@ -100,9 +100,7 @@ function CardSection({ data }: CardSectionProps) {
           className="flex flex-col items-center gap-y-1 md:gap-y-3 text-[#FFFFFF]"
         >
           <item.icon sx={{ fontSize: { xs: 23, md: 28 } }} />
-          <p className="block text-xs text-center md:text-sm">
-            {item.text}
-          </p>
+          <p className="block text-xs text-center md:text-sm">{item.text}</p>
         </li>
       ))}
     </ul>
