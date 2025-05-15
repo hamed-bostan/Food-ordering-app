@@ -14,8 +14,8 @@ export default function BranchList() {
   const images: StaticImageData[] = [image1, image2, image3];
 
   return (
-    <div>
-      <h3 className="mb-3 font-bold text-center">شعبه اکباتان</h3>
+    <section>
+      <h2 className="mb-3 font-bold text-center">شعبه اکباتان</h2>
       <Swiper
         modules={[Navigation, Pagination]}
         spaceBetween={20}
@@ -37,13 +37,17 @@ export default function BranchList() {
             />
           </SwiperSlide>
         ))}
-        <div className="absolute z-10 text-xl text-white -translate-y-1/2 cursor-pointer custom-prev top-1/2 right-4">
+        <button className="absolute z-10 text-xl text-white -translate-y-1/2 custom-prev top-1/2 right-4"
+                aria-label="Previous slide"
+        >
           ❮
-        </div>
-        <div className="absolute z-10 text-xl text-white -translate-y-1/2 cursor-pointer custom-next top-1/2 left-4">
+        </button>
+        <button className="absolute z-10 text-xl text-white -translate-y-1/2 custom-next top-1/2 left-4"
+                aria-label="Next slide"
+        >
           ❯
-        </div>
+        </button>
       </Swiper>
-    </div>
+    </section>
   );
 }
