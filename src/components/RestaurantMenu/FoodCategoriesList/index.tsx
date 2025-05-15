@@ -14,15 +14,16 @@ export default function FoodCategoriesList({
   ];
 
   return (
-    <div className="flex gap-2 flex-wrap md:gap-3 px-5 lg:px-10 2xl:px-28">
+    <ul className="flex gap-2 flex-wrap md:gap-3 px-5 lg:px-10 2xl:px-28">
       {FoodCategories.map((item, index) => (
-        <FoodCategoriesCard
-          key={index}
-          item={item}
-          setSelectedCategory={setSelectedCategory}
-          isSelected={selectedCategory === item}
-        />
+        <li key={index}>
+          <FoodCategoriesCard
+            item={item}
+            setSelectedCategory={setSelectedCategory}
+            isSelected={selectedCategory === item}
+          />
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
