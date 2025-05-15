@@ -24,10 +24,10 @@ export default function FoodList({
   const nonIranianFood = products.filter((item) => item.category === filter);
 
   return (
-    <div className={`p-5 md:p-6 lg:py-7 lg:px-10 2xl:px-28 ${containerStyle}`}>
-      <span className={`font-bold mb-3 block md:text-lg md:mb-5 ${titleStyle}`}>
+    <section className={`p-5 md:p-6 lg:py-7 lg:px-10 2xl:px-28 ${containerStyle}`}>
+      <h2 className={`font-bold mb-3 block md:text-lg md:mb-5 ${titleStyle}`}>
         {title}
-      </span>
+      </h2>
       <Swiper slidesPerView="auto" spaceBetween={10} className="w-full">
         {filteredFood.map((item) => (
           <SwiperSlide key={item.id} className="!w-fit">
@@ -42,6 +42,6 @@ export default function FoodList({
           </SwiperSlide>
         ))}
       </Swiper>
-    </div>
+    </section>
   );
 }

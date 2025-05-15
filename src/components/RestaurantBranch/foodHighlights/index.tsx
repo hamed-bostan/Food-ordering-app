@@ -19,7 +19,7 @@ export default function FoodHighlights() {
   if (isError) return <div>{(error as Error).message}</div>;
 
   return (
-    <>
+    <section>
       <FoodList
         title="پیشنهاد ویژه"
         filter="پیشنهاد ویژه"
@@ -37,6 +37,6 @@ export default function FoodHighlights() {
         filter="غذاهای غیر ایرانی"
         products={products}
       />
-    </>
+    </section>
   );
 }
