@@ -11,10 +11,10 @@ type BranchItemProps = {
 
 export default function BranchItem({ branch }: BranchItemProps) {
   return (
-    <li className="grid grid-cols-2 grid-rows-2 border border-[#CBCBCB] rounded-sm overflow-hidden md:grid-cols-1 md:grid-rows-[auto_1fr] md:rounded-lg group md:hover:border-[#315F41] md:hover:shadow-lg">
+    <>
       <DisplayingImage branch={branch} />
       <DisplayingDetails branch={branch} />
-    </li>
+    </>
   );
 }
 
@@ -30,28 +30,29 @@ function DisplayingImage({ branch }: BranchItemProps) {
       />
       <div className="hidden md:block absolute inset-0 bg-[#181818] opacity-0 group-hover:opacity-65 transition-opacity duration-300 z-20"></div>
       <button
-      type="button"
-      aria-label={`Displays ${branch.title} image in large size`}
-      className="absolute bottom-2 right-2 md:hidden">
-          <FullscreenOutlined
-              className="absolute bottom-2 right-2"
-              sx={{ color: "#fff", fontSize: 18 }}
-          />
+        type="button"
+        aria-label={`Displays ${branch.title} image in large size`}
+        className="absolute bottom-2 right-2 md:hidden"
+      >
+        <FullscreenOutlined
+          className="absolute bottom-2 right-2"
+          sx={{ color: "#fff", fontSize: 18 }}
+        />
       </button>
 
       <button
-          type="button"
-          aria-label={`Displays ${branch.title} image in large size`}
-          className="absolute z-30 hidden -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 md:group-hover:block"
+        type="button"
+        aria-label={`Displays ${branch.title} image in large size`}
+        className="absolute z-30 hidden -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 md:group-hover:block"
       >
-          <Image
-              width={40}
-              height={40}
-              src={expandDesktopIcon}
-              alt="expand icon"
-              aria-hidden="true"
-              className='w-12 h-12'
-          />
+        <Image
+          width={40}
+          height={40}
+          src={expandDesktopIcon}
+          alt="expand icon"
+          aria-hidden="true"
+          className="w-12 h-12"
+        />
       </button>
     </figure>
   );

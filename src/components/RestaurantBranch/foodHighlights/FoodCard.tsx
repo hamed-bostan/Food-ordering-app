@@ -58,20 +58,21 @@ function OfferDetails({ item }: ProductItemProps) {
       <h3 className="text-sm text-center col-span-full md:text-base md:font-semibold">
         {title}
       </h3>
-<button type={"button"} aria-label={`Add ${title} to favorites`}
+      <button
+        type={"button"}
+        aria-label={`Add ${title} to favorites`}
         className="ml-auto"
->
-    <FavoriteBorderOutlinedIcon
-        sx={{ color: "#ADADAD", fontSize: 18 }}
-    />
-</button>
+      >
+        <FavoriteBorderOutlinedIcon sx={{ color: "#ADADAD", fontSize: 18 }} />
+      </button>
       {discount && (
         <p className="flex items-center w-full mr-auto gap-x-1">
           <del className="text-[#ADADAD] line-through">
             {formatToPersianStyle(price)}
           </del>
-          <ins className="text-[#C30000] bg-[#FFF2F2] rounded-lg text-center mr-auto min-w-8 md:min-w-10"
-               style={{ textDecoration: "none" }}
+          <ins
+            className="text-[#C30000] bg-[#FFF2F2] rounded-lg text-center mr-auto min-w-8 md:min-w-10"
+            style={{ textDecoration: "none" }}
           >
             {formatToPersianStyle(discount)} %
           </ins>
@@ -81,9 +82,7 @@ function OfferDetails({ item }: ProductItemProps) {
         <Image src={starRateFillIcon} alt="like icon" className="w-4 h-4" />
         <output>5</output>
       </div>
-      <p className="col-start-2 row-start-3 mr-auto">
-        {discountedPrice} تومان
-      </p>
+      <p className="col-start-2 row-start-3 mr-auto">{discountedPrice} تومان</p>
       <CustomButton
         onClick={handleAddToCart}
         sx={{

@@ -68,7 +68,12 @@ function BranchListContainer({ branches }: BranchListContainerProps) {
   return (
     <ul className="flex flex-col gap-y-3 md:grid md:grid-cols-2 md:gap-5 xl:grid-cols-4 list-none">
       {branches.map((branch) => (
-        <BranchItem branch={branch} key={branch.id} />
+        <li
+          key={branch.id}
+          className="grid grid-cols-2 grid-rows-2 border border-[#CBCBCB] rounded-sm overflow-hidden md:grid-cols-1 md:grid-rows-[auto_1fr] md:rounded-lg group md:hover:border-[#315F41] md:hover:shadow-lg"
+        >
+          <BranchItem branch={branch} />
+        </li>
       ))}
     </ul>
   );
