@@ -33,38 +33,39 @@ const footerIcons: FooterIcon[] = [
 
 export default function Navigation() {
   return (
-    <div className="col-span-2 md:col-span-1 grid grid-cols-2 grid-rows-5 text-[#EDEDED]">
-      <span className="mb-2 text-sm md:text-base md:mb-3 md:font-medium">
+    <nav className="col-span-2 md:col-span-1 grid grid-cols-2 grid-rows-5 text-[#EDEDED]">
+      <h2 className="mb-2 text-sm md:text-base md:mb-3 md:font-medium">
         دسترسی آسان
-      </span>
-      <span className="mb-2 text-sm md:text-base md:mb-3 md:font-medium">
+      </h2>
+      <h2 className="mb-2 text-sm md:text-base md:mb-3 md:font-medium">
         شعبه های ترخینه
-      </span>
-      {footerLinks.map((item, index) => (
-        <Link href={item.to} className="w-fit" key={item.id}>
-          <span
+      </h2>
+      <ul className="contents">
+        {footerLinks.map((item, index) => (
+          <li
             key={item.id}
             className={`text-xs md:text-sm ${
               index < footerLinks.length - 1 ? "mb-1 md:mb-2" : ""
             }
           ${index === footerLinks.length - 1 ? "col-start-2" : ""}`}
           >
-            {item.text}
-          </span>
-        </Link>
-      ))}
-      <div className="flex row-start-5 gap-x-2">
-        {footerIcons.map((item) => (
-          <Image
-            key={item.id}
-            src={item.image}
-            alt="social media icons"
-            width={20}
-            height={20}
-            className="w-4 h-4 cursor-pointer md:w-5 md:h-5"
-          />
+            <Link href={item.to}>{item.text}</Link>
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+      <ul className="flex row-start-5 gap-x-2">
+        {footerIcons.map((item) => (
+          <li key={item.id}>
+            <Image
+              src={item.image}
+              alt="social media icons"
+              width={20}
+              height={20}
+              className="w-4 h-4 cursor-pointer md:w-5 md:h-5"
+            />
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
