@@ -46,7 +46,7 @@ function OfferDetails({ item }: FoodCardProps) {
   const isAddedToCart = cartItems.some((item) => item.id === id); // Check if the item is in the cart
 
   return (
-    <div className="grid grid-cols-[1fr_auto] p-2 gap-y-2 md:gap-y-3 md:p-3 text-[#353535] text-xs md:text-sm h-32 md:h-40">
+    <section className="grid grid-cols-[1fr_auto] p-2 gap-y-2 md:gap-y-3 md:p-3 text-[#353535] text-xs md:text-sm h-32 md:h-40">
       <h3 className="md:font-semibold">{title}</h3>
       <Favorite
         sx={{ color: "#C30000", fontSize: { xs: 16, md: 18 } }}
@@ -54,11 +54,11 @@ function OfferDetails({ item }: FoodCardProps) {
       />
       <div className="flex items-center row-start-2 gap-x-1">
         <Star sx={{ color: "#F4B740", fontSize: { xs: 16, md: 18 } }} />
-        <span className="md:hidden">5</span>
+        <output className="md:hidden">5</output>
       </div>
-      <span className="flex self-center row-start-2 mr-auto ">
+      <p className="flex self-center row-start-2 mr-auto ">
         {discountedPrice} تومان
-      </span>
-    </div>
+      </p>
+    </section>
   );
 }

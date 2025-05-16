@@ -38,7 +38,7 @@ export default function UserAddressList() {
           className="bg-[#F9F9F9] border border-[#CBCBCB] rounded-sm p-4 text-xs text-[#717171] grid grid-cols-3"
         >
           <p className="text-[#353535] col-span-2 mb-2">{item.address}</p>
-          <div className="flex gap-x-3 mr-auto">
+          <div className="flex mr-auto gap-x-3">
             <ModeEditOutlineOutlined
               onClick={() => handleEdit(item)}
               sx={{
@@ -56,9 +56,9 @@ export default function UserAddressList() {
               }}
             />
           </div>
-          <span>{item.title}</span>
-          <span>{item.name}</span>
-          <span className="mr-auto">{item.phoneNumber}</span>
+          <p>{item.title}</p>
+          <p>{item.name}</p>
+          <p className="mr-auto">{item.phoneNumber}</p>
         </div>
       ))}
     </div>
