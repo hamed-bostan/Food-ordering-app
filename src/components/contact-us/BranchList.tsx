@@ -52,11 +52,13 @@ const branchesData: Branch[] = [
 export default function BranchList() {
   return (
     <div className="container px-5 py-6 mx-auto lg:px-10 2xl:px-28">
-      <div className="flex flex-col gap-y-7">
+      <ul className="flex flex-col gap-y-7">
         {branchesData.map((item) => (
-          <BranchCard data={item} key={item.id} />
+          <li key={item.id}>
+            <BranchCard data={item} />
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
