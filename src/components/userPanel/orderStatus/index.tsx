@@ -11,7 +11,7 @@ export default function OrderStatus() {
   const [selectedCategory, setSelectedCategory] =
     useState<FilterCategory>("همه");
   return (
-    <div className="md:border md:border-[#CBCBCB] md:rounded-lg md:p-5">
+    <section className="md:border md:border-[#CBCBCB] md:rounded-lg md:p-5">
       <HeaderDesktop label="سفارشات" style="mb-4" />
       <StatusFilter
         selectedCategory={selectedCategory}
@@ -22,6 +22,6 @@ export default function OrderStatus() {
         <OrderDetails />
         <FoodList />
       </div>
-    </div>
+    </section>
   );
 }

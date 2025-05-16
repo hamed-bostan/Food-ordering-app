@@ -13,23 +13,23 @@ export default function FilterCard({
   isSelected,
 }: FilterCardProps) {
   return (
-    <div
+    <button
       onClick={() => setSelectedCategory(item)}
-      className="flex items-center gap-x-1 bg-[#EDEDED] rounded-md px-2 h-6 md:rounded-xl md:h-8 cursor-pointer"
+      className="flex items-center gap-x-1 bg-[#EDEDED] rounded-md px-2 h-6 md:rounded-xl md:h-8"
     >
-      <span
+      <p
         className={`text-xs lg:text-sm ${
           isSelected ? "text-[#417F56]" : "text-[#353535]"
         }`}
       >
         {item}
-      </span>
+      </p>
       <ArrowBackOutlinedIcon
         sx={{
           color: isSelected ? "#417F56" : "#353535",
           fontSize: { xs: 14, md: 16 },
         }}
       />
-    </div>
+    </button>
   );
 }

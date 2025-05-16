@@ -9,23 +9,23 @@ export default function FoodList() {
   );
 
   return (
-    <>
+    <section>
       <div className="grid grid-cols-3 gap-2 mb-2 md:mb-4 md:grid-cols-2 md:gap-5 lg:grid-cols-4 2xl:grid-cols-6 2xl:gap-4">
         {selectedItems.map((item, index) => (
           <FoodCard item={item} key={index} />
         ))}
       </div>
       <ActionButtons />
-    </>
+    </section>
   );
 }
 
 function ActionButtons() {
   return (
     <>
-      <span className="text-[#717171] text-xs text-center block mb-4 cursor-pointer md:hidden">
+      <button className="text-[#717171] text-xs text-center block mb-4 cursor-pointer md:hidden">
         مشاهده همه سفارشات
-      </span>
+      </button>
       <CustomButton
         variant="outlined"
         sx={{
