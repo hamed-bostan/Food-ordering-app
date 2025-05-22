@@ -1,7 +1,9 @@
+import { useFormContext, Controller } from "react-hook-form";
 import Checkbox from "@mui/material/Checkbox";
 import CustomButton from "@/components/ui/CustomButton";
 import Image from "next/image";
 import uploadIcon from "@/assets/images/icons/upload-image.svg";
+import { FormControlLabel } from "@mui/material";
 
 export default function FacilityProperty() {
   return (
@@ -11,7 +13,10 @@ export default function FacilityProperty() {
         <ApplicantFeatures />
         <PropertyImages />
       </div>
-      <CustomButton sx={{ mx: "auto", display: "flex", width: "8rem" }}>
+      <CustomButton
+        type="submit"
+        sx={{ mx: "auto", display: "flex", width: "8rem" }}
+      >
         ثبت اطلاعات
       </CustomButton>
     </div>
@@ -19,70 +24,104 @@ export default function FacilityProperty() {
 }
 
 function ApplicantFeatures() {
+  const { control } = useFormContext();
+
   return (
     <div>
-      <span className="text-[#717171] block mb-4">ملک متقاضی:</span>
-      <div className="grid grid-cols-2">
-        <div className="flex items-center">
-          <Checkbox
-            id="terms-1"
-            size="small"
-            sx={{
-              color: "#00BA88",
-              "&.Mui-checked": {
-                color: "#00BA88",
-              },
-            }}
-          />
-          <label htmlFor="terms-1" className="text-[#717171]">
-            پروانه کسب دارد.
-          </label>
-        </div>
-        <div className="flex items-center">
-          <Checkbox
-            id="terms-2"
-            size="small"
-            sx={{
-              color: "#00BA88",
-              "&.Mui-checked": {
-                color: "#00BA88",
-              },
-            }}
-          />
-          <label htmlFor="terms-2" className="text-[#717171]">
-            پارکینگ دارد.
-          </label>
-        </div>
-        <div className="flex items-center">
-          <Checkbox
-            id="terms-3"
-            size="small"
-            sx={{
-              color: "#00BA88",
-              "&.Mui-checked": {
-                color: "#00BA88",
-              },
-            }}
-          />
-          <label htmlFor="terms-3" className="text-[#717171]">
-            آشپزخانه دارد.
-          </label>
-        </div>
-        <div className="flex items-center">
-          <Checkbox
-            id="terms-4"
-            size="small"
-            sx={{
-              color: "#00BA88",
-              "&.Mui-checked": {
-                color: "#00BA88",
-              },
-            }}
-          />
-          <label htmlFor="terms-4" className="text-[#717171]">
-            انبار دارد.
-          </label>
-        </div>
+      <p className="text-[#717171] block mb-4">ملک متقاضی:</p>
+      <div className="grid grid-cols-2 gap-y-2">
+        <Controller
+          name="hasBusinessLicense"
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  {...field}
+                  checked={!!field.value}
+                  size="small"
+                  sx={{
+                    color: "#00BA88",
+                    "&.Mui-checked": {
+                      color: "#00BA88",
+                    },
+                  }}
+                />
+              }
+              label="پروانه کسب دارد."
+              sx={{ color: "#717171" }}
+            />
+          )}
+        />
+        <Controller
+          name="hasParking"
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  {...field}
+                  checked={!!field.value}
+                  size="small"
+                  sx={{
+                    color: "#00BA88",
+                    "&.Mui-checked": {
+                      color: "#00BA88",
+                    },
+                  }}
+                />
+              }
+              label="پارکینگ دارد."
+              sx={{ color: "#717171" }}
+            />
+          )}
+        />
+        <Controller
+          name="hasKitchen"
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  {...field}
+                  checked={!!field.value}
+                  size="small"
+                  sx={{
+                    color: "#00BA88",
+                    "&.Mui-checked": {
+                      color: "#00BA88",
+                    },
+                  }}
+                />
+              }
+              label="آشپزخانه دارد."
+              sx={{ color: "#717171" }}
+            />
+          )}
+        />
+        <Controller
+          name="hasStorage"
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  {...field}
+                  checked={!!field.value}
+                  size="small"
+                  sx={{
+                    color: "#00BA88",
+                    "&.Mui-checked": {
+                      color: "#00BA88",
+                    },
+                  }}
+                />
+              }
+              label="انبار دارد."
+              sx={{ color: "#717171" }}
+            />
+          )}
+        />
       </div>
     </div>
   );

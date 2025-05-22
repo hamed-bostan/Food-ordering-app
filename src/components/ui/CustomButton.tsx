@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 
 type CustomButtonProps = ButtonProps & {
   children: ReactNode;
+  type?: "button" | "submit" | "reset";
   variant?: "contained" | "outlined" | "text";
   onClick?: () => void;
   sx?: object;
@@ -13,6 +14,7 @@ type CustomButtonProps = ButtonProps & {
 export default function CustomButton({
   children,
   variant = "contained",
+  type = "button",
   onClick,
   sx = {},
   startIcon = null,
@@ -21,6 +23,7 @@ export default function CustomButton({
 }: CustomButtonProps) {
   return (
     <Button
+      type={type}
       variant={variant} // 'contained', 'outlined', or 'text'
       onClick={onClick}
       startIcon={startIcon} // Icon at the start
