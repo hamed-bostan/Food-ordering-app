@@ -1,8 +1,11 @@
 import { z } from "zod";
 
 export const franchiseFormSchema = z.object({
-  fullName: z.string().min(1, "وارد کردن نام الزامی است."),
-  nationalId: z.string().min(10, "کد ملی باید ۱۰ رقم باشد."),
+  fullName: z.string().min(1, "وارد کردن نام و نام خانوادگی الزامی است."),
+  nationalId: z
+    .string()
+    .min(10, "کد ملی باید ۱۰ رقم باشد.")
+    .regex(/^\d+$/, "کد ملی فقط باید عدد باشد."),
   phone: z.string().min(1, "شماره تماس الزامی است."),
   province: z.string().min(1),
   city: z.string().min(1),

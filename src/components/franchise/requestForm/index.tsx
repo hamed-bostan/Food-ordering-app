@@ -14,7 +14,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 export default function RequestForm() {
   const methods = useForm<FranchiseFormValues>({
     resolver: zodResolver(franchiseFormSchema),
-    mode: "onTouched",
+    mode: "onBlur",
+    defaultValues: {
+      nationalId: "0",
+    },
   });
 
   function onSubmit(data: FranchiseFormValues) {
