@@ -20,10 +20,16 @@ export default function ApplicantPropertyDetails() {
     formState: { errors },
   } = useFormContext();
 
+  function handleOnChange(event: SelectChangeEvent) {
+    setValue("ownershipType", event.target.value, {
+      shouldValidate: true,
+    });
+  }
+
   const value = watch("ownershipType");
   return (
     <div className="mb-12">
-      <span className="block mb-6">مشخصات ملک متقاضی</span>
+      <p className="block mb-6">مشخصات ملک متقاضی</p>
       <div className="flex gap-x-4">
         <FormControl fullWidth size="small" error={!!errors.ownershipType}>
           <InputLabel id="ownershipType-label">نوع مالکیت</InputLabel>
@@ -32,11 +38,7 @@ export default function ApplicantPropertyDetails() {
             id="ownershipType"
             label="نوع مالکیت"
             value={value || ""}
-            onChange={(event: SelectChangeEvent) =>
-              setValue("ownershipType", event.target.value, {
-                shouldValidate: true,
-              })
-            }
+            onChange={handleOnChange}
           >
             {ownershipOptions.map((option) => (
               <MenuItem key={option} value={option}>
