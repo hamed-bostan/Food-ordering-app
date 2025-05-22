@@ -1,22 +1,53 @@
 import Input from "@/components/ui/Input";
 import { getErrorMessage } from "@/utils/formHelpers";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  SelectChangeEvent,
+  MenuItem,
+  FormHelperText,
+} from "@mui/material";
 import { useFormContext } from "react-hook-form";
+
+const ownershipOptions = ["شخصی", "اجاره‌ای", "رهن کامل"];
 
 export default function ApplicantPropertyDetails() {
   const {
     register,
+    setValue,
+    watch,
     formState: { errors },
   } = useFormContext();
+
+  const value = watch("ownershipType");
   return (
     <div className="mb-12">
       <span className="block mb-6">مشخصات ملک متقاضی</span>
       <div className="flex gap-x-4">
-        <Input
-          label="نوع مالکیت"
-          {...register("ownershipType")}
-          error={!!errors.ownershipType}
-          helperText={getErrorMessage(errors.ownershipType)}
-        />
+        <FormControl fullWidth size="small" error={!!errors.ownershipType}>
+          <InputLabel id="ownershipType-label">نوع مالکیت</InputLabel>
+          <Select
+            labelId="ownershipType-label"
+            id="ownershipType"
+            label="نوع مالکیت"
+            value={value || ""}
+            onChange={(event: SelectChangeEvent) =>
+              setValue("ownershipType", event.target.value, {
+                shouldValidate: true,
+              })
+            }
+          >
+            {ownershipOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+          <FormHelperText>
+            {getErrorMessage(errors.ownershipType)}
+          </FormHelperText>
+        </FormControl>
         <Input
           label="مساحت ملک (متر مربع)"
           {...register("propertyArea")}
