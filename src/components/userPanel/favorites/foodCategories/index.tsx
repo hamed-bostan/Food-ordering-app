@@ -15,10 +15,12 @@ const categoriesLists: Category[] = [
 
 export default function FoodCategories() {
   return (
-    <div className="hidden md:flex flex-wrap mb-8 gap-2">
+    <ul className="flex-wrap hidden gap-2 mb-8 md:flex">
       {categoriesLists.map((item) => (
-        <FilterCard item={item} key={item.id} />
+        <li key={item.id}>
+          <FilterCard item={item} />
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

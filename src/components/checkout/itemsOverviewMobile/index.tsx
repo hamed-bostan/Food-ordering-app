@@ -17,11 +17,13 @@ export default function ItemsOverviewMobile({
 
   return (
     <>
-      <div className={`h-52 overflow-y-scroll mb-3 ${containerStyle}`}>
+      <ul className={`h-52 overflow-y-scroll mb-3 ${containerStyle}`}>
         {selectedItems.map((foodItem, index) => (
-          <ItemsCard foodItem={foodItem} key={index} />
+          <li key={index}>
+            <ItemsCard foodItem={foodItem} />
+          </li>
         ))}
-      </div>
+      </ul>
       <Divider className={`${shoppingCartTab ? "md:hidden" : ""}`} />
     </>
   );

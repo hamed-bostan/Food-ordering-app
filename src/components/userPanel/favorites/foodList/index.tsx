@@ -17,10 +17,12 @@ export default function FoodList() {
   if (isError) return <div>{(error as Error).message}</div>;
 
   return (
-    <div className="grid grid-cols-2 gap-x-4 gap-y-5 lg:grid-cols-3 md:gap-y-6">
+    <ul className="grid grid-cols-2 gap-x-4 gap-y-5 lg:grid-cols-3 md:gap-y-6">
       {products.map((item) => (
-        <FoodCard item={item} key={item.id} />
+        <li key={item.id}>
+          <FoodCard item={item} />
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

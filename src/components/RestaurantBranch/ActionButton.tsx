@@ -25,7 +25,7 @@ export default function ActionButton() {
             },
           }}
         >
-          مشهاده منوی کامل
+          مشاهده منوی کامل
         </CustomButton>
       </Link>
     </div>

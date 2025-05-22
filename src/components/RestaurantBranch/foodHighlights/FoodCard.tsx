@@ -17,10 +17,10 @@ type ProductItemProps = {
 
 export default function FoodCard({ item }: ProductItemProps) {
   return (
-    <div className="bg-[#fff] border border-[#CBCBCB] overflow-hidden rounded-sm w-48 md:w-52 md:rounded-lg">
+    <article className="bg-[#fff] border border-[#CBCBCB] overflow-hidden rounded-sm w-48 md:w-52 md:rounded-lg">
       <DisplayingImage item={item} />
       <OfferDetails item={item} />
-    </div>
+    </article>
   );
 }
 
@@ -58,26 +58,31 @@ function OfferDetails({ item }: ProductItemProps) {
       <h3 className="text-sm text-center col-span-full md:text-base md:font-semibold">
         {title}
       </h3>
-      <FavoriteBorderOutlinedIcon
-        sx={{ color: "#ADADAD", fontSize: 18, cursor: "pointer" }}
-      />
+      <button
+        type={"button"}
+        aria-label={`Add ${title} to favorites`}
+        className="ml-auto"
+      >
+        <FavoriteBorderOutlinedIcon sx={{ color: "#ADADAD", fontSize: 18 }} />
+      </button>
       {discount && (
-        <div className="flex items-center w-full mr-auto gap-x-1">
-          <span className="text-[#ADADAD] line-through">
+        <p className="flex items-center w-full mr-auto gap-x-1">
+          <del className="text-[#ADADAD] line-through">
             {formatToPersianStyle(price)}
-          </span>
-          <span className="text-[#C30000] bg-[#FFF2F2] rounded-lg text-center mr-auto min-w-8 md:min-w-10">
+          </del>
+          <ins
+            className="text-[#C30000] bg-[#FFF2F2] rounded-lg text-center mr-auto min-w-8 md:min-w-10"
+            style={{ textDecoration: "none" }}
+          >
             {formatToPersianStyle(discount)} %
-          </span>
-        </div>
+          </ins>
+        </p>
       )}
       <div className="flex items-center col-start-1 row-start-3 gap-x-1">
         <Image src={starRateFillIcon} alt="like icon" className="w-4 h-4" />
-        <span>5</span>
+        <output>5</output>
       </div>
-      <span className="col-start-2 row-start-3 mr-auto">
-        {discountedPrice} تومان
-      </span>
+      <p className="col-start-2 row-start-3 mr-auto">{discountedPrice} تومان</p>
       <CustomButton
         onClick={handleAddToCart}
         sx={{

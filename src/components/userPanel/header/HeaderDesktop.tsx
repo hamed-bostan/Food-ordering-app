@@ -22,8 +22,8 @@ export default function HeaderDesktop({
     <div
       className={`${pathname === "/userPanel" && "hidden"} md:block ${style}`}
     >
-      <div className="flex justify-between items-center mb-2">
-        <span className="block text-[#353535]">{label}</span>
+      <div className="flex items-center justify-between mb-2">
+        <p className="block text-[#353535]">{label}</p>
         {button && (
           <CustomButton
             variant="outlined"

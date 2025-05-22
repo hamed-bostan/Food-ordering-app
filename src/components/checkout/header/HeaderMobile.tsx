@@ -10,6 +10,7 @@ import {
 } from "@mui/icons-material";
 import { RootState } from "@/redux/store";
 import { clear } from "@/redux/reducers/cartSlice";
+import { IconButton } from "@mui/material";
 
 export default function HeaderMobile() {
   const { activeTab, setActiveTab } = useCheckoutTab();
@@ -37,34 +38,31 @@ export default function HeaderMobile() {
 
   return (
     <div className="flex justify-between mb-6 md:hidden">
-      <ArrowForwardOutlined
+      <IconButton
         onClick={handleNext}
-        fontSize="small"
+        disabled={activeTab === tabsConfig.length - 1}
         sx={{
           color: activeTab === tabsConfig.length - 1 ? "#A0A0A0" : "#353535",
-          pointerEvents: activeTab === tabsConfig.length - 1 ? "none" : "auto",
-          cursor: "pointer",
         }}
-      />
+      >
+        <ArrowForwardOutlined fontSize="small" />
+      </IconButton>
+
       <h1 className="text-sm font-bold text-[#353535]">
         {tabsConfig[activeTab].label}
       </h1>
       {activeTab > 0 ? (
-        <ArrowBackOutlined
-          onClick={handlePrevious}
-          fontSize="small"
-          sx={{ color: "#353535", cursor: "pointer" }}
-        />
+        <IconButton onClick={handlePrevious} sx={{ color: "#353535" }}>
+          <ArrowBackOutlined fontSize="small" />
+        </IconButton>
       ) : (
-        <DeleteOutlined
+        <IconButton
           onClick={handleClearCart}
-          fontSize="small"
-          sx={{
-            color: isCartEmpty ? "#A0A0A0" : "#353535",
-            cursor: isCartEmpty ? "default" : "pointer",
-            pointerEvents: isCartEmpty ? "none" : "auto",
-          }}
-        />
+          disabled={isCartEmpty}
+          sx={{ color: isCartEmpty ? "#A0A0A0" : "#353535" }}
+        >
+          <DeleteOutlined fontSize="small" />
+        </IconButton>
       )}
     </div>
   );
