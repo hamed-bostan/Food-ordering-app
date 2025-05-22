@@ -5,12 +5,14 @@ export default function HeaderDesktop() {
   const { activeTab, setActiveTab } = useCheckoutTab();
 
   return (
-    <div className="hidden md:flex justify-between mb-7">
+    <div className="justify-between hidden md:flex mb-7">
       {tabsConfig.map((tab) => (
-        <div
+        <button
           key={tab.tabIndex}
           onClick={() => setActiveTab(tab.tabIndex)}
-          className="flex gap-x-1 cursor-pointer items-center"
+          className="flex items-center gap-x-1"
+          role="tab"
+          aria-selected={activeTab === tab.tabIndex}
         >
           <tab.icon
             sx={{
@@ -18,7 +20,7 @@ export default function HeaderDesktop() {
               fontSize: activeTab === tab.tabIndex ? 20 : 18,
             }}
           />
-          <span
+          <p
             className={`text-sm ${
               activeTab === tab.tabIndex
                 ? "font-bold text-[#417F56]"
@@ -26,8 +28,8 @@ export default function HeaderDesktop() {
             }`}
           >
             {tab.label}
-          </span>
-        </div>
+          </p>
+        </button>
       ))}
     </div>
   );
