@@ -46,7 +46,7 @@ export default function ItemsCard({ foodItem }: ItemsCardProps) {
     >
       <div>
         <h3 className="text-[#353535] text-sm">{title}</h3>
-        <span className="text-[#717171] text-xs">{totalDiscountedPrice}</span>
+        <p className="text-[#717171] text-xs">{totalDiscountedPrice}</p>
       </div>
       <QuantitySelector
         selectedItem={selectedItem}

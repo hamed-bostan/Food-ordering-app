@@ -17,14 +17,14 @@ export default function ShoppingCart() {
   return (
     <>
       {selectedItems.length > 0 ? (
-        <div
+        <section
           className={`md:grid lg:grid-cols-[60fr_40fr] md:gap-y-4 lg:gap-x-6 ${
             hasBorder && "p-5 border border-[#CBCBCB] md:border-none rounded-lg"
           }`}
         >
           <Items />
           <CartSummary />
-        </div>
+        </section>
       ) : (
         <EmptyStateMessage
           button={true}

@@ -14,10 +14,10 @@ type FoodItemProps = {
 
 export default function ItemsCard({ foodItem }: FoodItemProps) {
   return (
-    <div className="min-h-24 grid grid-cols-[auto_1fr_1fr] grid-rows-3 border border-[#CBCBCB] rounded-sm overflow-hidden md:hover:shadow-md md:min-h-32 lg:min-h-36 lg:rounded-lg">
+    <section className="min-h-24 grid grid-cols-[auto_1fr_1fr] grid-rows-3 border border-[#CBCBCB] rounded-sm overflow-hidden md:hover:shadow-md md:min-h-32 lg:min-h-36 lg:rounded-lg">
       <FoodImage {...foodItem} />
       <FoodDetails foodItem={foodItem} />
-    </div>
+    </section>
   );
 }
 
@@ -65,9 +65,9 @@ function FoodDetails({ foodItem }: FoodItemProps) {
       <h3 className="lg:text-base md:font-semibold md:col-span-2">{title}</h3>
       {discount && (
         <div className="flex items-center mr-auto gap-x-2 md:row-start-2 md:col-start-3">
-          <span className="text-[#ADADAD] line-through">
+          <del className="text-[#ADADAD] line-through">
             {formatToPersianStyle(price)}
-          </span>
+          </del>
           <span className="text-[#C30000] bg-[#FFF2F2] rounded-lg px-1">
             {formatToPersianStyle(discount)} %
           </span>
@@ -77,7 +77,9 @@ function FoodDetails({ foodItem }: FoodItemProps) {
         {description.slice(0, 40)} ...
       </p>
       <div className="flex items-center mr-auto gap-x-2 md:col-start-3 md:row-start-4">
-        <span>{totalDiscountedPricePerItem}</span>
+        <data value={totalDiscountedPricePerItem}>
+          {totalDiscountedPricePerItem}
+        </data>
         <span>تومان</span>
       </div>
       <DeleteOutlineOutlinedIcon
@@ -86,7 +88,7 @@ function FoodDetails({ foodItem }: FoodItemProps) {
         className="cursor-pointer md:row-start-1 md:mr-auto lg:w-5 lg:h-5 md:col-start-3"
       />
       <div className="md:col-start-1 md:row-start-4 md:flex md:col-span-2 md:gap-x-2 lg:gap-x-4">
-        {/* <span className="self-center">{star}</span> */}
+        {/* <p className="self-center">{star}</p> */}
         <QuantitySelector
           selectedItem={selectedItem}
           handleIncrease={handleIncrease}

@@ -3,7 +3,7 @@ import formatToPersianStyle from "@/lib/formattedPrice";
 import { useCheckoutTab } from "@/context/CheckoutTabContext";
 import ItemsOverviewMobile from "./itemsOverviewMobile";
 import CustomButton from "../ui/CustomButton";
-import { Divider } from "@mui/material";
+import { Divider, IconButton } from "@mui/material";
 import {
   ReportGmailerrorredOutlined,
   DeleteOutlined,
@@ -60,14 +60,17 @@ export default function CartSummary() {
     >
       <div className="justify-between hidden mb-3 md:flex">
         <span className="text-base">سبد خرید ({itemsCounter})</span>
-        <DeleteOutlined
+        <IconButton
           onClick={handleClearCart}
-          fontSize="small"
-          sx={{
-            color: "#353535",
-            cursor: "pointer",
-          }}
-        />
+          aria-label="حذف سبد خرید"
+          size="small"
+        >
+          <DeleteOutlined
+            sx={{
+              color: "#353535",
+            }}
+          />
+        </IconButton>
       </div>
       <Divider className="hidden md:block md:mb-3" />
       {hasQuantitySelector && (
