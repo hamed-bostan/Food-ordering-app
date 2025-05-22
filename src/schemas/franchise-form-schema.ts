@@ -9,9 +9,9 @@ export const franchiseFormSchema = z.object({
   region: z.string().min(1),
   address: z.string().min(1),
   ownershipType: z.string().min(1),
-  area: z.string().min(1),
+  propertyArea: z.string().min(1), // was "area"
   buildingAge: z.string().min(1),
-  hasLicense: z.boolean().optional(),
+  hasBusinessLicense: z.boolean().optional(), // was "hasLicense"
   hasParking: z.boolean().optional(),
   hasKitchen: z.boolean().optional(),
   hasStorage: z.boolean().optional(),
