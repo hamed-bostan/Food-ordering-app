@@ -16,7 +16,12 @@ export default function RequestForm() {
     resolver: zodResolver(franchiseFormSchema),
     mode: "onBlur",
     defaultValues: {
-      nationalId: "0",
+      nationalId: "0", // required for useNumericField to start with correct leading
+      phone: "09", // required to ensure useNumericField works correctly
+      hasBusinessLicense: false,
+      hasParking: false,
+      hasKitchen: false,
+      hasStorage: false,
     },
   });
 
