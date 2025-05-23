@@ -1,56 +1,16 @@
 import { useFormContext } from "react-hook-form";
 import Input from "../../ui/Input";
 import { getErrorMessage } from "@/utils/formHelpers";
-import { ChangeEvent } from "react";
+import useNumericField from "@/hooks/useNumericField";
 
 export default function IndividualProfile() {
   const {
     register,
-    setValue,
-    watch,
-    formState: { errors, touchedFields },
-    clearErrors,
+    formState: { errors },
   } = useFormContext();
 
-  const nationalIdValue = watch("nationalId") || "0";
-  const isTouched = touchedFields.nationalId; // true if user interacted
-
-  function handleNationalIdChange(e: ChangeEvent<HTMLInputElement>) {
-    let value = e.target.value;
-
-    // Always start with 0
-    if (!value.startsWith("0")) {
-      value = "0" + value.replace(/^0+/, "");
-    }
-
-    // Remove non-digit characters
-    value = value.replace(/\D/g, "");
-
-    // Limit to 10 digits total
-    if (value.length > 10) {
-      value = value.slice(0, 10);
-    }
-
-    setValue("nationalId", value);
-  }
-
-  function handleFocus() {
-    clearErrors("nationalId"); // Clear error as soon as user focuses
-  }
-
-  function getBorderColor(value: string, error?: any, touched?: boolean) {
-    if (error) return "red";
-    if (!touched) return "#CBCBCB"; // default gray border if not touched
-    if (value.length < 10) return "orange";
-    if (value.length === 10) return "green";
-    return "#CBCBCB";
-  }
-
-  const borderColor = getBorderColor(
-    nationalIdValue,
-    errors.nationalId,
-    isTouched
-  );
+  const nationalId = useNumericField("nationalId", 10, "0");
+  const phone = useNumericField("phone", 11, "09");
 
   return (
     <div className="mb-10">
@@ -64,21 +24,30 @@ export default function IndividualProfile() {
         />
         <Input
           label="کدملی"
-          {...register("nationalId")}
           type="text"
-          inputProps={{ maxLength: 10 }}
-          error={!!errors.nationalId}
-          helperText={getErrorMessage(errors.nationalId)}
-          value={nationalIdValue}
-          onChange={handleNationalIdChange}
-          onFocus={handleFocus}
-          borderColor={borderColor}
+          {...nationalId.registerProps}
+          value={nationalId.value}
+          error={nationalId.error}
+          helperText={nationalId.helperText}
+          onChange={nationalId.onChange}
+          onFocus={nationalId.onFocus}
+          onBlur={nationalId.onBlur}
+          borderColor={nationalId.borderColor}
+          inputProps={nationalId.inputProps}
         />
+
         <Input
           label="شماره تماس"
-          {...register("phone")}
-          error={!!errors.phone}
-          helperText={getErrorMessage(errors.phone)}
+          type="text"
+          {...phone.registerProps}
+          value={phone.value}
+          error={phone.error}
+          helperText={phone.helperText}
+          onChange={phone.onChange}
+          onFocus={phone.onFocus}
+          onBlur={phone.onBlur}
+          borderColor={phone.borderColor}
+          inputProps={phone.inputProps}
         />
       </div>
     </div>

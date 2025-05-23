@@ -6,7 +6,10 @@ export const franchiseFormSchema = z.object({
     .string()
     .min(10, "کد ملی باید ۱۰ رقم باشد.")
     .regex(/^\d+$/, "کد ملی فقط باید عدد باشد."),
-  phone: z.string().min(1, "شماره تماس الزامی است."),
+  phone: z
+    .string()
+    .min(11, "شماره تماس باید 11 رقم باشد.")
+    .regex(/^\d+$/, "شماره تماس فقط باید عدد باشد."),
   province: z.string().min(1),
   city: z.string().min(1),
   region: z.string().min(1),
