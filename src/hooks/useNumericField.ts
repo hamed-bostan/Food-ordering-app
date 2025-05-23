@@ -5,7 +5,7 @@ import { useFormContext } from "react-hook-form";
 export default function useNumericField(
   name: string,
   maxLength: number,
-  leading = "0"
+  leading?: string
 ) {
   const {
     register,
@@ -16,26 +16,26 @@ export default function useNumericField(
     clearErrors,
   } = useFormContext();
 
-  const value = watch(name) || leading;
+  const value = watch(name) ?? leading ?? "";
+
   const isTouched = touchedFields[name];
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     let val = e.target.value;
 
-    // Ensure the value starts with the correct leading digit(s)
-    if (!val.startsWith(leading)) {
-      val = leading + val.replace(/^0+/, "");
-    }
-
-    // Keep only digits
+    // Remove non-digit characters
     val = val.replace(/\D/g, "");
+
+    // Add leading if needed
+    if (leading && !val.startsWith(leading)) {
+      val = leading + val.replace(new RegExp("^" + leading + "+"), "");
+    }
 
     // Enforce max length
     if (val.length > maxLength) {
       val = val.slice(0, maxLength);
     }
 
-    // Update the form value and mark it as touched
     setValue(name, val, { shouldTouch: true });
     clearErrors(name); // Hide error while typing
   }
@@ -44,8 +44,8 @@ export default function useNumericField(
     clearErrors(name); // Hide error on focus
   }
 
-  function handleBlur(e: FocusEvent<HTMLInputElement>) {
-    trigger(name); // Revalidate field on blur
+  function handleBlur() {
+    trigger(name); // Revalidate on blur
   }
 
   function getBorderColor() {

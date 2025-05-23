@@ -1,4 +1,5 @@
 import Input from "@/components/ui/Input";
+import useNumericField from "@/hooks/useNumericField";
 import { getErrorMessage } from "@/utils/formHelpers";
 import {
   FormControl,
@@ -26,6 +27,9 @@ export default function ApplicantPropertyDetails() {
     });
   }
 
+  const propertyArea = useNumericField("propertyArea", 5); // up to 99999
+  const buildingAge = useNumericField("buildingAge", 3); // up to 999
+
   const value = watch("ownershipType");
   return (
     <div className="mb-12">
@@ -52,15 +56,28 @@ export default function ApplicantPropertyDetails() {
         </FormControl>
         <Input
           label="مساحت ملک (متر مربع)"
-          {...register("propertyArea")}
-          error={!!errors.propertyArea}
-          helperText={getErrorMessage(errors.propertyArea)}
+          type="text"
+          {...propertyArea.registerProps}
+          value={propertyArea.value}
+          onChange={propertyArea.onChange}
+          onFocus={propertyArea.onFocus}
+          onBlur={propertyArea.onBlur}
+          error={propertyArea.error}
+          helperText={propertyArea.helperText}
+          inputProps={propertyArea.inputProps}
         />
+
         <Input
           label="سن بنا"
-          {...register("buildingAge")}
-          error={!!errors.buildingAge}
-          helperText={getErrorMessage(errors.buildingAge)}
+          type="text"
+          {...buildingAge.registerProps}
+          value={buildingAge.value}
+          onChange={buildingAge.onChange}
+          onFocus={buildingAge.onFocus}
+          onBlur={buildingAge.onBlur}
+          error={buildingAge.error}
+          helperText={buildingAge.helperText}
+          inputProps={buildingAge.inputProps}
         />
       </div>
     </div>

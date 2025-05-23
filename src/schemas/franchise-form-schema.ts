@@ -15,8 +15,8 @@ export const franchiseFormSchema = z.object({
   region: z.string().min(1),
   address: z.string().min(1),
   ownershipType: z.string().min(1),
-  propertyArea: z.string().min(1), // was "area"
-  buildingAge: z.string().min(1),
+  propertyArea: z.string().regex(/^\d+$/, "فقط عدد مجاز است."),
+  buildingAge: z.string().regex(/^\d+$/, "فقط عدد مجاز است."),
   hasBusinessLicense: z.boolean().optional(), // was "hasLicense"
   hasParking: z.boolean().optional(),
   hasKitchen: z.boolean().optional(),
