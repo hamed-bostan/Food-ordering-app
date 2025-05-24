@@ -43,6 +43,11 @@ export default function ApplicantPropertyDetails() {
             label="نوع مالکیت"
             value={value || ""}
             onChange={handleOnChange}
+            sx={{
+              "& .MuiSelect-select": {
+                paddingY: "7.2px",
+              },
+            }}
           >
             {ownershipOptions.map((option) => (
               <MenuItem key={option} value={option}>
