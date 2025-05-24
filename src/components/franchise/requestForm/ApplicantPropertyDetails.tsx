@@ -45,7 +45,7 @@ export default function ApplicantPropertyDetails() {
             onChange={handleOnChange}
             sx={{
               "& .MuiSelect-select": {
-                paddingY: "7.2px",
+                paddingY: "0.45rem",
               },
             }}
           >
