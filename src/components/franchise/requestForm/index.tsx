@@ -10,6 +10,8 @@ import FacilityProperty from "./FacilityProperty";
 import IndividualProfile from "./IndividualProfile";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import provinces from "@/data/province.json";
+import cities from "@/data/cities.json";
 
 export default function RequestForm() {
   const methods = useForm<FranchiseFormValues>({
@@ -22,11 +24,25 @@ export default function RequestForm() {
       hasParking: false,
       hasKitchen: false,
       hasStorage: false,
+      province: "",
+      city: "",
+      region: "",
+      address: "",
     },
   });
 
   function onSubmit(data: FranchiseFormValues) {
-    console.log("Submitted Data:", data);
+    const provinceName =
+      provinces.find((prov) => String(prov.id) === data.province)?.title ||
+      "نامشخص";
+    const cityName =
+      cities.find((city) => String(city.id) === data.city)?.title || "نامشخص";
+
+    console.log("Submitted Data:", {
+      ...data,
+      province: provinceName,
+      city: cityName,
+    });
   }
 
   return (
