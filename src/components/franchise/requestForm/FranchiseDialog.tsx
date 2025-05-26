@@ -34,9 +34,7 @@ export function FranchiseDialog() {
             padding: { xs: 1, md: 2 },
           }}
         >
-          <button className="text-sm md:text-base text-[#353535]">
-            اطلاعات شما
-          </button>
+          <p className="text-sm md:text-base text-[#353535]">اطلاعات شما</p>
         </DialogTitle>
         <DialogActions>
           <Button onClick={closeFranchiseDialog} sx={{ color: "#717171" }}>
