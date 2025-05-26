@@ -1,55 +1,32 @@
-// app/api/franchise/route.ts
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongoose";
 import Franchise from "@/models/Franchise";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    // 1. Connect to DB
     await connectDB();
 
+    // 2. Parse request body
     const body = await req.json();
 
+    // 3. Create new franchise document
     const newFranchise = await Franchise.create(body);
 
-    // Extract only the fields needed by FranchiseFormValues
-    const {
-      fullName,
-      nationalId,
-      phone,
-      province,
-      city,
-      region,
-      address,
-      propertyArea,
-      buildingAge,
-      hasBusinessLicense,
-      hasParking,
-      hasKitchen,
-      hasStorage,
-    } = newFranchise;
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        fullName,
-        nationalId,
-        phone,
-        province,
-        city,
-        region,
-        address,
-        propertyArea,
-        buildingAge,
-        hasBusinessLicense,
-        hasParking,
-        hasKitchen,
-        hasStorage,
-      },
-    });
-  } catch (err) {
-    console.error("Failed to submit franchise form:", err);
+    // 4. Return success response
     return NextResponse.json(
-      { success: false, error: "Something went wrong." },
+      { success: true, data: newFranchise },
+      { status: 201 }
+    );
+  } catch (error) {
+    // Log server error (avoid exposing sensitive details to client)
+    console.error("❌ Franchise submission failed:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "An unexpected error occurred. Please try again later.",
+      },
       { status: 500 }
     );
   }
