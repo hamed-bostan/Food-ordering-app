@@ -4,12 +4,15 @@ import {
   DialogContent,
   Button,
   DialogActions,
+  Grid,
+  Grid2,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useFranchiseDialog } from "@/context/FranchiseContext";
 
 export function FranchiseDialog() {
-  const { isFranchiseDialogOpen, closeFranchiseDialog } = useFranchiseDialog(); // Access the context values
+  const { isFranchiseDialogOpen, closeFranchiseDialog, submittedData } =
+    useFranchiseDialog(); // Access the context values
 
   return (
     <Dialog
@@ -41,19 +44,34 @@ export function FranchiseDialog() {
           </Button>
         </DialogActions>
       </div>
-      <DialogContent sx={{ padding: 0 }}>
-        <p>نام و نام خانوادگی:</p>
-        <p>کد ملی:</p>
-        <p>شماره تماس:</p>
-        <p>استان:</p>
-        <p>شهر:</p>
-        <p>منطقه:</p>
-        <p>آدرس دقیق:</p>
-        <p>نوع مالکیت:</p>
-        <p>مساحت ملک:</p>
-        <p>سن بنا:</p>
-        <p>پروانه کسب دارد</p>
+      <DialogContent>
+        {submittedData ? (
+          <>
+            <p>نام و نام خانوادگی: {submittedData.fullName}</p>
+            <p>کد ملی: {submittedData.nationalId}</p>
+            <p>شماره تماس: {submittedData.phone}</p>
+            <p>استان: {submittedData.province}</p>
+            <p>شهر: {submittedData.city}</p>
+            {submittedData.region && <p>منطقه: {submittedData.region}</p>}
 
+            {submittedData.address && <p>آدرس دقیق: {submittedData.address}</p>}
+            {submittedData.propertyArea && (
+              <p>مساحت ملک: {submittedData.propertyArea}</p>
+            )}
+            {submittedData.buildingAge && (
+              <p>سن بنا: {submittedData.buildingAge}</p>
+            )}
+            <p>
+              پروانه کسب دارد:
+              {submittedData.hasBusinessLicense ? "بله" : "خیر"}
+            </p>
+            <p>پارکینگ دارد: {submittedData.hasParking ? "بله" : "خیر"}</p>
+            <p>آشپزخانه دارد: {submittedData.hasKitchen ? "بله" : "خیر"}</p>
+            <p>انباری دارد: {submittedData.hasStorage ? "بله" : "خیر"}</p>
+          </>
+        ) : (
+          <p>اطلاعاتی موجود نیست.</p>
+        )}
       </DialogContent>
     </Dialog>
   );

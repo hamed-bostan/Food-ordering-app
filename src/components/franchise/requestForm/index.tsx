@@ -48,7 +48,13 @@ export default function RequestForm() {
       city: cityName,
     });
 
-    openFranchiseDialog();
+ const fullData = {
+    ...data,
+    province: provinceName,
+    city: cityName,
+  };
+    
+    openFranchiseDialog(fullData);
   }
 
   return (
