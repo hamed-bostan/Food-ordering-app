@@ -1,18 +1,18 @@
+"use client";
+
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   Button,
   DialogActions,
-  Grid,
-  Grid2,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useFranchiseDialog } from "@/context/FranchiseContext";
 
 export function FranchiseDialog() {
   const { isFranchiseDialogOpen, closeFranchiseDialog, submittedData } =
-    useFranchiseDialog(); // Access the context values
+    useFranchiseDialog();
 
   return (
     <Dialog
@@ -53,7 +53,6 @@ export function FranchiseDialog() {
             <p>استان: {submittedData.province}</p>
             <p>شهر: {submittedData.city}</p>
             {submittedData.region && <p>منطقه: {submittedData.region}</p>}
-
             {submittedData.address && <p>آدرس دقیق: {submittedData.address}</p>}
             {submittedData.propertyArea && (
               <p>مساحت ملک: {submittedData.propertyArea}</p>
@@ -62,7 +61,7 @@ export function FranchiseDialog() {
               <p>سن بنا: {submittedData.buildingAge}</p>
             )}
             <p>
-              پروانه کسب دارد:
+              پروانه کسب دارد:{" "}
               {submittedData.hasBusinessLicense ? "بله" : "خیر"}
             </p>
             <p>پارکینگ دارد: {submittedData.hasParking ? "بله" : "خیر"}</p>

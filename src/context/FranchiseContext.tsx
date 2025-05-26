@@ -1,22 +1,15 @@
+import { createContext, ReactNode, useContext, useState } from "react";
 import { FranchiseFormValues } from "@/schemas/franchise-form-schema";
-import { createContext, useState, useContext, ReactNode } from "react";
 
-// Define the context type
-type FranchiseDialogContextType = {
+type FranchiseDialogContextProps = {
   isFranchiseDialogOpen: boolean;
-  openFranchiseDialog: (data: FranchiseFormValuesWithProvinceCity) => void;
   closeFranchiseDialog: () => void;
-  submittedData: FranchiseFormValuesWithProvinceCity | null;
+  submittedData: FranchiseFormValues | null;
+  setFranchiseDataAndOpenDialog: (data: FranchiseFormValues) => void;
 };
 
-type FranchiseFormValuesWithProvinceCity = FranchiseFormValues & {
-  province: string;
-  city: string;
-};
-
-const FranchiseDialogContext = createContext<
-  FranchiseDialogContextType | undefined
->(undefined);
+const FranchiseDialogContext =
+  createContext<FranchiseDialogContextProps | null>(null);
 
 export const FranchiseDialogProvider = ({
   children,
@@ -25,22 +18,24 @@ export const FranchiseDialogProvider = ({
 }) => {
   const [isFranchiseDialogOpen, setIsFranchiseDialogOpen] = useState(false);
   const [submittedData, setSubmittedData] =
-    useState<FranchiseFormValuesWithProvinceCity | null>(null);
+    useState<FranchiseFormValues | null>(null);
 
-  const openFranchiseDialog = (data: FranchiseFormValuesWithProvinceCity) => {
+  const closeFranchiseDialog = () => {
+    setIsFranchiseDialogOpen(false);
+  };
+
+  const setFranchiseDataAndOpenDialog = (data: FranchiseFormValues) => {
     setSubmittedData(data);
     setIsFranchiseDialogOpen(true);
   };
-
-  const closeFranchiseDialog = () => setIsFranchiseDialogOpen(false);
 
   return (
     <FranchiseDialogContext.Provider
       value={{
         isFranchiseDialogOpen,
-        openFranchiseDialog,
         closeFranchiseDialog,
         submittedData,
+        setFranchiseDataAndOpenDialog,
       }}
     >
       {children}
@@ -49,11 +44,11 @@ export const FranchiseDialogProvider = ({
 };
 
 // Custom hook for consuming the context
-export const useFranchiseDialog = (): FranchiseDialogContextType => {
+export const useFranchiseDialog = () => {
   const context = useContext(FranchiseDialogContext);
   if (!context) {
     throw new Error(
-      "useFranchiseDialog must be used within an FranchiseDialogProvider"
+      "useFranchiseDialog must be used within a FranchiseDialogProvider"
     );
   }
   return context;

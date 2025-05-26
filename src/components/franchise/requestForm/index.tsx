@@ -14,9 +14,10 @@ import provinces from "@/data/province.json";
 import cities from "@/data/cities.json";
 import { FranchiseDialog } from "./FranchiseDialog";
 import { useFranchiseDialog } from "@/context/FranchiseContext";
+import axios from "axios";
 
 export default function RequestForm() {
-  const { openFranchiseDialog } = useFranchiseDialog(); // Access the context values
+  const { setFranchiseDataAndOpenDialog } = useFranchiseDialog(); // Access the context values
 
   const methods = useForm<FranchiseFormValues>({
     resolver: zodResolver(franchiseFormSchema),
@@ -35,26 +36,27 @@ export default function RequestForm() {
     },
   });
 
-  function onSubmit(data: FranchiseFormValues) {
+  async function onSubmit(data: FranchiseFormValues) {
     const provinceName =
       provinces.find((prov) => String(prov.id) === data.province)?.title ||
       "نامشخص";
     const cityName =
       cities.find((city) => String(city.id) === data.city)?.title || "نامشخص";
 
-    console.log("Submitted Data:", {
+    const submission = {
       ...data,
       province: provinceName,
       city: cityName,
-    });
+    };
 
- const fullData = {
-    ...data,
-    province: provinceName,
-    city: cityName,
-  };
-    
-    openFranchiseDialog(fullData);
+    try {
+      const res = await axios.post("/api/franchise", submission);
+
+      const submitted = res.data.data;
+      setFranchiseDataAndOpenDialog(submitted);
+    } catch (err) {
+      console.error("Submission failed:", err);
+    }
   }
 
   return (
