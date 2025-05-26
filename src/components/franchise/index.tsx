@@ -1,3 +1,5 @@
+"use client";
+
 import { Divider } from "@mui/material";
 import Banner from "../common/Banner";
 import Consultation from "./Consultation";
@@ -5,6 +7,7 @@ import Highlights from "./Highlights";
 import Privilege from "./Privilege";
 import RequestForm from "./requestForm";
 import image1 from "@/assets/images/bannerImages/banner-06.webp";
+import { FranchiseDialogProvider } from "@/context/FranchiseContext";
 
 export default function Franchise() {
   return (
@@ -22,7 +25,9 @@ export default function Franchise() {
         <Divider />
         <Consultation />
         <Divider />
-        <RequestForm />
+        <FranchiseDialogProvider>
+          <RequestForm />
+        </FranchiseDialogProvider>
       </div>
     </div>
   );

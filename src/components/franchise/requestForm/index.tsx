@@ -12,8 +12,12 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import provinces from "@/data/province.json";
 import cities from "@/data/cities.json";
+import { FranchiseDialog } from "./FranchiseDialog";
+import { useFranchiseDialog } from "@/context/FranchiseContext";
 
 export default function RequestForm() {
+  const { openFranchiseDialog } = useFranchiseDialog(); // Access the context values
+
   const methods = useForm<FranchiseFormValues>({
     resolver: zodResolver(franchiseFormSchema),
     mode: "onBlur",
@@ -43,20 +47,25 @@ export default function RequestForm() {
       province: provinceName,
       city: cityName,
     });
+
+    openFranchiseDialog();
   }
 
   return (
-    <FormProvider {...methods}>
-      <form
-        onSubmit={methods.handleSubmit(onSubmit)}
-        className="border border-[#CBCBCB] py-8 px-6 rounded-md my-9"
-      >
-        <span className="block text-center mb-11">فرم درخواست نمایندگی</span>
-        <IndividualProfile />
-        <AddressProperty />
-        <ApplicantPropertyDetails />
-        <FacilityProperty />
-      </form>
-    </FormProvider>
+    <>
+      <FormProvider {...methods}>
+        <form
+          onSubmit={methods.handleSubmit(onSubmit)}
+          className="border border-[#CBCBCB] py-8 px-6 rounded-md my-9"
+        >
+          <span className="block text-center mb-11">فرم درخواست نمایندگی</span>
+          <IndividualProfile />
+          <AddressProperty />
+          <ApplicantPropertyDetails />
+          <FacilityProperty />
+        </form>
+      </FormProvider>
+      <FranchiseDialog />
+    </>
   );
 }
