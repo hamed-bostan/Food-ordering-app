@@ -3,9 +3,10 @@ import { FranchiseFormValues } from "@/schemas/franchise-form-schema";
 
 type FranchiseDialogContextProps = {
   isFranchiseDialogOpen: boolean;
+  openFranchiseDialog: () => void;
   closeFranchiseDialog: () => void;
   submittedData: FranchiseFormValues | null;
-  setFranchiseDataAndOpenDialog: (data: FranchiseFormValues) => void;
+  setFranchiseSubmittedData: (data: FranchiseFormValues) => void;
 };
 
 const FranchiseDialogContext =
@@ -20,22 +21,21 @@ export const FranchiseDialogProvider = ({
   const [submittedData, setSubmittedData] =
     useState<FranchiseFormValues | null>(null);
 
-  const closeFranchiseDialog = () => {
-    setIsFranchiseDialogOpen(false);
-  };
-
-  const setFranchiseDataAndOpenDialog = (data: FranchiseFormValues) => {
+  const openFranchiseDialog = () => setIsFranchiseDialogOpen(true);
+  const closeFranchiseDialog = () => setIsFranchiseDialogOpen(false);
+  
+  const setFranchiseSubmittedData = (data: FranchiseFormValues) => {
     setSubmittedData(data);
-    setIsFranchiseDialogOpen(true);
   };
 
   return (
     <FranchiseDialogContext.Provider
       value={{
         isFranchiseDialogOpen,
+        openFranchiseDialog,
         closeFranchiseDialog,
         submittedData,
-        setFranchiseDataAndOpenDialog,
+        setFranchiseSubmittedData,
       }}
     >
       {children}

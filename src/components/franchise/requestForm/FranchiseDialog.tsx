@@ -61,7 +61,7 @@ export function FranchiseDialog() {
               <p>سن بنا: {submittedData.buildingAge}</p>
             )}
             <p>
-              پروانه کسب دارد:{" "}
+              پروانه کسب دارد:
               {submittedData.hasBusinessLicense ? "بله" : "خیر"}
             </p>
             <p>پارکینگ دارد: {submittedData.hasParking ? "بله" : "خیر"}</p>

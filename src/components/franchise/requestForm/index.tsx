@@ -17,7 +17,8 @@ import { useFranchiseDialog } from "@/context/FranchiseContext";
 import axios from "axios";
 
 export default function RequestForm() {
-  const { setFranchiseDataAndOpenDialog } = useFranchiseDialog(); // Access the context values
+  const { openFranchiseDialog, setFranchiseSubmittedData } =
+    useFranchiseDialog(); // Access the context values
 
   const methods = useForm<FranchiseFormValues>({
     resolver: zodResolver(franchiseFormSchema),
@@ -53,7 +54,8 @@ export default function RequestForm() {
       const res = await axios.post("/api/franchise", submission);
 
       const submitted = res.data.data;
-      setFranchiseDataAndOpenDialog(submitted);
+      setFranchiseSubmittedData(submitted);
+      openFranchiseDialog();
     } catch (err) {
       console.error("Submission failed:", err);
     }
