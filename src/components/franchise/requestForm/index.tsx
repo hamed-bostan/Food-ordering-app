@@ -15,6 +15,8 @@ import cities from "@/data/cities.json";
 import { FranchiseDialog } from "./FranchiseDialog";
 import { useFranchiseDialog } from "@/context/FranchiseContext";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function RequestForm() {
   const { openFranchiseDialog, setFranchiseSubmittedData } =
@@ -56,9 +58,11 @@ export default function RequestForm() {
       const submitted = res.data.data;
       setFranchiseSubmittedData(submitted);
       openFranchiseDialog();
+      toast.success("اطلاعات شما با موفقیت ثبت شد");
       methods.reset();
     } catch (err) {
       console.error("Submission failed:", err);
+      toast.error("ارسال اطلاعات با خطا مواجه شد");
     }
   }
 

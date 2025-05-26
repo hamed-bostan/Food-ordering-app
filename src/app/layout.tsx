@@ -6,6 +6,8 @@ import ThemeRegistry from "@/components/common/ThemeRegistry";
 import AppHeader from "@/components/common/appHeader";
 import { ReactNode } from "react";
 import QueryProvider from "@/components/common/QueryProvider";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
 
 export const metadata = {
   title: "Food ordering app",
@@ -34,6 +36,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             </ProviderWrapper>
           </SessionProviderWrapper>
         </ThemeRegistry>
+        <ToastContainer rtl position="top-center" />
       </body>
     </html>
   );
