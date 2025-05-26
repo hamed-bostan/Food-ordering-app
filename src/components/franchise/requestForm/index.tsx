@@ -56,6 +56,7 @@ export default function RequestForm() {
       const submitted = res.data.data;
       setFranchiseSubmittedData(submitted);
       openFranchiseDialog();
+      methods.reset();
     } catch (err) {
       console.error("Submission failed:", err);
     }
