@@ -49,7 +49,7 @@ function ApplicantFeatures() {
                 />
               }
               label="پروانه کسب دارد."
-              sx={{ color: "#717171" }}
+              sx={{ color: "#717171", width: "fit-content" }}
             />
           )}
         />
@@ -72,7 +72,7 @@ function ApplicantFeatures() {
                 />
               }
               label="پارکینگ دارد."
-              sx={{ color: "#717171" }}
+              sx={{ color: "#717171", width: "fit-content" }}
             />
           )}
         />
@@ -95,7 +95,7 @@ function ApplicantFeatures() {
                 />
               }
               label="آشپزخانه دارد."
-              sx={{ color: "#717171" }}
+              sx={{ color: "#717171", width: "fit-content" }}
             />
           )}
         />
@@ -118,7 +118,7 @@ function ApplicantFeatures() {
                 />
               }
               label="انبار دارد."
-              sx={{ color: "#717171" }}
+              sx={{ color: "#717171", width: "fit-content" }}
             />
           )}
         />
