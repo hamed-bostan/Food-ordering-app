@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import { userMenuItems } from "../common/UserMenuItems";
 import { Divider } from "@mui/material";
 import image1 from "@/assets/images/avatars/01.png";
+import { useSession } from "next-auth/react";
 
 type SidebarProps = {
   setActiveTab: (index: number) => void;
@@ -21,6 +24,7 @@ export default function Sidebar({ setActiveTab, activeTab }: SidebarProps) {
 }
 
 function UserInformation() {
+  const { data: session } = useSession();
   return (
     <div className="flex items-center mb-2 gap-x-5">
       <Image
@@ -33,6 +37,9 @@ function UserInformation() {
       <div className="flex flex-col gap-y-2">
         <span className="text-sm text-[#353535]">محمد محمدی</span>
         <span className="text-xs text-[#717171]">09121234567</span>
+        <p className="text-blue-500">
+          {session?.user?.email && session.user.email}
+        </p>
       </div>
     </div>
   );

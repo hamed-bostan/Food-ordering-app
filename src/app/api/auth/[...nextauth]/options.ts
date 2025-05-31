@@ -11,11 +11,12 @@ export const options: NextAuthOptions = {
     GitHubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
+      authorization: { params: { scope: "read:user user:email" } },
       profile(profile) {
         return {
           id: profile.id.toString(),
           name: profile.name ?? profile.login,
-          email: profile.email,
+          email: profile.email, // Might be null!
           image: profile.avatar_url,
           role: "GitHub User",
         };
@@ -43,15 +44,48 @@ export const options: NextAuthOptions = {
     strategy: "jwt", // <-- important for middleware token
   },
   callbacks: {
+    async signIn({ user, account, profile }) {
+      if (
+        !user.email &&
+        account?.provider === "github" &&
+        account.access_token
+      ) {
+        try {
+          const res = await fetch("https://api.github.com/user/emails", {
+            headers: {
+              Authorization: `token ${account.access_token}`,
+              Accept: "application/vnd.github.v3+json",
+            },
+          });
+
+          const emails = await res.json();
+          const primary = emails.find(
+            (email: any) => email.primary && email.verified
+          );
+          if (primary) {
+            user.email = primary.email;
+          }
+        } catch (error) {
+          console.error("Failed to fetch GitHub user email:", error);
+          return false;
+        }
+      }
+
+      return true;
+    },
+
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role || "user"; // fallback role if missing
+        token.role = user.role || "user";
+        token.email = user.email;
       }
       return token;
     },
+
     async session({ session, token }) {
-      if (token && session.user) {
+      if (session.user) {
         session.user.role = token.role as string;
+        session.user.email = token.email as string;
       }
       return session;
     },
