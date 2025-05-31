@@ -1,15 +1,17 @@
+// types/next-auth.d.ts
 import NextAuth from "next-auth";
 
 declare module "next-auth" {
   interface User {
-    role?: string; // Add 'role' property to User interface
+    role?: string; // 👈 make it optional
   }
 
   interface Session {
-    user: User; // Ensure the Session includes the extended User interface
-  }
-
-  interface JWT {
-    role?: string; // Add 'role' to JWT as well
+    user: {
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      role?: string; // 👈 also optional here
+    };
   }
 }

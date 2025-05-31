@@ -2,51 +2,56 @@ import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import { NextAuthOptions } from "next-auth";
 
+import { MongoDBAdapter } from "@auth/mongodb-adapter";
+import clientPromise from "@/lib/mongodb";
+
 export const options: NextAuthOptions = {
+  adapter: MongoDBAdapter(clientPromise),
   providers: [
     GitHubProvider({
-      profile(profile) {
-        console.log("Profile GitHub: ", profile);
-
-        // Explicitly assert the user role type in the return
-        return {
-          id: profile.id,
-          ...profile,
-          role: "GitHub User", // Add role
-        };
-      },
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
-    }),
-    GoogleProvider({
       profile(profile) {
-        console.log("Profile Google: ", profile);
-
-        // Explicitly assert the user role type in the return
         return {
-          id: profile.sub,
-          ...profile,
-          role: "Google User", // Add role
+          id: profile.id.toString(),
+          name: profile.name ?? profile.login,
+          email: profile.email,
+          image: profile.avatar_url,
+          role: "GitHub User",
         };
       },
+    }),
+
+    GoogleProvider({
       clientId: process.env.GOOGLE_ID!,
       clientSecret: process.env.GOOGLE_SECRET!,
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+          role: "Google User",
+        };
+      },
     }),
   ],
+
   secret: process.env.NEXTAUTH_SECRET!,
   debug: process.env.NODE_ENV === "development",
+  session: {
+    strategy: "jwt", // <-- important for middleware token
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        // Add role to JWT, with type assertion
-        token.role = user.role as string; // Ensure `role` is assigned as string
+        token.role = user.role || "user"; // fallback role if missing
       }
       return token;
     },
     async session({ session, token }) {
-      if (session?.user) {
-        // Explicitly assert session.user to have a role
-        session.user.role = token.role as string; // Assign `role` to session
+      if (token && session.user) {
+        session.user.role = token.role as string;
       }
       return session;
     },
