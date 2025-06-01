@@ -15,9 +15,9 @@ export const options: NextAuthOptions = {
       profile(profile) {
         // Explicitly assert the user role type in the return
         return {
+          ...profile,
           id: profile.id,
           image: profile.avatar_url,
-          ...profile,
           role: "GitHub User", // Add role
         };
       },
@@ -44,48 +44,17 @@ export const options: NextAuthOptions = {
     strategy: "jwt", // <-- important for middleware token
   },
   callbacks: {
-    async signIn({ user, account, profile }) {
-      if (
-        !user.email &&
-        account?.provider === "github" &&
-        account.access_token
-      ) {
-        try {
-          const res = await fetch("https://api.github.com/user/emails", {
-            headers: {
-              Authorization: `token ${account.access_token}`,
-              Accept: "application/vnd.github.v3+json",
-            },
-          });
-
-          const emails = await res.json();
-          const primary = emails.find(
-            (email: any) => email.primary && email.verified
-          );
-          if (primary) {
-            user.email = primary.email;
-          }
-        } catch (error) {
-          console.error("Failed to fetch GitHub user email:", error);
-          return false;
-        }
-      }
-
-      return true;
-    },
-
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role || "user";
-        token.email = user.email;
+        // Add role to JWT, with type assertion
+        token.role = user.role as string; // Ensure `role` is assigned as string
       }
       return token;
     },
-
     async session({ session, token }) {
-      if (session.user) {
-        session.user.role = token.role as string;
-        session.user.email = token.email as string;
+      if (session?.user) {
+        // Explicitly assert session.user to have a role
+        session.user.role = token.role as string; // Assign `role` to session
       }
       return session;
     },

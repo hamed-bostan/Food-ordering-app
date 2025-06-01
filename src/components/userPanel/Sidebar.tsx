@@ -27,17 +27,29 @@ function UserInformation() {
   const { data: session } = useSession();
   return (
     <div className="flex items-center mb-2 gap-x-5">
-      <Image
-        src={image1}
-        width={100}
-        height={100}
-        alt="user avatar"
-        className="w-20 h-20"
-      />
+      {session?.user?.image ? (
+        <Image
+          src={session?.user?.image}
+          width={100}
+          height={100}
+          alt="user avatar"
+          className="w-20 h-20 rounded-full"
+        />
+      ) : (
+        <Image
+          src={image1}
+          width={100}
+          height={100}
+          alt="user avatar"
+          className="w-20 h-20"
+        />
+      )}
       <div className="flex flex-col gap-y-2">
-        <span className="text-sm text-[#353535]">محمد محمدی</span>
-        <span className="text-xs text-[#717171]">09121234567</span>
-        <p className="text-blue-500">
+        <p className="text-sm text-[#353535]">
+          {session?.user?.name ? session.user.name : "نام خود را وارد کنید."}
+        </p>
+        <p className="text-xs text-[#717171]">09121234567</p>
+        <p className="text-xs text-[#717171]">
           {session?.user?.email && session.user.email}
         </p>
       </div>
