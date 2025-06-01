@@ -13,12 +13,14 @@ export const options: NextAuthOptions = {
       clientSecret: process.env.GITHUB_SECRET!,
       authorization: { params: { scope: "read:user user:email" } },
       profile(profile) {
+        console.log("GitHub profile received:", profile);
         // Explicitly assert the user role type in the return
         return {
-          ...profile,
-          id: profile.id,
-          image: profile.avatar_url,
-          role: "GitHub User", // Add role
+          id: profile.id.toString(),
+          name: profile.name ?? profile.login ?? null,
+          email: profile.email ?? null,
+          image: profile.avatar_url ?? null,
+          role: "GitHub User",
         };
       },
     }),
@@ -44,18 +46,18 @@ export const options: NextAuthOptions = {
     strategy: "jwt", // <-- important for middleware token
   },
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        // Add role to JWT, with type assertion
-        token.role = user.role as string; // Ensure `role` is assigned as string
+    async jwt({ token, account, profile }) {
+      if (account && profile) {
+        token.name = profile.name ?? null;
+        token.email = profile.email ?? null;
+        token.image = profile.image ?? (profile as any).avatar_url ?? null;
       }
       return token;
     },
     async session({ session, token }) {
-      if (session?.user) {
-        // Explicitly assert session.user to have a role
-        session.user.role = token.role as string; // Assign `role` to session
-      }
+      session.user.name = token.name ?? null;
+      session.user.email = token.email ?? null;
+      session.user.image = typeof token.image === "string" ? token.image : null;
       return session;
     },
   },
