@@ -1,38 +1,36 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { ObjectId } from "mongodb";
+import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
-
-  const { userId, phone_number } = req.body;
-
-  if (!userId || !phone_number) {
-    return res.status(400).json({ message: "Missing required fields" });
-  }
-
+export async function POST(req: NextRequest) {
   try {
-    const client = await clientPromise;
-    const db = client.db();
+    const { userId, phone_number } = await req.json();
 
-    const result = await db
-      .collection("users")
-      .updateOne({ _id: new ObjectId(userId) }, { $set: { phone_number } });
-
-    if (result.modifiedCount === 0) {
-      return res
-        .status(404)
-        .json({ message: "User not found or no changes made" });
+    if (!userId || !phone_number) {
+      return NextResponse.json(
+        { message: "Missing user ID or phone number" },
+        { status: 400 }
+      );
     }
 
-    res.status(200).json({ message: "User updated successfully" });
+    const client = await clientPromise;
+    const db = client.db(); // defaults to the DB in your connection string
+    const usersCollection = db.collection("users");
+
+    const result = await usersCollection.updateOne(
+      { _id: new (require("mongodb").ObjectId)(userId) },
+      { $set: { phone_number } }
+    );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "اطلاعات شما بروز رسانی شد." });
   } catch (error) {
     console.error("Update user error:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

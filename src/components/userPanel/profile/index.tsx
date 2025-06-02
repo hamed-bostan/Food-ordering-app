@@ -20,7 +20,6 @@ interface Props {
 
 export default function Profile() {
   const { data: session, status } = useSession();
-  console.log("session", session);
 
   // Show spinner while session is loading
   if (status === "loading") {
@@ -48,12 +47,13 @@ export default function Profile() {
 function UserInformationForm({ userId }: Props) {
   const { register, handleSubmit, reset } = useForm<FormData>();
 
-  const onSubmit = async (data: FormData) => {
+  async function onSubmit(data: FormData) {
     try {
       const response = await axios.post("/api/user/update", {
         userId,
         phone_number: data.phone_number,
       });
+
       toast.success(response.data.message || "User info updated!");
       reset();
     } catch (error: any) {
@@ -62,7 +62,7 @@ function UserInformationForm({ userId }: Props) {
           "Failed to update user info. Please try again."
       );
     }
-  };
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
