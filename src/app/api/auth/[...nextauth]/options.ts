@@ -45,18 +45,29 @@ export const options: NextAuthOptions = {
     strategy: "jwt", // <-- important for middleware token
   },
   callbacks: {
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account, profile, user }) {
       if (account && profile) {
         token.name = profile.name ?? null;
         token.email = profile.email ?? null;
         token.image = profile.image ?? (profile as any).avatar_url ?? null;
       }
+      // ✅ Add user ID to token if available (on first sign-in)
+      if (user) {
+        token.id = user.id;
+      }
+
       return token;
     },
     async session({ session, token }) {
       session.user.name = token.name ?? null;
       session.user.email = token.email ?? null;
       session.user.image = typeof token.image === "string" ? token.image : null;
+
+      // ✅ Attach user ID from token to session
+      if (token.id) {
+        session.user.id = token.id as string;
+      }
+
       return session;
     },
   },

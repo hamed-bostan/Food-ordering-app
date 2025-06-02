@@ -8,11 +8,13 @@ declare module "next-auth" {
 
   // Extend User type
   type ExtendedUser = {
+    id: string;
     role?: UserRole;
   };
 
   // Extend Session user type
   type ExtendedSessionUser = {
+    id: string;
     name?: string | null;
     email?: string | null;
     image?: string | null;
