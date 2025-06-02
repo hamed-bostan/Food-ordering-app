@@ -13,10 +13,11 @@ export const options: NextAuthOptions = {
       clientSecret: process.env.GITHUB_SECRET!,
       authorization: { params: { scope: "read:user user:email" } },
       profile(profile) {
+        console.log(profile);
         // Explicitly assert the user role type in the return
         return {
           id: profile.id.toString(),
-          name: profile.name ?? profile.login ?? null,
+          name: profile.name || profile.login, // Fallback if name is null
           email: profile.email ?? null,
           image: profile.avatar_url ?? null,
           role: "GitHub User",

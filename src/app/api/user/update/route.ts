@@ -3,7 +3,7 @@ import clientPromise from "@/lib/mongodb";
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId, phone_number } = await req.json();
+    const { name, userId, phone_number, email } = await req.json();
 
     if (!userId || !phone_number) {
       return NextResponse.json(
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 
     const result = await usersCollection.updateOne(
       { _id: new (require("mongodb").ObjectId)(userId) },
-      { $set: { phone_number } }
+      { $set: { phone_number, name, email } }
     );
 
     if (result.matchedCount === 0) {

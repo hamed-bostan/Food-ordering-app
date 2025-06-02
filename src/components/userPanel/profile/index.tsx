@@ -11,7 +11,9 @@ import { useSession } from "next-auth/react";
 import { CircularProgress } from "@mui/material";
 
 type FormData = {
+  name: string;
   phone_number: string;
+  email: string;
 };
 
 type UserIdProps = {
@@ -51,7 +53,9 @@ function UserInformationForm({ userId }: UserIdProps) {
     try {
       const response = await axios.post("/api/user/update", {
         userId,
+        name: data.name,
         phone_number: data.phone_number,
+        email: data.email,
       });
 
       toast.success(response.data.message || "User info updated!");
@@ -67,7 +71,9 @@ function UserInformationForm({ userId }: UserIdProps) {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="grid grid-cols-1 mb-5 gap-y-4 md:grid-cols-2 md:gap-x-4 md:mb-7 md:gap-y-5">
+        <Input label="نام و نام خانوادگی" {...register("name")} />
         <Input label="شماره تماس" {...register("phone_number")} />
+        <Input label="ایمیل" {...register("email")} />
       </div>
       <CustomButton
         type="submit"
