@@ -10,7 +10,7 @@ import {
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 import { userMenuItems } from "../../UserMenuItems";
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { MouseEvent, useState } from "react";
 import { Divider } from "@mui/material";
 import Popover from "@mui/material/Popover";
@@ -51,7 +51,7 @@ export default function ActionButton() {
 }
 
 function UserMenuPopover() {
-  const { data: session } = useSession();
+  const { data: session } = useSession(); // Client-side session retrieval
   const pathname = usePathname();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -68,8 +68,9 @@ function UserMenuPopover() {
   return (
     <>
       {session ? (
-        <div
+        <button
           onClick={handleClick}
+          type="button"
           className={`w-12 h-8 rounded-sm cursor-pointer flex justify-center items-center ${
             pathname === "/userPanel"
               ? "bg-[#417F56] text-[#fff]"
@@ -78,14 +79,14 @@ function UserMenuPopover() {
         >
           <Person2Outlined fontSize="small" />
           <ArrowDownwardOutlined sx={{ fontSize: 18 }} />
-        </div>
+        </button>
       ) : (
-        <button
-          onClick={() => signIn("github", { callbackUrl: "/userPanel" })}
+        <Link
+          href="/api/auth/signin?callbackUrl=/userPanel"
           className="bg-[#E5F2E9] w-8 h-8 rounded-sm cursor-pointer flex justify-center items-center"
         >
           <Person2Outlined fontSize="small" sx={{ color: "#417F56" }} />
-        </button>
+        </Link>
       )}
 
       <Popover
@@ -102,30 +103,17 @@ function UserMenuPopover() {
         }}
       >
         {session && (
-          <div className="p-2 min-w-[160px]">
+          <div className="p-2">
             {userMenuItems.map((item, index) => (
               <div key={index}>
-                {item.action ? (
-                  <button
-                    onClick={() => {
-                      item.action?.();
-                      handleClose();
-                    }}
-                    className="flex items-center py-2 text-xs gap-x-1 text-[#353535]"
-                  >
-                    <item.icon sx={{ fontSize: 18 }} />
-                    <span>{item.label}</span>
-                  </button>
-                ) : (
-                  <Link
-                    href={item.href!}
-                    onClick={handleClose}
-                    className="flex items-center py-2 text-xs cursor-pointer gap-x-1 w-fit text-[#353535]"
-                  >
-                    <item.icon sx={{ fontSize: 18 }} />
-                    <span>{item.label}</span>
-                  </Link>
-                )}
+                <Link
+                  onClick={handleClose}
+                  href={item.href}
+                  className="flex items-center py-2 text-xs cursor-pointer gap-x-1 w-fit"
+                >
+                  <item.icon sx={{ color: "#353535", fontSize: 18 }} />
+                  <span className="text-[#353535]">{item.label}</span>
+                </Link>
                 {index < userMenuItems.length - 1 && <Divider />}
               </div>
             ))}

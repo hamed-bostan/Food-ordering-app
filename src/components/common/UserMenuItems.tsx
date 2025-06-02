@@ -12,8 +12,7 @@ type MenuItem = {
   label: string;
   icon: ComponentType<SvgIconProps>;
   tabIndex: number;
-  href?: string;
-  action?: () => void;
+  href: string;
 };
 
 export const userMenuItems: MenuItem[] = [
@@ -40,9 +39,6 @@ export const userMenuItems: MenuItem[] = [
     label: "خروج",
     icon: LogoutOutlined,
     tabIndex: 4,
-    action: () => {
-      const { signOut } = require("next-auth/react");
-      signOut({ callbackUrl: "/" });
-    },
+    href: "/api/auth/signout?callbackUrl=/",
   },
 ];
