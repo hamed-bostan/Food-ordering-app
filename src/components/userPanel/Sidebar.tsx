@@ -24,12 +24,7 @@ export default function Sidebar({ setActiveTab, activeTab }: SidebarProps) {
 }
 
 function UserInformation() {
-  const { data: session, status } = useSession();
-
-  if (status === "loading") return <p>Loading...</p>;
-  if (status === "unauthenticated") return <p>You are not authenticated</p>;
-
-  console.log(session);
+  const { data: session } = useSession();
 
   return (
     <div className="flex items-center mb-2 gap-x-5">
