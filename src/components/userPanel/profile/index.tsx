@@ -9,6 +9,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { CircularProgress } from "@mui/material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type FormData = {
   name: string;
@@ -48,24 +49,31 @@ export default function Profile() {
 
 function UserInformationForm({ userId }: UserIdProps) {
   const { register, handleSubmit, reset } = useForm<FormData>();
+  const queryClient = useQueryClient();
 
-  async function onSubmit(data: FormData) {
-    try {
+  const mutation = useMutation({
+    mutationFn: async (data: FormData) => {
       const response = await axios.post("/api/user/update", {
         userId,
-        name: data.name,
-        phone_number: data.phone_number,
-        email: data.email,
+        ...data,
       });
-
-      toast.success(response.data.message || "User info updated!");
+      return response.data;
+    },
+    onSuccess: (data) => {
+      toast.success(data.message || "User info updated!");
       reset();
-    } catch (error: any) {
+      queryClient.invalidateQueries({ queryKey: ["user", userId] });
+    },
+    onError: (error: any) => {
       toast.error(
         error.response?.data?.message ||
           "Failed to update user info. Please try again."
       );
-    }
+    },
+  });
+
+  function onSubmit(data: FormData) {
+    mutation.mutate(data);
   }
 
   return (
