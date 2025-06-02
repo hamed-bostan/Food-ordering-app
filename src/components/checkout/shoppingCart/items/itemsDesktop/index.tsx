@@ -3,9 +3,9 @@
 import { FullCartProduct } from "..";
 import ItemsCard from "./ItemsCard";
 
-interface ItemsDesktopProps {
+type ItemsDesktopProps = {
   selectedItems: FullCartProduct[];
-}
+};
 
 export default function ItemsDesktop({ selectedItems }: ItemsDesktopProps) {
   return (

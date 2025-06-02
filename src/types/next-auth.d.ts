@@ -1,19 +1,11 @@
-// types/next-auth.d.ts
-
 import NextAuth from "next-auth";
 
 declare module "next-auth" {
-  // use type aliases inside the module instead of interfaces
+  // Define a reusable type for user roles
   type UserRole = "GitHub User" | "Google User" | string;
 
-  // Extend User type
-  type ExtendedUser = {
-    id: string;
-    role?: UserRole;
-  };
-
-  // Extend Session user type
-  type ExtendedSessionUser = {
+  // Define a type alias for your session user
+  type SessionUser = {
     id: string;
     name?: string | null;
     email?: string | null;
@@ -21,8 +13,8 @@ declare module "next-auth" {
     role?: UserRole;
   };
 
-  interface User extends ExtendedUser {}
+  // Override the default Session type to include your custom user shape
   interface Session {
-    user: ExtendedSessionUser;
+    user: SessionUser; // ✅ Not optional anymore
   }
 }

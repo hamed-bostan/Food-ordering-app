@@ -14,9 +14,9 @@ type FormData = {
   phone_number: string;
 };
 
-interface Props {
+type UserIdProps = {
   userId: string; // pass logged-in user's id here
-}
+};
 
 export default function Profile() {
   const { data: session, status } = useSession();
@@ -44,7 +44,7 @@ export default function Profile() {
   );
 }
 
-function UserInformationForm({ userId }: Props) {
+function UserInformationForm({ userId }: UserIdProps) {
   const { register, handleSubmit, reset } = useForm<FormData>();
 
   async function onSubmit(data: FormData) {
