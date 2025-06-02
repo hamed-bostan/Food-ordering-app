@@ -4,10 +4,9 @@ import { ObjectId } from "mongodb";
 
 export async function GET(
   _: NextRequest,
-  context: { params: Promise<{ id: string }> } // or just any, since we await it anyway
+  { params }: { params: { id: string } }
 ) {
   try {
-    const params = await context.params; // <=== Await here!
     const id = params.id;
 
     const client = await clientPromise;
