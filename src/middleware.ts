@@ -2,8 +2,12 @@ import { withAuth } from "next-auth/middleware";
 
 export default withAuth({
   callbacks: {
-    authorized: ({ token }: { token?: unknown }) => Boolean(token),
+    authorized: ({ token }) => {
+      return !!token;
+    },
   },
 });
 
-export const config = { matcher: ["/userPanel"] };
+export const config = {
+  matcher: ["/userPanel", "/userPanel/:path*"],
+};

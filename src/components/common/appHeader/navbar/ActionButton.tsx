@@ -68,8 +68,9 @@ function UserMenuPopover() {
   return (
     <>
       {session ? (
-        <div
+        <button
           onClick={handleClick}
+          type="button"
           className={`w-12 h-8 rounded-sm cursor-pointer flex justify-center items-center ${
             pathname === "/userPanel"
               ? "bg-[#417F56] text-[#fff]"
@@ -78,7 +79,7 @@ function UserMenuPopover() {
         >
           <Person2Outlined fontSize="small" />
           <ArrowDownwardOutlined sx={{ fontSize: 18 }} />
-        </div>
+        </button>
       ) : (
         <Link
           href="/api/auth/signin?callbackUrl=/userPanel"
