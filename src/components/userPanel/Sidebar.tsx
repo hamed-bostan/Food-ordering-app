@@ -7,7 +7,6 @@ import image1 from "@/assets/images/avatars/01.png";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserById } from "@/lib/fetchUserById";
-import axios from "axios";
 
 type SidebarProps = {
   setActiveTab: (index: number) => void;
