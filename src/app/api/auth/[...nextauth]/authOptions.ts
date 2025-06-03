@@ -5,7 +5,7 @@ import { NextAuthOptions } from "next-auth";
 import clientPromise from "@/lib/mongodb";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 
-export const options: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(clientPromise),
   providers: [
     GitHubProvider({
