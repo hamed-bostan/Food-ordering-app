@@ -60,14 +60,14 @@ function UserInformation() {
       )}
       <div className="flex flex-col gap-y-2">
         <p className="text-sm text-[#353535]">
-          {userData.name || "نام خود را وارد کنید."}
+          {userData?.name || "نام خود را وارد کنید."}
         </p>
         <p className="text-xs text-[#717171]">
           {userData?.phone_number || "شماره تماس ثبت نشده است"}
         </p>
 
         <p className="text-xs text-[#717171]">
-          {userData.email || "ایمیل ثبت نشده است"}
+          {userData?.email || "ایمیل ثبت نشده است"}
         </p>
       </div>
     </div>

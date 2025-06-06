@@ -12,9 +12,9 @@ import { CircularProgress } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type FormData = {
-  name: string;
-  phone_number: string;
-  email: string;
+  name?: string;
+  phone_number?: string;
+  email?: string;
 };
 
 type UserIdProps = {
