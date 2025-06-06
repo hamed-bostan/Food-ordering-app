@@ -46,7 +46,19 @@ export default function UserInformation({ userId }: UserIdProps) {
   });
 
   function onSubmit(data: ProfileSchema) {
-    mutation.mutate(data);
+    // Remove fields that are empty strings (e.g., user left them blank to keep unchanged)
+    const filteredData: ProfileSchema = {};
+
+    for (const key in data) {
+      const value = data[key as keyof ProfileSchema];
+
+      // Only include fields that are non-empty strings
+      if (typeof value === "string" && value.trim() !== "") {
+        filteredData[key as keyof ProfileSchema] = value;
+      }
+    }
+
+    mutation.mutate(filteredData);
   }
 
   const phone = useNumericField("phone_number", 11, "09");

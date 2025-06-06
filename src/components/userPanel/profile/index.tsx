@@ -21,7 +21,7 @@ export default function Profile() {
   }
 
   if (!session?.user?.id) {
-    return <p className="text-center text-red-500">User not found.</p>;
+    return <p className="text-center text-red-500">کاربر یافت نشد.</p>;
   }
 
   const userId = session.user.id;
