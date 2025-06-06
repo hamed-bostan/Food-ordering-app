@@ -1,5 +1,5 @@
 import { getErrorMessage } from "@/utils/formHelpers";
-import { ChangeEvent, FocusEvent } from "react";
+import { ChangeEvent } from "react";
 import { useFormContext } from "react-hook-form";
 
 export default function useNumericField(
