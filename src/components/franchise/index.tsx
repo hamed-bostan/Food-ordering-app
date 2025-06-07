@@ -2,7 +2,6 @@
 
 import { Divider } from "@mui/material";
 import Banner from "../common/Banner";
-import Consultation from "./Consultation";
 import Highlights from "./Highlights";
 import Privilege from "./Privilege";
 import RequestForm from "./requestForm";
@@ -22,9 +21,6 @@ export default function Franchise() {
         <Highlights />
         <Divider />
         <Privilege />
-        <Divider />
-        <Consultation />
-        <Divider />
         <FranchiseDialogProvider>
           <RequestForm />
         </FranchiseDialogProvider>
