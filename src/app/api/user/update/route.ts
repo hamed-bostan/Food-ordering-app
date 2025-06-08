@@ -1,37 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
+import { writeFile } from "fs/promises";
+import path from "path";
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, userId, phone_number, email } = await req.json();
+    const formData = await req.formData();
+    const userId = formData.get("userId")?.toString();
+    const name = formData.get("name")?.toString();
+    const email = formData.get("email")?.toString();
+    const phone_number = formData.get("phone_number")?.toString();
+    const file = formData.get("image") as File | null;
 
     if (!userId) {
-      return NextResponse.json(
-        { message: "User ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "Missing userId" }, { status: 400 });
     }
 
     const updateFields: Record<string, string> = {};
+    if (name?.trim()) updateFields.name = name;
+    if (email?.trim()) updateFields.email = email;
+    if (phone_number?.trim()) updateFields.phone_number = phone_number;
 
-    if (typeof name === "string" && name.trim() !== "") {
-      updateFields.name = name;
-    }
+    // Handle image upload
+    if (file && file.size > 0) {
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
 
-    if (typeof phone_number === "string" && phone_number.trim() !== "") {
-      updateFields.phone_number = phone_number;
-    }
+      const fileName = `${Date.now()}-${file.name}`;
+      const filePath = path.join(process.cwd(), "public/uploads", fileName);
 
-    if (typeof email === "string" && email.trim() !== "") {
-      updateFields.email = email;
-    }
-
-    if (Object.keys(updateFields).length === 0) {
-      return NextResponse.json(
-        { message: "No valid fields to update." },
-        { status: 400 }
-      );
+      await writeFile(filePath, buffer);
+      updateFields.image = `/uploads/${fileName}`;
     }
 
     const client = await clientPromise;
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     const usersCollection = db.collection("users");
 
     const result = await usersCollection.updateOne(
-      { _id: new ObjectId(userId as string) },
+      { _id: new ObjectId(userId) },
       { $set: updateFields }
     );
 
@@ -49,10 +49,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "اطلاعات شما بروز رسانی شد." });
   } catch (error) {
-    console.error("Update user error:", error);
-    return NextResponse.json(
-      { message: "Internal Server Error" },
-      { status: 500 }
-    );
+    console.error("Update error:", error);
+    return NextResponse.json({ message: "خطای سرور" }, { status: 500 });
   }
 }

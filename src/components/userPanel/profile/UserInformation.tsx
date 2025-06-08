@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProfileSchema } from "@/schemas/profile-schema";
 import useNumericField from "@/hooks/useNumericField";
+import { Typography } from "@mui/material";
+import { useState } from "react";
 
 type UserIdProps = {
   userId: string; // pass logged-in user's id here
@@ -20,15 +22,18 @@ export default function UserInformation({ userId }: UserIdProps) {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useFormContext<ProfileSchema>();
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
+  const phone = useNumericField("phone_number", 11, "09");
   const queryClient = useQueryClient();
+  const selectedImage = watch("image");
 
   const mutation = useMutation({
-    mutationFn: async (data: ProfileSchema) => {
-      const response = await axios.post("/api/user/update", {
-        userId,
-        ...data,
+    mutationFn: async (formData: FormData) => {
+      const response = await axios.post("/api/user/update", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
       return response.data;
     },
@@ -45,23 +50,16 @@ export default function UserInformation({ userId }: UserIdProps) {
     },
   });
 
-  function onSubmit(data: ProfileSchema) {
-    // Remove fields that are empty strings (e.g., user left them blank to keep unchanged)
-    const filteredData: ProfileSchema = {};
+  function onSubmit(data: any) {
+    const formData = new FormData();
+    formData.append("userId", userId);
+    if (data.name) formData.append("name", data.name);
+    if (data.email) formData.append("email", data.email);
+    if (data.phone_number) formData.append("phone_number", data.phone_number);
+    if (imageFile) formData.append("image", imageFile);
 
-    for (const key in data) {
-      const value = data[key as keyof ProfileSchema];
-
-      // Only include fields that are non-empty strings
-      if (typeof value === "string" && value.trim() !== "") {
-        filteredData[key as keyof ProfileSchema] = value;
-      }
-    }
-
-    mutation.mutate(filteredData);
+    mutation.mutate(formData);
   }
-
-  const phone = useNumericField("phone_number", 11, "09");
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -86,6 +84,18 @@ export default function UserInformation({ userId }: UserIdProps) {
           error={!!errors.email}
           helperText={errors.email?.message}
         />
+
+        {/* Image input (MUI TextField fallback, or use FileInput) */}
+        <div>
+          <label className="block mb-2">تصویر پروفایل</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              if (e.target.files?.[0]) setImageFile(e.target.files[0]);
+            }}
+          />
+        </div>
       </div>
       <CustomButton
         type="submit"
