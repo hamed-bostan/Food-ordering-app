@@ -41,9 +41,9 @@ function UserInformation() {
 
   return (
     <div className="flex items-center mb-2 gap-x-5">
-      {session?.user?.image ? (
+      {userData?.image ? (
         <Image
-          src={session?.user?.image}
+          src={userData?.image}
           width={100}
           height={100}
           alt="user avatar"
