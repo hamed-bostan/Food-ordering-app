@@ -1,17 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
-import { writeFile } from "fs/promises";
-import path from "path";
 
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.formData();
-    const userId = formData.get("userId")?.toString();
-    const name = formData.get("name")?.toString();
-    const email = formData.get("email")?.toString();
-    const phone_number = formData.get("phone_number")?.toString();
-    const file = formData.get("image") as File | null;
+    const body = await req.json();
+    const { userId, name, email, phone_number, image } = body;
 
     if (!userId) {
       return NextResponse.json({ message: "Missing userId" }, { status: 400 });
@@ -21,18 +15,7 @@ export async function POST(req: NextRequest) {
     if (name?.trim()) updateFields.name = name;
     if (email?.trim()) updateFields.email = email;
     if (phone_number?.trim()) updateFields.phone_number = phone_number;
-
-    // Handle image upload
-    if (file && file.size > 0) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
-      const fileName = `${Date.now()}-${file.name}`;
-      const filePath = path.join(process.cwd(), "public/uploads", fileName);
-
-      await writeFile(filePath, buffer);
-      updateFields.image = `/uploads/${fileName}`;
-    }
+    if (image?.trim()) updateFields.image = image;
 
     const client = await clientPromise;
     const db = client.db();

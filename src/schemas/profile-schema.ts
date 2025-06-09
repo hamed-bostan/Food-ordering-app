@@ -8,7 +8,7 @@ export const profileSchema = z.object({
     .optional()
     .or(z.literal("")), // allow empty
   email: z.string().email("ایمیل معتبر وارد کنید").optional().or(z.literal("")),
-  image: z.any().optional(), // use .any() because FileList isn't directly supported
+  image: z.string().optional(),
 });
 
 export type ProfileSchema = z.infer<typeof profileSchema>;

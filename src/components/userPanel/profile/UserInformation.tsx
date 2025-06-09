@@ -4,13 +4,12 @@ import Input from "@/components/ui/Input";
 import CustomButton from "@/components/ui/CustomButton";
 import EditIcon from "@mui/icons-material/Edit";
 import { useFormContext } from "react-hook-form";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProfileSchema } from "@/schemas/profile-schema";
 import useNumericField from "@/hooks/useNumericField";
-import { Typography } from "@mui/material";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
+import Image from "next/image";
 
 type UserIdProps = {
   userId: string; // pass logged-in user's id here
@@ -22,44 +21,84 @@ export default function UserInformation({ userId }: UserIdProps) {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
     watch,
   } = useFormContext<ProfileSchema>();
-  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
 
   const phone = useNumericField("phone_number", 11, "09");
   const queryClient = useQueryClient();
-  const selectedImage = watch("image");
 
   const mutation = useMutation({
-    mutationFn: async (formData: FormData) => {
-      const response = await axios.post("/api/user/update", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+    mutationFn: async (data: ProfileSchema) => {
+      const res = await fetch("/api/user/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, ...data }),
       });
-      return response.data;
+      return res.json();
     },
     onSuccess: (data) => {
-      toast.success(data.message || "User info updated!");
+      toast.success(data.message || "User updated");
       reset();
       queryClient.invalidateQueries({ queryKey: ["user", userId] });
     },
-    onError: (error: any) => {
-      toast.error(
-        error.response?.data?.message ||
-          "Failed to update user info. Please try again."
-      );
+    onError: () => {
+      toast.error("Failed to update user info");
     },
   });
 
-  function onSubmit(data: any) {
-    const formData = new FormData();
-    formData.append("userId", userId);
-    if (data.name) formData.append("name", data.name);
-    if (data.email) formData.append("email", data.email);
-    if (data.phone_number) formData.append("phone_number", data.phone_number);
-    if (imageFile) formData.append("image", imageFile);
+  async function handleImageChange(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-    mutation.mutate(formData);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("userId", userId);
+
+    setUploading(true);
+
+    try {
+      const res = await fetch("/api/upload-image", {
+        method: "POST",
+        body: formData,
+      });
+
+      let result;
+      try {
+        result = await res.json();
+      } catch (err) {
+        throw new Error("Invalid server response");
+      }
+
+      if (!res.ok) {
+        throw new Error(result?.error || "Upload failed");
+      }
+
+      setValue("image", result.url);
+      setPreview(result.url);
+      toast.success("Image uploaded");
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setUploading(false);
+    }
   }
+
+  function onSubmit(data: ProfileSchema) {
+    const filtered: ProfileSchema = {};
+    for (const key in data) {
+      const value = data[key as keyof ProfileSchema];
+      if (typeof value === "string" && value.trim()) {
+        filtered[key as keyof ProfileSchema] = value;
+      }
+    }
+    mutation.mutate(filtered);
+  }
+
+  const currentImage = watch("image");
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -84,17 +123,17 @@ export default function UserInformation({ userId }: UserIdProps) {
           error={!!errors.email}
           helperText={errors.email?.message}
         />
-
-        {/* Image input (MUI TextField fallback, or use FileInput) */}
         <div>
-          <label className="block mb-2">تصویر پروفایل</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              if (e.target.files?.[0]) setImageFile(e.target.files[0]);
-            }}
-          />
+          <input type="file" accept="image/*" onChange={handleImageChange} />
+          {preview || currentImage ? (
+            <Image
+              src={preview || currentImage || ""}
+              alt="Profile preview"
+              width={100}
+              height={100}
+              className="mt-2 rounded-full"
+            />
+          ) : null}
         </div>
       </div>
       <CustomButton
