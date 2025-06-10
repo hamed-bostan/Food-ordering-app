@@ -10,6 +10,7 @@ import { ProfileSchema } from "@/schemas/profile-schema";
 import useNumericField from "@/hooks/useNumericField";
 import { ChangeEvent, useState } from "react";
 import Image from "next/image";
+import axios from "axios";
 
 type UserIdProps = {
   userId: string; // pass logged-in user's id here
@@ -27,6 +28,8 @@ export default function UserInformation({ userId }: UserIdProps) {
 
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
+
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const phone = useNumericField("phone_number", 11, "09");
   const queryClient = useQueryClient();
@@ -54,40 +57,11 @@ export default function UserInformation({ userId }: UserIdProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("userId", userId);
-
-    setUploading(true);
-
-    try {
-      const res = await fetch("/api/upload-image", {
-        method: "POST",
-        body: formData,
-      });
-
-      let result;
-      try {
-        result = await res.json();
-      } catch (err) {
-        throw new Error("Invalid server response");
-      }
-
-      if (!res.ok) {
-        throw new Error(result?.error || "Upload failed");
-      }
-
-      setValue("image", result.url);
-      setPreview(result.url);
-      toast.success("Image uploaded");
-    } catch (err) {
-      toast.error((err as Error).message);
-    } finally {
-      setUploading(false);
-    }
+    setSelectedImage(file);
+    setPreview(URL.createObjectURL(file)); // show image preview
   }
 
-  function onSubmit(data: ProfileSchema) {
+  async function onSubmit(data: ProfileSchema) {
     const filtered: ProfileSchema = {};
     for (const key in data) {
       const value = data[key as keyof ProfileSchema];
@@ -95,6 +69,32 @@ export default function UserInformation({ userId }: UserIdProps) {
         filtered[key as keyof ProfileSchema] = value;
       }
     }
+
+    // Upload image using Axios before submitting user data
+    if (selectedImage) {
+      const formData = new FormData();
+      formData.append("file", selectedImage);
+      formData.append("userId", userId);
+
+      setUploading(true);
+      try {
+        const res = await axios.post("/api/upload-image", formData);
+        const result = res.data;
+
+        filtered.image = result.url; // set uploaded image URL
+        setValue("image", result.url);
+        toast.success("تصویر با موفقیت آپلود شد");
+      } catch (err: any) {
+        const message = err?.response?.data?.error || "خطا در آپلود تصویر";
+        toast.error(message);
+        setUploading(false);
+        return; // cancel form submission if image upload fails
+      } finally {
+        setUploading(false);
+      }
+    }
+
+    // Submit user data
     mutation.mutate(filtered);
   }
 
