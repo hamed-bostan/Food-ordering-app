@@ -112,7 +112,7 @@ export default function UserInformation({ userId }: UserIdProps) {
           label="شماره تماس"
           type="text"
           {...phone.registerProps}
-          value={phone.value}
+          // value={phone.value}
           error={phone.error}
           helperText={phone.helperText}
           onChange={phone.onChange}
