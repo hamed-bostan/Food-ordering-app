@@ -36,20 +36,21 @@ export default function UserInformation({ userId }: UserIdProps) {
 
   const mutation = useMutation({
     mutationFn: async (data: ProfileSchema) => {
-      const res = await fetch("/api/user/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, ...data }),
+      const res = await axios.post("/api/user/update", {
+        userId,
+        ...data,
       });
-      return res.json();
+      return res.data; // axios stores the response data in `res.data`
     },
     onSuccess: (data) => {
       toast.success(data.message || "User updated");
-      reset();
+      reset(); // Optional — see earlier note about whether you want to reset the form
       queryClient.invalidateQueries({ queryKey: ["user", userId] });
     },
-    onError: () => {
-      toast.error("Failed to update user info");
+    onError: (error: any) => {
+      const message =
+        error?.response?.data?.error || "Failed to update user info";
+      toast.error(message);
     },
   });
 
@@ -70,7 +71,6 @@ export default function UserInformation({ userId }: UserIdProps) {
       }
     }
 
-    // Upload image using Axios before submitting user data
     if (selectedImage) {
       const formData = new FormData();
       formData.append("file", selectedImage);
@@ -81,21 +81,25 @@ export default function UserInformation({ userId }: UserIdProps) {
         const res = await axios.post("/api/upload-image", formData);
         const result = res.data;
 
-        filtered.image = result.url; // set uploaded image URL
+        filtered.image = result.url;
         setValue("image", result.url);
         toast.success("تصویر با موفقیت آپلود شد");
       } catch (err: any) {
         const message = err?.response?.data?.error || "خطا در آپلود تصویر";
         toast.error(message);
         setUploading(false);
-        return; // cancel form submission if image upload fails
+        return;
       } finally {
         setUploading(false);
       }
     }
 
-    // Submit user data
-    mutation.mutate(filtered);
+    mutation.mutate(filtered, {
+      onSuccess: () => {
+        setSelectedImage(null); // Clear the image file
+        setPreview(null); // Clear the preview URL
+      },
+    });
   }
 
   const currentImage = watch("image");
