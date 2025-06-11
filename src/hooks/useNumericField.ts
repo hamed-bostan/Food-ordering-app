@@ -16,6 +16,8 @@ export default function useNumericField(
     clearErrors,
   } = useFormContext();
 
+  const value = watch(name) ?? leading ?? "";
+
   const isTouched = touchedFields[name];
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
@@ -49,14 +51,14 @@ export default function useNumericField(
   function getBorderColor() {
     if (errors[name]) return "red";
     if (!isTouched) return "#CBCBCB";
-    const currentVal = watch(name);
-    if (currentVal?.length < maxLength) return "orange";
-    if (currentVal?.length === maxLength) return "green";
+    if (value.length < maxLength) return "orange";
+    if (value.length === maxLength) return "green";
     return "#CBCBCB";
   }
 
   return {
     registerProps: register(name),
+    value,
     error: !!errors[name],
     helperText: getErrorMessage(errors[name]),
     onChange: handleChange,
