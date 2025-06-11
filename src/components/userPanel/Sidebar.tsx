@@ -47,7 +47,7 @@ function UserInformation() {
           width={100}
           height={100}
           alt="user avatar"
-          className="w-20 h-20 rounded-full"
+          className="object-cover w-20 h-20 rounded-full "
         />
       ) : (
         <Image
@@ -55,7 +55,7 @@ function UserInformation() {
           width={100}
           height={100}
           alt="user avatar"
-          className="w-20 h-20"
+          className="w-20 h-20 "
         />
       )}
       <div className="flex flex-col gap-y-2">

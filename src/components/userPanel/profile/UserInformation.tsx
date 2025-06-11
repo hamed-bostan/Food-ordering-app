@@ -11,6 +11,8 @@ import useNumericField from "@/hooks/useNumericField";
 import { ChangeEvent, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
+import { Button } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
 type UserIdProps = {
   userId: string; // pass logged-in user's id here
@@ -112,7 +114,6 @@ export default function UserInformation({ userId }: UserIdProps) {
           label="شماره تماس"
           type="text"
           {...phone.registerProps}
-          // value={phone.value}
           error={phone.error}
           helperText={phone.helperText}
           onChange={phone.onChange}
@@ -128,14 +129,33 @@ export default function UserInformation({ userId }: UserIdProps) {
           helperText={errors.email?.message}
         />
         <div>
-          <input type="file" accept="image/*" onChange={handleImageChange} />
+          <Button
+            variant="outlined"
+            component="label"
+            endIcon={<AddIcon />}
+            sx={{
+              color: "#717171",
+              borderColor: "#CBCBCB",
+              width: "100%",
+              mb: 3,
+              fontSize: { xs: "12px", lg: "14px" },
+            }}
+          >
+            اضافه کردن آواتار
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={handleImageChange}
+            />
+          </Button>
           {preview || currentImage ? (
             <Image
               src={preview || currentImage || ""}
               alt="Profile preview"
               width={100}
               height={100}
-              className="mt-2 rounded-full"
+              className="object-cover w-24 h-24 rounded-full"
             />
           ) : null}
         </div>
