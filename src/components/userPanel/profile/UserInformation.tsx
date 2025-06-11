@@ -139,6 +139,7 @@ export default function UserInformation({ userId }: UserIdProps) {
               width: "100%",
               mb: 3,
               fontSize: { xs: "12px", lg: "14px" },
+              height: { xs: "34.2px", lg: "37px" },
             }}
           >
             اضافه کردن آواتار
