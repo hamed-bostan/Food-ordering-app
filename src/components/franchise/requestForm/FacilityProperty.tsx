@@ -11,7 +11,7 @@ export default function FacilityProperty() {
       <span className="mb-6 block text-[#353535]">امکانات ملک متقاضی</span>
       <div className="grid grid-cols-2 mb-4">
         <ApplicantFeatures />
-        <PropertyImages />
+        {/* <PropertyImages /> */}
       </div>
       <CustomButton
         type="submit"
