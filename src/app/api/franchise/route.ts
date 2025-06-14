@@ -1,25 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongoose";
-import Franchise from "@/models/Franchise";
+import clientPromise from "@/lib/mongodb";
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Connect to DB
-    await connectDB();
+    // 1. Connect to MongoDB
+    const client = await clientPromise;
+    const db = client.db(); // replace with your DB name
 
     // 2. Parse request body
     const body = await req.json();
 
-    // 3. Create new franchise document
-    const newFranchise = await Franchise.create(body);
+    // 3. Insert new document
+    const result = await db.collection("franchises").insertOne(body);
 
-    // 4. Return success response
+    // 4. Return inserted document with _id
+    const insertedDoc = { _id: result.insertedId, ...body };
+
     return NextResponse.json(
-      { success: true, data: newFranchise },
+      { success: true, data: insertedDoc },
       { status: 201 }
     );
   } catch (error) {
-    // Log server error (avoid exposing sensitive details to client)
     console.error("❌ Franchise submission failed:", error);
 
     return NextResponse.json(
