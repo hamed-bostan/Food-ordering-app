@@ -4,19 +4,20 @@ import { ObjectId } from "mongodb";
 
 export async function GET(
   _: NextRequest,
-  { params }: { params: Promise<{ id: string }> } // note: params is a Promise here
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const paramsData = await params; // await here
-    const id = paramsData.id;
+    const { id } = await params;
+
+    if (!ObjectId.isValid(id)) {
+      return NextResponse.json({ message: "Invalid user ID" }, { status: 400 });
+    }
 
     const client = await clientPromise;
     const db = client.db();
     const usersCollection = db.collection("users");
 
-    const user = await usersCollection.findOne({
-      _id: new ObjectId(id),
-    });
+    const user = await usersCollection.findOne({ _id: new ObjectId(id) });
 
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });

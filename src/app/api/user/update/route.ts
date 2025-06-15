@@ -7,8 +7,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { userId, name, email, phone_number, image } = body;
 
-    if (!userId) {
-      return NextResponse.json({ message: "Missing userId" }, { status: 400 });
+    if (!userId || !ObjectId.isValid(userId)) {
+      return NextResponse.json(
+        { message: "Invalid or missing userId" },
+        { status: 400 }
+      );
     }
 
     const updateFields: Record<string, string> = {};

@@ -128,7 +128,7 @@ export default function UserInformation({ userId }: UserIdProps) {
           error={!!errors.email}
           helperText={errors.email?.message}
         />
-        <div>
+        {/* <div>
           <Button
             variant="outlined"
             component="label"
@@ -159,7 +159,7 @@ export default function UserInformation({ userId }: UserIdProps) {
               className="object-cover w-24 h-24 rounded-full"
             />
           ) : null}
-        </div>
+        </div> */}
       </div>
       <CustomButton
         type="submit"
