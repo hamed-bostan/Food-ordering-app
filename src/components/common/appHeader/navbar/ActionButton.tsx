@@ -24,9 +24,9 @@ export default function ActionButton() {
 
   return (
     <div className="flex items-center gap-x-1">
-      <div className="bg-[#E5F2E9] flex justify-center items-center rounded-sm cursor-pointer w-8 h-8">
+      {/* <div className="bg-[#E5F2E9] flex justify-center items-center rounded-sm cursor-pointer w-8 h-8">
         <SearchOutlined fontSize="small" sx={{ color: "#417F56" }} />
-      </div>
+      </div> */}
       <div className="relative">
         <Link href="/checkout">
           <div
