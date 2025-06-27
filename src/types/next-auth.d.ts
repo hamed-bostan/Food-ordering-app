@@ -1,10 +1,9 @@
-import NextAuth from "next-auth";
+import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
+import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
-  // Define a reusable type for user roles
   type UserRole = "GitHub User" | "Google User" | string;
 
-  // Define a type alias for your session user
   type SessionUser = {
     id: string;
     name?: string | null;
@@ -13,8 +12,21 @@ declare module "next-auth" {
     role?: UserRole;
   };
 
-  // Override the default Session type to include your custom user shape
   interface Session {
-    user: SessionUser; // ✅ Not optional anymore
+    user: SessionUser;
+  }
+
+  interface User extends DefaultUser {
+    role?: UserRole;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    role?: string;
   }
 }
