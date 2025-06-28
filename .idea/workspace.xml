@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="00a6b10f-f164-40cb-8260-c0ca14298506" name="Changes" comment="fix(restaurantMenu): update with semantic elements" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;hamed-bostan&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/hamed-bostan/tarkhineh-next-ts.git&quot;,
+    &quot;accountId&quot;: &quot;f5f836e6-3dea-4e34-b3aa-c1f3314eb3d4&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2wzzkeBCSPY4e6v91wDNsmIGfag" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "learning",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "last_opened_file_path": "C:/Users/Soprano/tarkhine-next-ts",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\Soprano\\AppData\\Roaming\\npm\\node_modules\\prettier",
+    "settings.editor.selected.configurable": "settings.javascript.prettier",
+    "ts.external.directory.path": "C:\\Users\\Soprano\\tarkhine-next-ts\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="npm.Next.js: server-side">
+    <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
+      <method v="2" />
+    </configuration>
+    <configuration name="Next.js: server-side" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-WS-251.23774.424" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="00a6b10f-f164-40cb-8260-c0ca14298506" name="Changes" comment="" />
+      <created>1747059334873</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1747059334873</updated>
+      <workItem from="1747059336134" duration="2610000" />
+      <workItem from="1747196044338" duration="2122000" />
+      <workItem from="1747203530486" duration="143000" />
+      <workItem from="1747204876667" duration="229000" />
+      <workItem from="1747208714857" duration="10879000" />
+      <workItem from="1747275661122" duration="5353000" />
+      <workItem from="1747283395096" duration="225000" />
+      <workItem from="1747283639016" duration="8043000" />
+      <workItem from="1747885724290" duration="206000" />
+      <workItem from="1748420319073" duration="1168000" />
+    </task>
+    <task id="LOCAL-00001" summary="fix(Banner): update with semantic elements">
+      <option name="closed" value="true" />
+      <created>1747061254827</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1747061254827</updated>
+    </task>
+    <task id="LOCAL-00002" summary="fix(landing): update menuSection with semantic elements">
+      <option name="closed" value="true" />
+      <created>1747197390977</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1747197390977</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fix(landing): update descriptionSection with semantic elements">
+      <option name="closed" value="true" />
+      <created>1747209396720</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1747209396720</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fix(landing): update branchOverview with semantic elements">
+      <option name="closed" value="true" />
+      <created>1747226515493</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1747226515493</updated>
+    </task>
+    <task id="LOCAL-00005" summary="fix(landing): update branchOverview with semantic elements">
+      <option name="closed" value="true" />
+      <created>1747228626578</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1747228626578</updated>
+    </task>
+    <task id="LOCAL-00006" summary="fix(restaurantBranch): update with semantic elements">
+      <option name="closed" value="true" />
+      <created>1747280666303</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1747280666303</updated>
+    </task>
+    <task id="LOCAL-00007" summary="fix(restaurantBranch): update with semantic elements">
+      <option name="closed" value="true" />
+      <created>1747283323066</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1747283323066</updated>
+    </task>
+    <task id="LOCAL-00008" summary="fix(restaurantBranch): update with semantic elements">
+      <option name="closed" value="true" />
+      <created>1747287435575</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1747287435575</updated>
+    </task>
+    <task id="LOCAL-00009" summary="fix(restaurantMenu): update with semantic elements">
+      <option name="closed" value="true" />
+      <created>1747296734952</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1747296734952</updated>
+    </task>
+    <task id="LOCAL-00010" summary="fix(restaurantMenu): update with semantic elements">
+      <option name="closed" value="true" />
+      <created>1747306415503</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1747306415503</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fix(Banner): update with semantic elements" />
+    <MESSAGE value="fix(landing): update menuSection with semantic elements" />
+    <MESSAGE value="fix(landing): update descriptionSection with semantic elements" />
+    <MESSAGE value="fix(landing): update branchOverview with semantic elements" />
+    <MESSAGE value="fix(restaurantBranch): update with semantic elements" />
+    <MESSAGE value="fix(restaurantMenu): update with semantic elements" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(restaurantMenu): update with semantic elements" />
+  </component>
+</project>

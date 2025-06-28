@@ -1,0 +1,36 @@
+Index: src/components/common/Banner.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import Image, { StaticImageData } from \"next/image\";\r\nimport CustomButton from \"../ui/CustomButton\";\r\n\r\ntype BannerProps = {\r\n  styleContainer?: string;\r\n  imageSrc: string | StaticImageData;\r\n  text: string;\r\n  isButton?: boolean;\r\n};\r\n\r\nexport default function Banner({\r\n  styleContainer = \"\",\r\n  imageSrc,\r\n  text,\r\n  isButton = true,\r\n}: BannerProps) {\r\n  return (\r\n    <div className={`relative h-44 mb-6 md:h-48 ${styleContainer}`}>\r\n      <Image\r\n        src={imageSrc}\r\n        alt={text}\r\n        priority\r\n        className=\"object-cover w-full h-full\"\r\n      />\r\n      <span className=\"absolute top-1/2 right-1/2 text-[#E5F2E9] -translate-y-1/2 translate-x-1/2 text-nowrap md:text-xl\">\r\n        {text}\r\n      </span>\r\n      {isButton && (\r\n        <CustomButton className=\"absolute translate-x-1/2 right-1/2 bottom-16\">\r\n          سفارش آنلاین غذا\r\n        </CustomButton>\r\n      )}\r\n    </div>\r\n  );\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/components/common/Banner.tsx b/src/components/common/Banner.tsx
+--- a/src/components/common/Banner.tsx	(revision f7ddb23a8718d46db47a71ae4b71b155936c3f67)
++++ b/src/components/common/Banner.tsx	(date 1747060463051)
+@@ -15,21 +15,21 @@
+   isButton = true,
+ }: BannerProps) {
+   return (
+-    <div className={`relative h-44 mb-6 md:h-48 ${styleContainer}`}>
++    <section className={`relative h-44 mb-6 md:h-48 ${styleContainer}`}>
+       <Image
+         src={imageSrc}
+         alt={text}
+         priority
+         className="object-cover w-full h-full"
+       />
+-      <span className="absolute top-1/2 right-1/2 text-[#E5F2E9] -translate-y-1/2 translate-x-1/2 text-nowrap md:text-xl">
++      <p className="absolute top-1/2 right-1/2 text-[#E5F2E9] -translate-y-1/2 translate-x-1/2 text-nowrap md:text-xl">
+         {text}
+-      </span>
++      </p>
+       {isButton && (
+         <CustomButton className="absolute translate-x-1/2 right-1/2 bottom-16">
+           سفارش آنلاین غذا
+         </CustomButton>
+       )}
+-    </div>
++    </section>
+   );
+ }
