@@ -1,77 +1,57 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRef } from "react";
+import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { ChangeEvent, KeyboardEvent, useRef } from "react";
 import CustomButton from "../ui/CustomButton";
-import axios from "axios";
 
-const otpSchema = z.object({
-  otp: z
-    .string()
-    .length(5, "کد باید ۵ رقم باشد")
-    .regex(/^\d{5}$/, "فقط عدد مجاز است"),
-});
+type Props = {
+  loading: boolean;
+  message: string;
+  register: UseFormRegister<{ otp: string }>;
+  errors: FieldErrors<{ otp: string }>;
+  onSubmit: (e?: React.BaseSyntheticEvent) => void;
+};
 
-type OtpFormData = z.infer<typeof otpSchema>;
-
-export default function VerifyCodeForm() {
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    getValues,
-    formState: { errors },
-  } = useForm<OtpFormData>({
-    resolver: zodResolver(otpSchema),
-    defaultValues: { otp: "" },
-  });
-
+export default function VerifyCodeForm({
+  loading,
+  message,
+  register,
+  errors,
+  onSubmit,
+}: Props) {
   const inputsRef = useRef<HTMLInputElement[]>([]);
 
-  const onSubmit = async (data: OtpFormData) => {
-    try {
-      const response = await axios.post("/api/auth/verify-otp", {
-        phone: localStorage.getItem("phone"), // make sure to store phone in localStorage when sending OTP
-        otp: data.otp,
-      });
-
-      if (response.data.success) {
-        console.log("✅ OTP is valid");
-        // redirect to profile update or dashboard
-      } else {
-        console.error("❌ Invalid OTP");
-      }
-    } catch (err) {
-      console.error("❌ OTP verification failed", err);
-    }
-  };
-
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
     const val = e.target.value;
     if (!/^\d?$/.test(val)) return;
 
-    const currentOtp = getValues("otp").split("");
-    currentOtp[index] = val;
-    setValue("otp", currentOtp.join(""));
+    const otpArray = Array.from(
+      inputsRef.current.map((input) => input?.value || "")
+    );
+    otpArray[index] = val;
 
-    if (val && index < 5) {
+    const otpString = otpArray.join("");
+    register("otp").onChange({
+      target: { value: otpString },
+    } as any);
+
+    if (val && index < 4) {
       inputsRef.current[index + 1]?.focus();
     }
   };
 
   const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
+    e: KeyboardEvent<HTMLInputElement>,
     index: number
   ) => {
-    if (e.key === "Backspace" && !getValues("otp")[index] && index > 0) {
-      const currentOtp = getValues("otp").split("");
-      currentOtp[index - 1] = "";
-      setValue("otp", currentOtp.join(""));
+    if (
+      e.key === "Backspace" &&
+      !inputsRef.current[index]?.value &&
+      index > 0
+    ) {
       inputsRef.current[index - 1]?.focus();
     }
   };
@@ -80,37 +60,32 @@ export default function VerifyCodeForm() {
     <>
       <p className="text-lg font-bold text-[#353535]">کد تایید</p>
       <p className="text-[#717171] text-sm">کد تایید پنج‌رقمی ارسال شد.</p>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-8">
-        <Controller
-          name="otp"
-          control={control}
-          render={({ field }) => (
-            <div className="flex gap-4" dir="ltr">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <input
-                  key={index}
-                  ref={(el) => {
-                    if (el) inputsRef.current[index] = el;
-                  }}
-                  type="text"
-                  inputMode="numeric"
-                  maxLength={1}
-                  value={field.value[index] || ""}
-                  onChange={(e) => handleChange(e, index)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  className="h-8 text-center border border-[#717171] rounded w-[3.125rem]"
-                />
-              ))}
-            </div>
-          )}
-        />
+      <form onSubmit={onSubmit} className="flex flex-col gap-y-8">
+        <div className="flex gap-4" dir="ltr">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <input
+              key={index}
+              ref={(el) => {
+                if (el) inputsRef.current[index] = el;
+              }}
+              type="text"
+              inputMode="numeric"
+              maxLength={1}
+              onChange={(e) => handleChange(e, index)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              className="h-8 text-center border border-[#717171] rounded w-[3.125rem]"
+            />
+          ))}
+        </div>
 
         {errors.otp && (
           <p className="text-sm text-red-500">{errors.otp.message}</p>
         )}
 
-        <CustomButton type="submit" className="w-full">
-          تایید
+        {message && <p className="text-xs text-center">{message}</p>}
+
+        <CustomButton type="submit" className="w-full" disabled={loading}>
+          {loading ? "در حال تایید..." : "تایید"}
         </CustomButton>
       </form>
     </>

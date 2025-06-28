@@ -1,30 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sendOtp } from "@/lib/kavenegar";
-import { OtpCode } from "@/models/OtpCode";
-import { connectDB } from "@/lib/mongodb";
+import axios from "axios";
 
 export async function POST(req: NextRequest) {
   try {
-    const { phone, otp } = await req.json();
+    const { phone } = await req.json();
 
-    if (!phone || !otp) {
-      return NextResponse.json(
-        { error: "Missing phone or OTP" },
-        { status: 400 }
-      );
+    if (!phone) {
+      return NextResponse.json({ message: "شماره وارد نشده" }, { status: 400 });
     }
 
-    await connectDB();
+    // تولید کد رندوم ۵ رقمی
+    const code = Math.floor(10000 + Math.random() * 90000).toString();
 
-    // Save to MongoDB
-    await OtpCode.create({ phone, code: otp });
+    const response = await axios.post(
+      "https://api.sms.ir/v1/send/verify",
+      {
+        mobile: phone,
+        templateId: 562447,
+        parameters: [{ name: "CODE", value: code }],
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "83d500krxwSAZtrvy8lvbZBI0oKd0RJhPJwn4hAFlY4moFF3",
+        },
+      }
+    );
 
-    // Send SMS
-    const result = await sendOtp(phone, otp);
-
-    return NextResponse.json({ success: true, result });
+    return NextResponse.json({ success: true, codeSent: true });
   } catch (error: any) {
-    console.error("Send OTP error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("خطا در ارسال OTP:", error.response?.data || error.message);
+    return NextResponse.json(
+      { message: "خطا در ارسال پیامک" },
+      { status: 500 }
+    );
   }
 }
