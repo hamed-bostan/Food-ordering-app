@@ -1,29 +1,38 @@
-"use client";
-
-import { UseFormRegister, FieldErrors } from "react-hook-form";
-import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import {
+  BaseSyntheticEvent,
+  ChangeEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import CustomButton from "../ui/CustomButton";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 
 type Props = {
   loading: boolean;
   message: string;
   register: UseFormRegister<{ otp: string }>;
+  setOtpValue: UseFormSetValue<{ otp: string }>;
   errors: FieldErrors<{ otp: string }>;
-  onSubmit: (e?: React.BaseSyntheticEvent) => void;
+  onSubmit: (e?: BaseSyntheticEvent) => void;
+  otpStatus: "success" | "error" | "";
 };
 
-export default function VerifyCodeForm({ loading, register, onSubmit }: Props) {
+export default function VerifyCodeForm({
+  loading,
+  register,
+  onSubmit,
+  setOtpValue,
+  otpStatus,
+}: Props) {
   const inputsRef = useRef<HTMLInputElement[]>([]);
-  const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
+  const [otpValues, setOtpValues] = useState<string[]>(["", "", "", "", ""]);
+  const [timeLeft, setTimeLeft] = useState(120);
 
   useEffect(() => {
     if (timeLeft <= 0) return;
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
-    }, 1000);
-
+    const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
     return () => clearInterval(timer);
   }, [timeLeft]);
 
@@ -37,27 +46,23 @@ export default function VerifyCodeForm({ loading, register, onSubmit }: Props) {
     const val = e.target.value;
     if (!/^\d?$/.test(val)) return;
 
-    const otpArray = Array.from(
-      inputsRef.current.map((input) => input?.value || "")
-    );
-    otpArray[index] = val;
+    const newOtpValues = [...otpValues];
+    newOtpValues[index] = val;
+    setOtpValues(newOtpValues);
 
-    const otpString = otpArray.join("");
-    register("otp").onChange({
-      target: { value: otpString },
-    } as any);
+    const otpString = newOtpValues.join("");
+    setOtpValue("otp", otpString); // <-- correct react-hook-form state update
 
     if (val && index < 4) {
       inputsRef.current[index + 1]?.focus();
     }
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (
-      e.key === "Backspace" &&
-      !inputsRef.current[index]?.value &&
-      index > 0
-    ) {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    if (e.key === "Backspace" && !otpValues[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
     }
   };
@@ -68,7 +73,7 @@ export default function VerifyCodeForm({ loading, register, onSubmit }: Props) {
       <p className="text-[#717171] text-sm">کد تایید پنج‌رقمی ارسال شد.</p>
       <form onSubmit={onSubmit} className="flex flex-col gap-y-8">
         <div className="flex gap-4" dir="ltr">
-          {Array.from({ length: 5 }).map((_, index) => (
+          {otpValues.map((val, index) => (
             <input
               key={index}
               ref={(el) => {
@@ -77,9 +82,16 @@ export default function VerifyCodeForm({ loading, register, onSubmit }: Props) {
               type="text"
               inputMode="numeric"
               maxLength={1}
+              value={val}
               onChange={(e) => handleChange(e, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className="h-8 text-center border border-[#717171] rounded w-[3.125rem]"
+              className={`h-8 text-center border rounded w-[3.125rem] transition-colors ${
+                otpStatus === "success"
+                  ? "border-green-500"
+                  : otpStatus === "error"
+                  ? "border-red-500"
+                  : "border-[#717171]"
+              }`}
             />
           ))}
         </div>
@@ -89,9 +101,11 @@ export default function VerifyCodeForm({ loading, register, onSubmit }: Props) {
           {timeLeft > 0 ? (
             <p className="ml-auto">{formatTime()} تا دریافت مجدد کد</p>
           ) : (
-            <button className="ml-auto text-[#417F56]">دریافت مجدد کد</button>
+            <button type="button" className="ml-auto text-[#417F56]">
+              دریافت مجدد کد
+            </button>
           )}
-          <button>ویرایش شماره</button>
+          <button type="button">ویرایش شماره</button>
         </div>
 
         <CustomButton type="submit" className="w-full" disabled={loading}>

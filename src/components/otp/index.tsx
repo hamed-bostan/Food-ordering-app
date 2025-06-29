@@ -30,6 +30,7 @@ export default function Otp() {
   const [message, setMessage] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [phone, setPhone] = useState("");
+  const [otpStatus, setOtpStatus] = useState<"success" | "error" | "">("");
 
   const {
     register,
@@ -42,6 +43,7 @@ export default function Otp() {
   const {
     register: otpRegister,
     handleSubmit: otpHandleSubmit,
+    setValue: setOtpValue,
     formState: { errors: otpErrors },
   } = useForm<{ otp: string }>({
     resolver: zodResolver(otpSchema.pick({ otp: true })),
@@ -69,22 +71,28 @@ export default function Otp() {
     }
   };
 
-  const verifyOtp = async ({ otp }: { otp: string }) => {
+  const verifyOtp = async (data: { otp: string }) => {
     setLoading(true);
-    setMessage("");
-
     try {
-      const { data } = await axios.post("/api/auth/verify-otp", { phone, otp });
+      const res = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, otp: data.otp }),
+      });
 
-      if (data.success) {
-        setMessage("کد تایید صحیح است.");
-        // اینجا می‌تونی ریدایرکت یا مرحله بعد رو اجرا کنی
+      const result = await res.json();
+
+      if (result.success) {
+        setOtpStatus("success");
+        setMessage("کد تایید صحیح است");
+        // Navigate or do whatever you want
       } else {
-        setMessage(data.message || "کد تایید اشتباه است.");
+        setOtpStatus("error");
+        setMessage(result.error || "کد تایید اشتباه است");
       }
-    } catch (error: any) {
-      console.error("Verify OTP error:", error);
-      setMessage(error.response?.data?.message || "خطا در تایید کد.");
+    } catch (err) {
+      setOtpStatus("error");
+      setMessage("خطا در برقراری ارتباط");
     } finally {
       setLoading(false);
     }
@@ -101,6 +109,8 @@ export default function Otp() {
             register={otpRegister}
             errors={otpErrors}
             onSubmit={otpHandleSubmit(verifyOtp)}
+            otpStatus={otpStatus}
+            setOtpValue={setOtpValue}
           />
         ) : (
           <OtpRequestForm
