@@ -1,8 +1,9 @@
 "use client";
 
 import { UseFormRegister, FieldErrors } from "react-hook-form";
-import { ChangeEvent, KeyboardEvent, useRef } from "react";
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import CustomButton from "../ui/CustomButton";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 type Props = {
   loading: boolean;
@@ -12,19 +13,27 @@ type Props = {
   onSubmit: (e?: React.BaseSyntheticEvent) => void;
 };
 
-export default function VerifyCodeForm({
-  loading,
-  message,
-  register,
-  errors,
-  onSubmit,
-}: Props) {
+export default function VerifyCodeForm({ loading, register, onSubmit }: Props) {
   const inputsRef = useRef<HTMLInputElement[]>([]);
+  const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const formatTime = () => {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     const val = e.target.value;
     if (!/^\d?$/.test(val)) return;
 
@@ -43,10 +52,7 @@ export default function VerifyCodeForm({
     }
   };
 
-  const handleKeyDown = (
-    e: KeyboardEvent<HTMLInputElement>,
-    index: number
-  ) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
     if (
       e.key === "Backspace" &&
       !inputsRef.current[index]?.value &&
@@ -78,11 +84,15 @@ export default function VerifyCodeForm({
           ))}
         </div>
 
-        {errors.otp && (
-          <p className="text-sm text-red-500">{errors.otp.message}</p>
-        )}
-
-        {message && <p className="text-xs text-center">{message}</p>}
+        <div className="flex gap-x-1 text-[#717171] text-xs items-center">
+          <AccessTimeIcon fontSize="small" />
+          {timeLeft > 0 ? (
+            <p className="ml-auto">{formatTime()} تا دریافت مجدد کد</p>
+          ) : (
+            <button className="ml-auto text-[#417F56]">دریافت مجدد کد</button>
+          )}
+          <button>ویرایش شماره</button>
+        </div>
 
         <CustomButton type="submit" className="w-full" disabled={loading}>
           {loading ? "در حال تایید..." : "تایید"}
