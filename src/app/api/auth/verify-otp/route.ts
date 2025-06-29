@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/mongodb";
-import { UserProfile } from "@/models/UserProfile";
+import clientPromise from "@/lib/mongodb";
 
 export async function POST(req: NextRequest) {
   try {
     const { phone, otp } = await req.json();
+
     if (!phone || !otp) {
       return NextResponse.json(
         { error: "Missing phone or OTP" },
@@ -12,15 +12,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await connectDB();
+    const client = await clientPromise;
+    const db = client.db(); // optionally: client.db('yourDbName')
 
-    const user = await UserProfile.findOne({ phone_number: phone });
+    // Find OTP record for the phone
+    const otpRecord = await db.collection("otps").findOne({ phone });
 
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    if (!otpRecord) {
+      return NextResponse.json(
+        { error: "User not found or OTP expired" },
+        { status: 404 }
+      );
     }
 
-    if (user.otp === otp) {
+    if (otpRecord.code === otp) {
+      // OTP is valid - delete used OTP for security
+      await db.collection("otps").deleteMany({ phone });
+
       return NextResponse.json({ success: true, message: "OTP is valid" });
     } else {
       return NextResponse.json(
@@ -29,6 +37,10 @@ export async function POST(req: NextRequest) {
       );
     }
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error(error);
+    return NextResponse.json(
+      { error: error.message || "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

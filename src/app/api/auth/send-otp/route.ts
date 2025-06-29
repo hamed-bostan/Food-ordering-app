@@ -1,38 +1,39 @@
-import { NextRequest, NextResponse } from "next/server";
-import axios from "axios";
+import { NextResponse } from "next/server";
+import { generateOtp, sendOtp } from "@/utils/otp";
+import { getDb } from "@/lib/getDB";
 
-export async function POST(req: NextRequest) {
+export const POST = async (req: Request) => {
   try {
     const { phone } = await req.json();
 
-    if (!phone) {
-      return NextResponse.json({ message: "شماره وارد نشده" }, { status: 400 });
+    if (!phone || !/^09\d{9}$/.test(phone)) {
+      return NextResponse.json(
+        { message: "شماره معتبر نیست" },
+        { status: 400 }
+      );
     }
 
-    // تولید کد رندوم ۵ رقمی
-    const code = Math.floor(10000 + Math.random() * 90000).toString();
+    const code = generateOtp();
 
-    const response = await axios.post(
-      "https://api.sms.ir/v1/send/verify",
-      {
-        mobile: phone,
-        templateId: 562447,
-        parameters: [{ name: "CODE", value: code }],
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": "83d500krxwSAZtrvy8lvbZBI0oKd0RJhPJwn4hAFlY4moFF3",
-        },
-      }
-    );
+    const db = await getDb();
+    const collection = db.collection("otps");
 
-    return NextResponse.json({ success: true, codeSent: true });
-  } catch (error: any) {
-    console.error("خطا در ارسال OTP:", error.response?.data || error.message);
-    return NextResponse.json(
-      { message: "خطا در ارسال پیامک" },
-      { status: 500 }
-    );
+    // حذف کدهای قبلی برای این شماره
+    await collection.deleteMany({ phone });
+
+    // ذخیره کد جدید
+    await collection.insertOne({
+      phone,
+      code,
+      createdAt: new Date(),
+    });
+
+    // ارسال پیامک
+    await sendOtp(phone, code);
+
+    return NextResponse.json({ success: true, message: "کد ارسال شد" });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ message: "خطا در ارسال کد" }, { status: 500 });
   }
-}
+};
