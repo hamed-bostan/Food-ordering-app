@@ -82,7 +82,7 @@ function UserMenuPopover() {
         </button>
       ) : (
         <Link
-          href="/api/auth/signin?callbackUrl=/userPanel"
+          href="/auth"
           className="bg-[#E5F2E9] w-8 h-8 rounded-sm cursor-pointer flex justify-center items-center"
         >
           <Person2Outlined fontSize="small" sx={{ color: "#417F56" }} />
