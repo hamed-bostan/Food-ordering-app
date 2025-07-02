@@ -13,14 +13,14 @@ export default function AuthPage() {
         <div className="flex flex-col items-center mb-5 gap-y-6">
           <Link
             href="/api/auth/signin?callbackUrl=/userPanel"
-            className="bg-[#417F56] text-white px-4 py-2 rounded hover:bg-[#2f6341] transition min-w-52 text-center"
+            className="bg-[#417F56] text-white px-4 py-2 rounded hover:bg-[#2f6341] transition min-w-56 text-center"
           >
-            از طریق گیت هاب
+            از طریق ایمیل و یا گیت هاب
           </Link>
 
           <Link
             href="/auth/otp"
-            className="bg-[#417F56] text-white px-4 py-2 rounded hover:bg-[#2f6341] transition min-w-52"
+            className="bg-[#417F56] text-white px-4 py-2 rounded hover:bg-[#2f6341] transition min-w-56 text-center"
           >
             از طریق رمز یک بار مصرف
           </Link>
