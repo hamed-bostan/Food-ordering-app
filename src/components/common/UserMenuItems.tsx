@@ -1,7 +1,5 @@
 import {
   Person2Outlined,
-  PaymentOutlined,
-  FavoriteBorderOutlined,
   LocationOnOutlined,
   LogoutOutlined,
 } from "@mui/icons-material";
@@ -29,17 +27,4 @@ export const userMenuItems: MenuItem[] = [
     tabIndex: 2,
     href: "/api/auth/signout?callbackUrl=/",
   },
-
-  // {
-  //   label: "پیگیری سفارشات",
-  //   icon: PaymentOutlined,
-  //   tabIndex: 1,
-  //   href: "/userPanel",
-  // },
-  // {
-  //   label: "علاقه مندی‌ها",
-  //   icon: FavoriteBorderOutlined,
-  //   tabIndex: 2,
-  //   href: "/userPanel",
-  // },
 ];

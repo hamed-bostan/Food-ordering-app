@@ -1,8 +1,6 @@
 "use client";
 
 import { ComponentType, useState } from "react";
-import OrderStatus from "./orderStatus";
-import Favorites from "./favorites";
 import Logout from "./logout";
 import Sidebar from "./Sidebar";
 import Profile from "./profile";
@@ -14,8 +12,6 @@ export default function UserPanel() {
 
   const tabs: ComponentType[] = [
     Profile,
-    // OrderStatus,
-    // Favorites,
     MyAddresses,
     Logout,
   ];
