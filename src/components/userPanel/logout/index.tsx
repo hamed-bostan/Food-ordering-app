@@ -1,15 +1,10 @@
 "use client";
 
 import CustomButton from "@/components/ui/CustomButton";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Button,
-  DialogActions,
-} from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useLogoutDialog } from "@/context/LogoutContext";
+import Link from "next/link";
 
 export default function Logout() {
   const { isLogoutDialogOpen, closeLogoutDialog } = useLogoutDialog();
@@ -66,6 +61,7 @@ export default function Logout() {
             </p>
             <div className="flex gap-x-4">
               <CustomButton
+                onClick={closeLogoutDialog}
                 disableElevation
                 sx={{
                   width: "100%",
@@ -75,18 +71,13 @@ export default function Logout() {
               >
                 بازگشت
               </CustomButton>
-              <CustomButton
-                disableElevation
-                sx={{
-                  background: "#FFF2F2",
-                  color: "#C30000",
-                  width: "100%",
-                  fontSize: { xs: "12px", lg: "14px" },
-                  "&:hover": { background: "#C30000", color: "#FFF" },
-                }}
+              <Link
+                role="button"
+                href="/api/auth/signout?callbackUrl=/"
+                className="bg-[#FFF2F2] text-[#C30000] w-full text-xs md:text-sm hover:bg-[#C30000] hover:text-[#FFF] rounded flex items-center justify-center"
               >
                 خروج
-              </CustomButton>
+              </Link>
             </div>
           </div>
         </DialogContent>
