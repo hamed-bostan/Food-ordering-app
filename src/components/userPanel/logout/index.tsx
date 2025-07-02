@@ -55,7 +55,7 @@ export default function Logout() {
             padding: 0,
           }}
         >
-          <div className="px-6 py-4">
+          <div className="px-6 py-4 lg:pt-8 lg:pb-6 lg:px-14">
             <p className="text-[#353535] text-xs text-center mb-8 md:text-sm">
               آیا مایل به خروج از حساب کاربری خود هستید؟
             </p>
@@ -74,7 +74,7 @@ export default function Logout() {
               <Link
                 role="button"
                 href="/api/auth/signout?callbackUrl=/"
-                className="bg-[#FFF2F2] text-[#C30000] w-full text-xs md:text-sm hover:bg-[#C30000] hover:text-[#FFF] rounded flex items-center justify-center"
+                className="bg-[#FFF2F2] text-[#C30000] w-full text-xs md:text-sm hover:bg-[#C30000] hover:text-[#FFF] rounded flex items-center justify-center px-4"
               >
                 خروج
               </Link>
