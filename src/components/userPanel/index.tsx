@@ -14,8 +14,8 @@ export default function UserPanel() {
 
   const tabs: ComponentType[] = [
     Profile,
-    OrderStatus,
-    Favorites,
+    // OrderStatus,
+    // Favorites,
     MyAddresses,
     Logout,
   ];

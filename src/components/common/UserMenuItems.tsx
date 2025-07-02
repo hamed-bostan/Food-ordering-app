@@ -18,27 +18,28 @@ type MenuItem = {
 export const userMenuItems: MenuItem[] = [
   { label: "پروفایل", icon: Person2Outlined, tabIndex: 0, href: "/userPanel" },
   {
-    label: "پیگیری سفارشات",
-    icon: PaymentOutlined,
-    tabIndex: 1,
-    href: "/userPanel",
-  },
-  {
-    label: "علاقه مندی‌ها",
-    icon: FavoriteBorderOutlined,
-    tabIndex: 2,
-    href: "/userPanel",
-  },
-  {
     label: "آدرس‌های من",
     icon: LocationOnOutlined,
-    tabIndex: 3,
+    tabIndex: 1,
     href: "/userPanel",
   },
   {
     label: "خروج",
     icon: LogoutOutlined,
-    tabIndex: 4,
+    tabIndex: 2,
     href: "/api/auth/signout?callbackUrl=/",
   },
+
+  // {
+  //   label: "پیگیری سفارشات",
+  //   icon: PaymentOutlined,
+  //   tabIndex: 1,
+  //   href: "/userPanel",
+  // },
+  // {
+  //   label: "علاقه مندی‌ها",
+  //   icon: FavoriteBorderOutlined,
+  //   tabIndex: 2,
+  //   href: "/userPanel",
+  // },
 ];

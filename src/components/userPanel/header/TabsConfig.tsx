@@ -5,8 +5,8 @@ type TabConfig = {
 
 export const tabsConfig: TabConfig[] = [
   { label: "پروفایل", tabIndex: 0 },
-  { label: "پیگیری سفارشات", tabIndex: 1 },
-  { label: "علاقه مندی‌ها", tabIndex: 2 },
-  { label: "آدرس‌ها", tabIndex: 3 },
-  { label: "خروج", tabIndex: 4 },
+  { label: "آدرس‌ها", tabIndex: 1 },
+  { label: "خروج", tabIndex: 2 },
+  // { label: "پیگیری سفارشات", tabIndex: 1 },
+  // { label: "علاقه مندی‌ها", tabIndex: 2 },
 ];
