@@ -3,6 +3,7 @@
 import { ArrowBackOutlined, ArrowForwardOutlined } from "@mui/icons-material";
 import { tabsConfig } from "./TabsConfig";
 import { Dispatch, SetStateAction } from "react";
+import { useLogoutDialog } from "@/context/LogoutContext";
 
 type HeaderMobileProps = {
   setActiveTab: Dispatch<SetStateAction<number>>;
@@ -13,9 +14,16 @@ export default function HeaderMobile({
   setActiveTab,
   activeTab,
 }: HeaderMobileProps) {
+  const { openLogoutDialog } = useLogoutDialog();
+
   function handleNext() {
-    if (activeTab < 4) {
+    if (activeTab < 3) {
       setActiveTab(activeTab + 1);
+    }
+
+    if (activeTab === 1) {
+      openLogoutDialog();
+      console.log("active");
     }
   }
 

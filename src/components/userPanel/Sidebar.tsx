@@ -7,12 +7,12 @@ import image1 from "@/assets/images/avatars/01.png";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserById } from "@/lib/fetchUserById";
+import { useLogoutDialog } from "@/context/LogoutContext";
+import { Dispatch, SetStateAction } from "react";
 
 type SidebarProps = {
-  setActiveTab: (index: number) => void;
+  setActiveTab: Dispatch<SetStateAction<number>>;
   activeTab: number;
-  // Another solution
-  // setActiveTab: Dispatch<SetStateAction<number>>;
 };
 
 export default function Sidebar({ setActiveTab, activeTab }: SidebarProps) {
@@ -75,11 +75,21 @@ function UserInformation() {
 }
 
 function SidebarMenu({ setActiveTab, activeTab }: SidebarProps) {
+  const { openLogoutDialog } = useLogoutDialog();
+
+  function handleClick(index: number) {
+    setActiveTab(index);
+
+    if (index === 2) {
+      openLogoutDialog();
+    }
+  }
+
   return (
     <div className="flex flex-col mt-2 gap-y-2">
       {userMenuItems.map((item, index) => (
-        <div
-          onClick={() => setActiveTab(item.tabIndex)}
+        <button
+          onClick={() => handleClick(item.tabIndex)}
           key={index}
           className={`
         text-[#353535] flex gap-x-1 w-fit items-center text-sm cursor-pointer 
@@ -92,7 +102,7 @@ function SidebarMenu({ setActiveTab, activeTab }: SidebarProps) {
             }}
           />
           <span>{item.label}</span>
-        </div>
+        </button>
       ))}
     </div>
   );
