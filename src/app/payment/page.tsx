@@ -1,6 +1,7 @@
-import SuccessfulPayment from "@/components/payment/status/SuccessfulPayment";
 import { verifyPayment } from "./action";
-import UnsuccessfulPayment from "@/components/payment/status/UnsuccessfulPayment";
+import successfulPaymentImage from "@/assets/images/icons/successful-payment.png";
+import unsuccessfulPaymentImage from "@/assets/images/icons/unsuccessful-payment.png";
+import PaymentMessage from "@/components/payment/PaymentMessage";
 
 export default async function PaymentPage({
   searchParams,
@@ -14,6 +15,26 @@ export default async function PaymentPage({
   const status = await verifyPayment(searchParams.trackId);
 
   return (
-    <>{status.success ? <SuccessfulPayment /> : <UnsuccessfulPayment />}</>
+    <>
+      {status.success ? (
+        <PaymentMessage
+          image={successfulPaymentImage}
+          mainText="پرداخت شما با موفقیت انجام شد!"
+          secondaryText="کد رهگیری سفارش شما: ۲۱۵۴۹۰۱۹"
+          secondButtonText="پیگیری سفارش"
+          mainTextColor="#417F56"
+          secondaryTextColor="#417F56"
+        />
+      ) : (
+        <PaymentMessage
+          image={unsuccessfulPaymentImage}
+          mainText="پرداخت شما ناموفق بود!"
+          secondaryText="کد رهگیری تراکنش شما:  ۶۵۸۵۷۱۲۷"
+          secondButtonText="پرداخت مجدد"
+          mainTextColor="#C30000"
+          secondaryTextColor="#353535"
+        />
+      )}
+    </>
   );
 }

@@ -1,17 +1,28 @@
 "use client";
 
 import { startPayment } from "@/app/payment/action";
+import { useTransition } from "react";
 
-export default function PayButton() {
-  const handlePayment = async () => {
-    const res = await startPayment(10000);
+export default function Payment() {
+  const [isPending, startTransition] = useTransition();
 
-    if (res?.paymentUrl) {
-      window.location.href = res.paymentUrl;
-    } else {
-      alert("Payment initiation failed");
-    }
+  const handlePayment = () => {
+    startTransition(async () => {
+      const result = await startPayment(91500000);
+      if (result?.paymentUrl) {
+        window.location.href = result.paymentUrl;
+      } else {
+        alert("Payment initiation failed.");
+      }
+    });
   };
 
-  return <button onClick={handlePayment}>Pay 10,000 Toman</button>;
+  return (
+    <div>
+      <h1>Pay Now</h1>
+      <button onClick={handlePayment} disabled={isPending}>
+        {isPending ? "Redirecting..." : "Pay"}
+      </button>
+    </div>
+  );
 }
