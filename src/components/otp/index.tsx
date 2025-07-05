@@ -54,18 +54,15 @@ export default function Otp() {
     setMessage("");
 
     try {
-      const { data } = await axios.post("/api/auth/send-otp", { phone });
-
-      if (data.success) {
-        setOtpSent(true);
-        setPhone(phone);
-        setMessage("کد تایید ارسال شد.");
-      } else {
-        setMessage(data.message || "ارسال پیامک ناموفق بود.");
-      }
+      await axios.post("/api/auth/send-otp", { phone });
+      setOtpSent(true);
+      setPhone(phone);
+      setMessage("کد تایید ارسال شد.");
     } catch (error: any) {
       console.error("Send OTP error:", error);
-      setMessage(error.response?.data?.message || "ارسال با خطا مواجه شد.");
+      setMessage(
+        error.response?.data?.message || "ارسال کد تایید با خطا مواجه شد."
+      );
     } finally {
       setLoading(false);
     }

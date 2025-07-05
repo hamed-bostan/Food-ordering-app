@@ -14,7 +14,6 @@ export const POST = async (req: Request) => {
     }
 
     const code = generateOtp();
-
     const db = await getDb();
     const collection = db.collection("otps");
 
@@ -22,16 +21,12 @@ export const POST = async (req: Request) => {
     await collection.deleteMany({ phone });
 
     // ذخیره کد جدید
-    await collection.insertOne({
-      phone,
-      code,
-      createdAt: new Date(),
-    });
+    await collection.insertOne({ phone, code, createdAt: new Date() });
 
     // ارسال پیامک
     await sendOtp(phone, code);
 
-    return NextResponse.json({ success: true, message: "کد ارسال شد" });
+    return NextResponse.json({ message: "کد ارسال شد." }, { status: 200 });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ message: "خطا در ارسال کد" }, { status: 500 });
