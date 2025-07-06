@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     }
 
     const client = await clientPromise;
-    const db = client.db(); // optionally: client.db('yourDbName')
+    const db = client.db();
 
     // Find OTP record for the phone
     const otpRecord = await db.collection("otps").findOne({ phone });
@@ -25,17 +25,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (otpRecord.code === otp) {
-      // OTP is valid - delete used OTP for security
-      await db.collection("otps").deleteMany({ phone });
-
-      return NextResponse.json({ success: true, message: "OTP is valid" });
-    } else {
-      return NextResponse.json(
-        { success: false, error: "Invalid OTP" },
-        { status: 401 }
-      );
+    if (otpRecord.code !== otp) {
+      return NextResponse.json({ error: "Invalid OTP" }, { status: 401 });
     }
+
+    // OTP is valid - delete used OTP for security
+    await db.collection("otps").deleteMany({ phone });
+
+    return NextResponse.json({ message: "OTP is valid" }, { status: 200 });
   } catch (error: any) {
     console.error(error);
     return NextResponse.json(

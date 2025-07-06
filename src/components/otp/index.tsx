@@ -92,25 +92,16 @@ export default function Otp() {
 
   const verifyOtp = async (data: { otp: string }) => {
     setLoading(true);
+    setMessage("");
+
     try {
-      const res = await fetch("/api/auth/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, otp: data.otp }),
-      });
+      await axios.post("/api/auth/verify-otp", { phone, otp: data.otp });
 
-      const result = await res.json();
-
-      if (result.success) {
-        setOtpStatus("success");
-        setMessage("کد تایید صحیح است");
-      } else {
-        setOtpStatus("error");
-        setMessage(result.error || "کد تایید اشتباه است");
-      }
-    } catch (err) {
+      setOtpStatus("success");
+      setMessage("کد تایید صحیح است");
+    } catch (error: any) {
       setOtpStatus("error");
-      setMessage("خطا در برقراری ارتباط");
+      setMessage(error.response?.data?.message || "خطا در برقراری ارتباط");
     } finally {
       setLoading(false);
     }
