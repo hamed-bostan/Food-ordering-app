@@ -96,9 +96,9 @@ export default function VerifyCodeForm({
               autoFocus={index === 0} // focus on first input
               className={`h-8 text-center border rounded w-[3.125rem] transition-colors outline-none focus:border-2 focus:border-[#717171] ${
                 otpStatus === "success"
-                  ? "border-[#417F56]"
+                  ? "border-[#417F56] border-2"
                   : otpStatus === "error"
-                  ? "border-[#C30000]"
+                  ? "border-[#C30000] border-2"
                   : "border-[#717171]"
               }`}
             />
