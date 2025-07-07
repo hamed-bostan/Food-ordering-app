@@ -1,14 +1,13 @@
 import CustomButton from "@/components/ui/CustomButton";
 import Input from "@/components/ui/Input";
-import { OtpFormProps } from "@/types/otpForm";
+import { OtpRequestFormProps } from "@/types/otpForm";
 
 export default function OtpRequestForm({
-  message,
   loading,
   register,
   errors,
   onSubmit,
-}: OtpFormProps) {
+}: OtpRequestFormProps) {
   return (
     <>
       <p className="text-[#353535] font-[700] text-lg">ورود / ثبت‌نام</p>

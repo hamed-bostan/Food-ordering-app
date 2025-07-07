@@ -1,31 +1,10 @@
-import {
-  BaseSyntheticEvent,
-  ChangeEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form";
 import CustomButton from "@/components/ui/CustomButton";
-
-type Props = {
-  loading: boolean;
-  message: string;
-  register: UseFormRegister<{ otp: string }>;
-  setOtpValue: UseFormSetValue<{ otp: string }>;
-  errors: FieldErrors<{ otp: string }>;
-  onSubmit: (e?: BaseSyntheticEvent) => void;
-  otpStatus: "success" | "error" | "";
-  setOtpStatus: (status: "success" | "error" | "") => void;
-  goBack: () => void;
-  phone: string;
-  resendOtp: () => void;
-};
+import { VerifyCodeFormProps } from "@/types/otpForm";
 
 export default function VerifyCodeForm({
   loading,
-  register,
   onSubmit,
   setOtpValue,
   otpStatus,
@@ -33,7 +12,7 @@ export default function VerifyCodeForm({
   phone,
   resendOtp,
   setOtpStatus,
-}: Props) {
+}: VerifyCodeFormProps) {
   const inputsRef = useRef<HTMLInputElement[]>([]);
   const [otpValues, setOtpValues] = useState<string[]>(["", "", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState(120);
@@ -59,17 +38,14 @@ export default function VerifyCodeForm({
     setOtpValues(newOtpValues);
 
     const otpString = newOtpValues.join("");
-    setOtpValue("otp", otpString); // <-- correct react-hook-form state update
+    setOtpValue("otp", otpString); // correct react-hook-form state update
 
     if (val && index < 4) {
       inputsRef.current[index + 1]?.focus();
     }
   };
 
-  const handleKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
-  ) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Backspace" && !otpValues[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
     }
@@ -119,8 +95,8 @@ export default function VerifyCodeForm({
                 resendOtp();
                 setTimeLeft(120); // reset timer after resending
                 setOtpValues(["", "", "", "", ""]); // clear inputs
-                setOtpValue("otp", ""); //  clear react-hook-form state
-                inputsRef.current[0]?.focus(); // optional: focus first input again
+                setOtpValue("otp", ""); // clear react-hook-form state
+                inputsRef.current[0]?.focus(); // focus first input again
                 setOtpStatus("");
               }}
             >

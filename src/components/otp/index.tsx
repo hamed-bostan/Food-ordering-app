@@ -116,7 +116,6 @@ export default function Otp() {
         ) : (
           <OtpRequestForm
             loading={loading}
-            message={message}
             register={register}
             errors={errors}
             onSubmit={handleSubmit(sendOtp)}
