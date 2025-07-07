@@ -1,7 +1,7 @@
 import { UseFormRegister, FieldErrors, SubmitHandler } from "react-hook-form";
 
 type FormData = {
-  phone: string;
+  userPhoneNumber: string;
   otp?: string;
 };
 

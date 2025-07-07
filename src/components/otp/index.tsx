@@ -11,14 +11,14 @@ import OtpRequestForm from "./OtpRequestForm";
 import VerifyCodeForm from "./VerifyCodeForm";
 
 const phoneSchema = z.object({
-  phone: z
+  userPhoneNumber: z
     .string()
     .min(11, "شماره باید ۱۱ رقم باشد")
     .regex(/^09\d{9}$/, "شماره موبایل معتبر نیست"),
 });
 
 const otpSchema = z.object({
-  phone: z
+  userPhoneNumber: z
     .string()
     .min(11)
     .regex(/^09\d{9}$/),
@@ -36,7 +36,7 @@ export default function Otp() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<{ phone: string }>({
+  } = useForm<{ userPhoneNumber: string }>({
     resolver: zodResolver(phoneSchema),
   });
 
@@ -49,14 +49,14 @@ export default function Otp() {
     resolver: zodResolver(otpSchema.pick({ otp: true })),
   });
 
-  const sendOtp = async ({ phone }: { phone: string }) => {
+  const sendOtp = async ({ userPhoneNumber }: { userPhoneNumber: string }) => {
     setLoading(true);
     setMessage("");
 
     try {
-      await axios.post("/api/auth/send-otp", { phone });
+      await axios.post("/api/auth/send-otp", { userPhoneNumber });
       setOtpSent(true);
-      setPhone(phone);
+      setPhone(userPhoneNumber);
       setMessage("کد تایید ارسال شد.");
     } catch (error: any) {
       console.error("Send OTP error:", error);
@@ -73,7 +73,7 @@ export default function Otp() {
     setMessage("");
 
     try {
-      await axios.post("/api/auth/send-otp", { phone });
+      await axios.post("/api/auth/send-otp", { userPhoneNumber: phone });
       setMessage("کد تایید مجددا ارسال شد.");
     } catch (error: any) {
       console.error("Resend OTP error:", error);
@@ -90,7 +90,10 @@ export default function Otp() {
     setMessage("");
 
     try {
-      await axios.post("/api/auth/verify-otp", { phone, otp: data.otp });
+      await axios.post("/api/auth/verify-otp", {
+        userPhoneNumber: phone,
+        otp: data.otp,
+      });
 
       setOtpStatus("success");
       setMessage("کد تایید صحیح است");

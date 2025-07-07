@@ -3,9 +3,9 @@ import clientPromise from "@/lib/mongodb";
 
 export async function POST(req: NextRequest) {
   try {
-    const { phone, otp } = await req.json();
+    const { userPhoneNumber, otp } = await req.json();
 
-    if (!phone || !otp) {
+    if (!userPhoneNumber || !otp) {
       return NextResponse.json(
         { error: "Missing phone or OTP" },
         { status: 400 }
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     const db = client.db();
 
     // Find OTP record for the phone
-    const otpRecord = await db.collection("otps").findOne({ phone });
+    const otpRecord = await db.collection("otps").findOne({ userPhoneNumber });
 
     if (!otpRecord) {
       return NextResponse.json(
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     }
 
     // OTP is valid - delete used OTP for security
-    await db.collection("otps").deleteMany({ phone });
+    await db.collection("otps").deleteMany({ userPhoneNumber });
 
     return NextResponse.json({ message: "OTP is valid" }, { status: 200 });
   } catch (error: any) {

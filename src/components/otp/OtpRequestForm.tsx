@@ -16,14 +16,16 @@ export default function OtpRequestForm({
       <form onSubmit={onSubmit} className="flex flex-col">
         <div className="h-[4.375rem]">
           <Input
-            {...register("phone")}
-            error={!!errors.phone}
+            {...register("userPhoneNumber")}
+            error={!!errors.userPhoneNumber}
             label="شماره همراه"
             sx={{ width: "20rem", mb: 1 }}
             size="small"
           />
-          {errors.phone && (
-            <p className="text-xs text-[#C30000]">{errors.phone.message}</p>
+          {errors.userPhoneNumber && (
+            <p className="text-xs text-[#C30000]">
+              {errors.userPhoneNumber.message}
+            </p>
           )}
         </div>
         <CustomButton type="submit" disabled={loading}>

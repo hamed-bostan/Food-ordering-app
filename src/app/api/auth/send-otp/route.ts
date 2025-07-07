@@ -4,9 +4,9 @@ import { getDb } from "@/lib/getDB";
 
 export const POST = async (req: Request) => {
   try {
-    const { phone } = await req.json();
+    const { userPhoneNumber } = await req.json();
 
-    if (!phone || !/^09\d{9}$/.test(phone)) {
+    if (!userPhoneNumber || !/^09\d{9}$/.test(userPhoneNumber)) {
       return NextResponse.json(
         { message: "شماره معتبر نیست" },
         { status: 400 }
@@ -18,13 +18,17 @@ export const POST = async (req: Request) => {
     const collection = db.collection("otps");
 
     // حذف کدهای قبلی برای این شماره
-    await collection.deleteMany({ phone });
+    await collection.deleteMany({ userPhoneNumber });
 
     // ذخیره کد جدید
-    await collection.insertOne({ phone, code, createdAt: new Date() });
+    await collection.insertOne({
+      userPhoneNumber,
+      code,
+      createdAt: new Date(),
+    });
 
     // ارسال پیامک
-    await sendOtp(phone, code);
+    await sendOtp(userPhoneNumber, code);
 
     return NextResponse.json({ message: "کد ارسال شد." }, { status: 200 });
   } catch (err) {
