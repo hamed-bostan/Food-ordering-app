@@ -17,6 +17,7 @@ type Props = {
   errors: FieldErrors<{ otp: string }>;
   onSubmit: (e?: BaseSyntheticEvent) => void;
   otpStatus: "success" | "error" | "";
+  setOtpStatus: (status: "success" | "error" | "") => void;
   goBack: () => void;
   phone: string;
   resendOtp: () => void;
@@ -31,6 +32,7 @@ export default function VerifyCodeForm({
   goBack,
   phone,
   resendOtp,
+  setOtpStatus,
 }: Props) {
   const inputsRef = useRef<HTMLInputElement[]>([]);
   const [otpValues, setOtpValues] = useState<string[]>(["", "", "", "", ""]);
@@ -116,6 +118,10 @@ export default function VerifyCodeForm({
               onClick={() => {
                 resendOtp();
                 setTimeLeft(120); // reset timer after resending
+                setOtpValues(["", "", "", "", ""]); // clear inputs
+                setOtpValue("otp", ""); //  clear react-hook-form state
+                inputsRef.current[0]?.focus(); // optional: focus first input again
+                setOtpStatus("");
               }}
             >
               دریافت مجدد کد

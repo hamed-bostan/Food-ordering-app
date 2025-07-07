@@ -73,17 +73,12 @@ export default function Otp() {
     setMessage("");
 
     try {
-      const { data } = await axios.post("/api/auth/send-otp", { phone });
-
-      if (data.success) {
-        setMessage("کد تایید مجددا ارسال شد.");
-      } else {
-        setMessage(data.message || "ارسال مجدد پیامک ناموفق بود.");
-      }
+      await axios.post("/api/auth/send-otp", { phone });
+      setMessage("کد تایید مجددا ارسال شد.");
     } catch (error: any) {
       console.error("Resend OTP error:", error);
       setMessage(
-        error.response?.data?.message || "ارسال مجدد با خطا مواجه شد."
+        error.response?.data?.message || "ارسال مجدد کد تایید با خطا مواجه شد."
       );
     } finally {
       setLoading(false);
@@ -123,6 +118,7 @@ export default function Otp() {
             register={otpRegister}
             errors={otpErrors}
             onSubmit={otpHandleSubmit(verifyOtp)}
+            setOtpStatus={setOtpStatus}
             otpStatus={otpStatus}
             setOtpValue={setOtpValue}
             goBack={handleGoBack}
