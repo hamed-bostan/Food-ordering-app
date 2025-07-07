@@ -3,27 +3,12 @@
 import Image from "next/image";
 import logo from "@/assets/images/icons/Logo.png";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import axios from "axios";
 import OtpRequestForm from "./OtpRequestForm";
 import VerifyCodeForm from "./VerifyCodeForm";
-
-const phoneSchema = z.object({
-  userPhoneNumber: z
-    .string()
-    .min(11, "شماره باید ۱۱ رقم باشد")
-    .regex(/^09\d{9}$/, "شماره موبایل معتبر نیست"),
-});
-
-const otpSchema = z.object({
-  userPhoneNumber: z
-    .string()
-    .min(11)
-    .regex(/^09\d{9}$/),
-  otp: z.string().length(5, "کد تایید باید ۵ رقم باشد"),
-});
+import { otpOnlySchema, phoneSchema } from "@/lib/otpValidationSchemas";
 
 export default function Otp() {
   const [loading, setLoading] = useState(false);
@@ -46,7 +31,7 @@ export default function Otp() {
     setValue: setOtpValue,
     formState: { errors: otpErrors },
   } = useForm<{ otp: string }>({
-    resolver: zodResolver(otpSchema.pick({ otp: true })),
+    resolver: zodResolver(otpOnlySchema),
   });
 
   const sendOtp = async ({ userPhoneNumber }: { userPhoneNumber: string }) => {

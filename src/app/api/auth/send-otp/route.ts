@@ -1,33 +1,40 @@
 import { NextResponse } from "next/server";
 import { generateOtp, sendOtp } from "@/utils/otp";
 import { getDb } from "@/lib/getDB";
+import { phoneSchema } from "@/lib/otpValidationSchemas";
 
 export const POST = async (req: Request) => {
   try {
-    const { userPhoneNumber } = await req.json();
+    const body = await req.json();
+    const result = phoneSchema.safeParse(body);
 
-    if (!userPhoneNumber || !/^09\d{9}$/.test(userPhoneNumber)) {
+    if (!result.success) {
       return NextResponse.json(
-        { message: "شماره معتبر نیست" },
+        {
+          message: "شماره معتبر نیست",
+          details: result.error.flatten().fieldErrors,
+        },
         { status: 400 }
       );
     }
+
+    const { userPhoneNumber } = result.data;
 
     const code = generateOtp();
     const db = await getDb();
     const collection = db.collection("otps");
 
-    // حذف کدهای قبلی برای این شماره
+    // Remove any existing OTPs for this phone number
     await collection.deleteMany({ userPhoneNumber });
 
-    // ذخیره کد جدید
+    // Store the new OTP
     await collection.insertOne({
       userPhoneNumber,
       code,
       createdAt: new Date(),
     });
 
-    // ارسال پیامک
+    // Send OTP via SMS
     await sendOtp(userPhoneNumber, code);
 
     return NextResponse.json({ message: "کد ارسال شد." }, { status: 200 });

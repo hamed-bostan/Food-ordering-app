@@ -1,16 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
+import { otpSchema } from "@/lib/otpValidationSchemas";
 
 export async function POST(req: NextRequest) {
   try {
-    const { userPhoneNumber, otp } = await req.json();
+    const body = await req.json();
+    const result = otpSchema.safeParse(body);
 
-    if (!userPhoneNumber || !otp) {
+    if (!result.success) {
       return NextResponse.json(
-        { error: "Missing phone or OTP" },
+        { error: "Invalid input", details: result.error.flatten().fieldErrors },
         { status: 400 }
       );
     }
+
+    const { userPhoneNumber, otp } = result.data;
 
     const client = await clientPromise;
     const db = client.db();
