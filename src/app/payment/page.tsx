@@ -3,11 +3,13 @@ import successfulPaymentImage from "@/assets/images/icons/successful-payment.png
 import unsuccessfulPaymentImage from "@/assets/images/icons/unsuccessful-payment.png";
 import PaymentMessage from "@/components/payment/PaymentMessage";
 
-export default async function PaymentPage({
-  searchParams,
-}: {
-  searchParams: { trackId?: string };
-}) {
+type PaymentPage = {
+  searchParams: {
+    trackId?: string;
+  };
+};
+
+export default async function PaymentPage({ searchParams }: PaymentPage) {
   if (!searchParams.trackId) {
     return <p>Invalid payment session</p>;
   }
