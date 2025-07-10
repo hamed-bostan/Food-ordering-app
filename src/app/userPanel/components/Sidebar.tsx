@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { userMenuItems } from "../common/UserMenuItems";
 import { Divider } from "@mui/material";
 import image1 from "@/assets/images/avatars/01.png";
 import { useSession } from "next-auth/react";
@@ -9,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUserById } from "@/lib/fetchUserById";
 import { useLogoutDialog } from "@/context/LogoutContext";
 import { Dispatch, SetStateAction } from "react";
+import { userMenuItems } from "@/components/common/UserMenuItems";
 
 type SidebarProps = {
   setActiveTab: Dispatch<SetStateAction<number>>;

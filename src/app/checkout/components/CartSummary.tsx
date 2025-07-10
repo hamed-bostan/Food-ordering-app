@@ -2,7 +2,6 @@ import { useSelector, useDispatch } from "react-redux";
 import formatToPersianStyle from "@/lib/formattedPrice";
 import { useCheckoutTab } from "@/context/CheckoutTabContext";
 import ItemsOverviewMobile from "./itemsOverviewMobile";
-import CustomButton from "../ui/CustomButton";
 import { Divider, IconButton } from "@mui/material";
 import {
   ReportGmailerrorredOutlined,
@@ -10,6 +9,7 @@ import {
 } from "@mui/icons-material";
 import { RootState } from "@/redux/store";
 import { clear } from "@/redux/reducers/cartSlice";
+import CustomButton from "@/components/ui/CustomButton";
 
 export default function CartSummary() {
   const dispatch = useDispatch();
