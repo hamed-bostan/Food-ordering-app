@@ -2,8 +2,8 @@ import Image from "next/image";
 import expandDesktopIcon from "@/assets/images/icons/expand-desktop.svg";
 import { FullscreenOutlined, ArrowBackOutlined } from "@mui/icons-material";
 import Link from "next/link";
-import CustomButton from "../../ui/CustomButton";
 import { Branch } from ".";
+import CustomButton from "@/components/ui/CustomButton";
 
 type BranchItemProps = {
   branch: Branch;

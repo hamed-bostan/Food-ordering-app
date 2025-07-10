@@ -1,4 +1,3 @@
-import CustomButton from "../ui/CustomButton";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import {
   Person2Outlined,
@@ -9,6 +8,7 @@ import {
 } from "@mui/icons-material";
 import Image from "next/image";
 import image1 from "@/assets/images/bannerImages/banner-02.webp";
+import CustomButton from "@/components/ui/CustomButton";
 
 type CardItem = {
   id: number;
