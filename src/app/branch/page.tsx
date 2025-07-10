@@ -1,4 +1,4 @@
-import RestaurantBranch from "@/components/RestaurantBranch";
+import RestaurantBranch from "./components";
 
 export default function RestaurantBranchPage() {
   return <RestaurantBranch />;

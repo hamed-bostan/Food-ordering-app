@@ -1,7 +1,7 @@
 import { useFormContext } from "react-hook-form";
-import Input from "../../ui/Input";
 import { getErrorMessage } from "@/utils/formHelpers";
 import useNumericField from "@/hooks/useNumericField";
+import Input from "@/components/ui/Input";
 
 export default function IndividualProfile() {
   const {

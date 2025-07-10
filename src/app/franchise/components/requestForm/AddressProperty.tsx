@@ -1,6 +1,5 @@
 "use client";
 
-import Input from "@/components/ui/Input";
 import { getErrorMessage } from "@/utils/formHelpers";
 import { useFormContext, Controller, useWatch } from "react-hook-form";
 import {
@@ -13,6 +12,7 @@ import {
 import provinces from "@/data/province.json";
 import cities from "@/data/cities.json";
 import { useEffect } from "react";
+import Input from "@/components/ui/Input";
 
 export default function AddressProperty() {
   const {

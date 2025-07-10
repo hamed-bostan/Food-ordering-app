@@ -1,10 +1,10 @@
 import Link from "next/link";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import CustomButton from "../ui/CustomButton";
+import CustomButton from "@/components/ui/CustomButton";
 
 export default function CheckoutButton() {
   return (
-    <div className="w-fit mr-auto">
+    <div className="mr-auto w-fit">
       <CustomButton
         variant="outlined"
         component={Link}

@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import CustomButton from "../ui/CustomButton";
 import { Branch } from "./BranchList";
 import expandDesktopIcon from "@/assets/images/icons/expand-desktop.svg";
+import CustomButton from "@/components/ui/CustomButton";
 
 type BranchCardProps = {
   data: Branch;

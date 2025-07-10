@@ -1,10 +1,10 @@
 import Link from "next/link";
 import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
-import CustomButton from "../ui/CustomButton";
+import CustomButton from "@/components/ui/CustomButton";
 
 export default function ActionButton() {
   return (
-    <div className="text-center mb-6 w-fit mx-auto">
+    <div className="mx-auto mb-6 text-center w-fit">
       <Link href="/menu">
         <CustomButton
           variant="outlined"

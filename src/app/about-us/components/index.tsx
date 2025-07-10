@@ -1,4 +1,4 @@
-import Banner from "../common/Banner";
+import Banner from "@/components/common/Banner";
 import Details from "./Details";
 import Highlights from "./Highlights";
 import image1 from "@/assets/images/bannerImages/banner-07.webp";

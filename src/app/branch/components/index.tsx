@@ -1,4 +1,4 @@
-import Banner from "../common/Banner";
+import Banner from "@/components/common/Banner";
 import ActionButton from "./ActionButton";
 import Address from "./Address";
 import BranchList from "./BranchList";
