@@ -1,4 +1,4 @@
-import Otp from "@/components/otp";
+import Otp from "./components";
 
 export default function OtpPage() {
   return <Otp />;

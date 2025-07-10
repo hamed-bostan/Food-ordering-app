@@ -7,8 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import axios from "axios";
 import OtpRequestForm from "./OtpRequestForm";
-import VerifyCodeForm from "./VerifyCodeForm";
 import { otpOnlySchema, phoneSchema } from "@/lib/otpValidationSchemas";
+import VerifyCodeForm from "./VerifyCodeForm";
 
 export default function Otp() {
   const [loading, setLoading] = useState(false);
