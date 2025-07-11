@@ -1,11 +1,11 @@
 import "./globals.css";
 import Footer from "@/components/common/footer";
-import ProviderWrapper from "@/components/redux/ProviderWrapper";
-import SessionProviderWrapper from "@/components/common/SessionProviderWrapper";
+import ProviderWrapper from "@/components/providers/ProviderWrapper";
+import SessionProviderWrapper from "@/components/providers/SessionProviderWrapper";
 import ThemeRegistry from "@/components/common/ThemeRegistry";
 import AppHeader from "@/components/common/appHeader";
 import { ReactNode } from "react";
-import QueryProvider from "@/components/common/QueryProvider";
+import QueryProvider from "@/components/providers/QueryProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 
