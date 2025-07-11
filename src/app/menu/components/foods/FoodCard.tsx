@@ -9,7 +9,7 @@ import {
 import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
 import CustomButton from "@/components/ui/CustomButton";
-import { RootState } from "@/redux/store";
+import { RootState } from "@/store/store";
 import { addItem } from "@/redux/reducers/cartSlice";
 import { ProductType } from "@/lib/productApi";
 

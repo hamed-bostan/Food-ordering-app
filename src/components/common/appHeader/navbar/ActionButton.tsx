@@ -14,7 +14,7 @@ import { useSession } from "next-auth/react";
 import { MouseEvent, useState } from "react";
 import { Divider } from "@mui/material";
 import Popover from "@mui/material/Popover";
-import { RootState } from "@/redux/store";
+import { RootState } from "@/store/store";
 
 export default function ActionButton() {
   const pathname = usePathname();

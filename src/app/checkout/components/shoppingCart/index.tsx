@@ -5,7 +5,7 @@ import Items from "./items";
 import EmptyStateMessage from "@/components/common/EmptyStateMessage";
 import { useCheckoutTab } from "@/context/CheckoutTabContext";
 import CartSummary from "../CartSummary";
-import { RootState } from "@/redux/store";
+import { RootState } from "@/store/store";
 
 export default function ShoppingCart() {
   const { activeTab } = useCheckoutTab();

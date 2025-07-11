@@ -8,7 +8,7 @@ import {
   ArrowForwardOutlined,
   DeleteOutlined,
 } from "@mui/icons-material";
-import { RootState } from "@/redux/store";
+import { RootState } from "@/store/store";
 import { clear } from "@/redux/reducers/cartSlice";
 import { IconButton } from "@mui/material";
 

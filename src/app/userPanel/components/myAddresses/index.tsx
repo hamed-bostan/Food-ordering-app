@@ -6,7 +6,7 @@ import { GeolocationDialog } from "./geolocationDialog";
 import AddressDialog from "./addressDialog";
 import { AddressProvider } from "@/context/AddressContext";
 import UserAddresses from "./userAddresses";
-import { RootState } from "@/redux/store";
+import { RootState } from "@/store/store";
 
 export default function MyAddresses() {
   const addresses = useSelector((state: RootState) => state.address.addresses); // Get address from Redux

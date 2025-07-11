@@ -5,7 +5,7 @@ import { Favorite, Star } from "@mui/icons-material";
 import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { RootState } from "@/store/store";
 import { ProductType } from "@/lib/productApi";
 
 type FoodCardProps = {

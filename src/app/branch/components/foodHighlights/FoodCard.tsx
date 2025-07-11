@@ -6,7 +6,7 @@ import discountPrice from "@/lib/discountPrice";
 import { useDispatch, useSelector } from "react-redux";
 import CustomButton from "@/components/ui/CustomButton";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
-import { RootState } from "@/redux/store";
+import { RootState } from "@/store/store";
 import { addItem } from "@/redux/reducers/cartSlice";
 import starRateFillIcon from "@/assets/images/icons/star-rate-fill.svg";
 import { ProductType } from "@/lib/productApi";

@@ -1,7 +1,7 @@
 import FoodCard from "./FoodCard";
 import { useSelector } from "react-redux";
 import CustomButton from "@/components/ui/CustomButton";
-import { RootState } from "@/redux/store";
+import { RootState } from "@/store/store";
 
 export default function FoodList() {
   const selectedItems = useSelector(

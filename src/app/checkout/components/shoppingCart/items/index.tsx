@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import ItemsDesktop from "./itemsDesktop";
-import { RootState } from "@/redux/store";
+import { RootState } from "@/store/store";
 import { ProductType } from "@/lib/productApi";
 import ItemsOverviewMobile from "../../itemsOverviewMobile";
 
@@ -16,7 +16,10 @@ export default function Items() {
 
   return (
     <>
-      <ItemsOverviewMobile selectedItems={selectedItems} containerStyle="md:hidden" />
+      <ItemsOverviewMobile
+        selectedItems={selectedItems}
+        containerStyle="md:hidden"
+      />
       <ItemsDesktop selectedItems={selectedItems} />
     </>
   );

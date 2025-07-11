@@ -7,7 +7,7 @@ import {
   ReportGmailerrorredOutlined,
   DeleteOutlined,
 } from "@mui/icons-material";
-import { RootState } from "@/redux/store";
+import { RootState } from "@/store/store";
 import { clear } from "@/redux/reducers/cartSlice";
 import CustomButton from "@/components/ui/CustomButton";
 

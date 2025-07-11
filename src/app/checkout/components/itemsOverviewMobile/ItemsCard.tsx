@@ -2,7 +2,7 @@ import QuantitySelector from "@/components/common/QuantitySelector";
 import { useDispatch, useSelector } from "react-redux";
 import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
-import { RootState } from "@/redux/store";
+import { RootState } from "@/store/store";
 import { decrease, increase, removeItem } from "@/redux/reducers/cartSlice";
 import { ProductType } from "@/lib/productApi";
 
