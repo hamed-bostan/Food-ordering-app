@@ -9,7 +9,7 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import { RootState } from "@/store/store";
 import { addItem } from "@/shared/redux/cart/cartSlice";
 import starRateFillIcon from "@/assets/images/icons/star-rate-fill.svg";
-import { ProductType } from "@/lib/productApi";
+import { ProductType } from "@/lib/api/productApi";
 
 type ProductItemProps = {
   item: ProductType;

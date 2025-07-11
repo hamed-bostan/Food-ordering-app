@@ -1,4 +1,4 @@
-import { ProductType } from "@/lib/productApi";
+import { ProductType } from "@/lib/api/productApi";
 import FoodCard from "./FoodCard";
 
 type FoodListProps = {

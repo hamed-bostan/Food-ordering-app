@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import FoodCard from "./FoodCard";
-import { getProducts } from "@/lib/productApi";
+import { getProducts } from "@/lib/api/productApi";
 
 export default function FoodList() {
   const {

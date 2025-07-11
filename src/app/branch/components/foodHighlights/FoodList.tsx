@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { ProductType } from "@/lib/productApi";
+import { ProductType } from "@/lib/api/productApi";
 
 type FoodListProps = {
   title: string;
@@ -24,7 +24,9 @@ export default function FoodList({
   const nonIranianFood = products.filter((item) => item.category === filter);
 
   return (
-    <section className={`p-5 md:p-6 lg:py-7 lg:px-10 2xl:px-28 ${containerStyle}`}>
+    <section
+      className={`p-5 md:p-6 lg:py-7 lg:px-10 2xl:px-28 ${containerStyle}`}
+    >
       <h2 className={`font-bold mb-3 block md:text-lg md:mb-5 ${titleStyle}`}>
         {title}
       </h2>

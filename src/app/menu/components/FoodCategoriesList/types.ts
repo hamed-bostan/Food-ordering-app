@@ -1,4 +1,4 @@
-import { ProductType } from "@/lib/productApi";
+import { ProductType } from "@/lib/api/productApi";
 import { Dispatch, SetStateAction } from "react";
 
 export type FoodCategoriesListProps = {
