@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
-import { otpSchema } from "@/lib/otpValidationSchemas";
+import { otpSchema } from "@/lib/validation/otpValidationSchemas";
 
 export async function POST(req: NextRequest) {
   try {
