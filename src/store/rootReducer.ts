@@ -1,6 +1,8 @@
 import { combineReducers } from "redux";
-import cartReducer, { CartState } from "../redux/reducers/cartSlice";
-import addressReducer, { AddressState } from "../redux/reducers/addressSlice";
+import cartReducer, { CartState } from "../shared/redux/cart/cartSlice";
+import addressReducer, {
+  AddressState,
+} from "../shared/redux/address/addressSlice";
 
 const rootReducer = combineReducers({
   cart: cartReducer,

@@ -2,7 +2,7 @@
 
 import { AddressContext } from "@/context/AddressContext";
 import { useAddressDialog } from "@/context/AddressDialogContext";
-import { deleteAddress } from "@/redux/reducers/addressSlice";
+import { deleteAddress } from "@/shared/redux/address/addressSlice";
 import { RootState } from "@/store/store";
 import { ModeEditOutlineOutlined, DeleteOutlined } from "@mui/icons-material";
 import { useContext } from "react";

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
 import { RootState } from "@/store/store";
-import { decrease, increase, removeItem } from "@/redux/reducers/cartSlice";
+import { decrease, increase, removeItem } from "@/shared/redux/cart/cartSlice";
 import { ProductType } from "@/lib/productApi";
 
 type ItemsCardProps = {

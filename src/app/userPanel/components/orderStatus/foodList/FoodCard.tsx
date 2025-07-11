@@ -3,7 +3,7 @@
 import Image from "next/image";
 import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
-import { CartItem } from "@/redux/reducers/cartSlice";
+import { CartItem } from "@/shared/redux/cart/cartSlice";
 
 type FoodCardProps = {
   item: CartItem;

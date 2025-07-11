@@ -10,7 +10,7 @@ import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
 import CustomButton from "@/components/ui/CustomButton";
 import { RootState } from "@/store/store";
-import { addItem } from "@/redux/reducers/cartSlice";
+import { addItem } from "@/shared/redux/cart/cartSlice";
 import { ProductType } from "@/lib/productApi";
 
 type FoodCardProps = {

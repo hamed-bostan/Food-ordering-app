@@ -3,7 +3,10 @@
 import { FormEvent, useContext, useEffect, useState } from "react";
 import Checkbox from "@mui/material/Checkbox";
 import { useDispatch } from "react-redux";
-import { storeAddress, updateAddress } from "@/redux/reducers/addressSlice";
+import {
+  storeAddress,
+  updateAddress,
+} from "@/shared/redux/address/addressSlice";
 import { AddressContext } from "@/context/AddressContext";
 import { useAddressDialog } from "@/context/AddressDialogContext";
 import Input from "@/components/ui/Input";
@@ -50,7 +53,7 @@ export default function AddressForm() {
     if (addressData) {
       dispatch(
         updateAddress({
-          id: addressData.id, 
+          id: addressData.id,
           title,
           phoneNumber,
           name: familyName,

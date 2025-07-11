@@ -6,7 +6,7 @@ import discountPrice from "@/lib/discountPrice";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { FullCartProduct } from "..";
 import { RootState } from "@/store/store";
-import { decrease, increase, removeItem } from "@/redux/reducers/cartSlice";
+import { decrease, increase, removeItem } from "@/shared/redux/cart/cartSlice";
 
 type FoodItemProps = {
   foodItem: FullCartProduct;

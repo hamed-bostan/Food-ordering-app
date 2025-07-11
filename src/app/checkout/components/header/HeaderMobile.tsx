@@ -9,7 +9,7 @@ import {
   DeleteOutlined,
 } from "@mui/icons-material";
 import { RootState } from "@/store/store";
-import { clear } from "@/redux/reducers/cartSlice";
+import { clear } from "@/shared/redux/cart/cartSlice";
 import { IconButton } from "@mui/material";
 
 export default function HeaderMobile() {
