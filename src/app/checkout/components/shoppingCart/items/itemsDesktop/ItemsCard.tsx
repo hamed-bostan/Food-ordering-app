@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
-import QuantitySelector from "@/components/common/QuantitySelector";
+import QuantitySelector from "@/components/ui/QuantitySelector";
 import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";

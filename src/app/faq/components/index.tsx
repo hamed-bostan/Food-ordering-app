@@ -4,7 +4,7 @@ import { useState } from "react";
 import ContentSection from "./ContentSection";
 import image1 from "@/assets/images/bannerImages/banner-10.webp";
 import { tabDetails } from "@/lib/faq";
-import Banner from "@/components/common/Banner";
+import Banner from "@/components/ui/Banner";
 
 type ActiveTab = "faq" | "rules" | "privacyPolicy";
 

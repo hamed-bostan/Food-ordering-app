@@ -1,5 +1,5 @@
 import Image, { StaticImageData } from "next/image";
-import CustomButton from "../ui/CustomButton";
+import CustomButton from "./CustomButton";
 
 type BannerProps = {
   styleContainer?: string;

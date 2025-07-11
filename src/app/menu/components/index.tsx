@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Banner from "../../../components/common/Banner";
+import Banner from "../../../components/ui/Banner";
 import FoodCategoriesList from "./FoodCategoriesList";
 import Foods from "./foods";
 import FoodTypesList from "./FoodTypesList";

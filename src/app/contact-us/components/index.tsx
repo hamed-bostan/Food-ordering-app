@@ -1,4 +1,4 @@
-import Banner from "@/components/common/Banner";
+import Banner from "@/components/ui/Banner";
 import BranchList from "./BranchList";
 import image1 from "@/assets/images/bannerImages/banner-08.webp";
 

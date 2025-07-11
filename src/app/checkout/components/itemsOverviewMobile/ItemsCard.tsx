@@ -1,4 +1,4 @@
-import QuantitySelector from "@/components/common/QuantitySelector";
+import QuantitySelector from "@/components/ui/QuantitySelector";
 import { useDispatch, useSelector } from "react-redux";
 import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
