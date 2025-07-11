@@ -3,8 +3,8 @@
 import { ReactNode, useState } from "react";
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider as MUIThemeProvider, CssBaseline } from "@mui/material";
-import createEmotionCache from "@/lib/createEmotionCache";
-import theme from "@/lib/theme";
+import createEmotionCache from "@/lib/theme/createEmotionCache";
+import theme from "@/lib/theme/theme";
 
 type ThemeRegistryProps = {
   children: ReactNode;

@@ -2,7 +2,7 @@ import "./globals.css";
 import Footer from "@/components/common/footer";
 import ProviderWrapper from "@/components/providers/ProviderWrapper";
 import SessionProviderWrapper from "@/components/providers/SessionProviderWrapper";
-import ThemeRegistry from "@/components/common/ThemeRegistry";
+import ThemeRegistry from "@/lib/theme/ThemeRegistry";
 import AppHeader from "@/components/common/appHeader";
 import { ReactNode } from "react";
 import QueryProvider from "@/components/providers/QueryProvider";
