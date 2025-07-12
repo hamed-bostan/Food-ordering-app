@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Address, NewAddress } from "../../../redux/reducers/types";
+import { Address, NewAddress } from "../../reducers/types";
 
 export type AddressState = {
   addresses: Address[];

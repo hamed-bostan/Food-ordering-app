@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import {
   storeAddress,
   updateAddress,
-} from "@/shared/redux/address/addressSlice";
+} from "@/redux/slices/address/addressSlice";
 import { AddressContext } from "@/context/AddressContext";
 import { useAddressDialog } from "@/context/AddressDialogContext";
 import Input from "@/components/ui/Input";

@@ -5,7 +5,7 @@ import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { FullCartProduct } from "..";
 import { RootState } from "@/store/store";
-import { decrease, increase, removeItem } from "@/shared/redux/cart/cartSlice";
+import { decrease, increase, removeItem } from "@/redux/slices/cart/cartSlice";
 import { calculateDiscountPrice } from "@/lib/utils/calculateDiscountPrice";
 
 type FoodItemProps = {

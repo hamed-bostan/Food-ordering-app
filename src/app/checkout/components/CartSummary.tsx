@@ -8,7 +8,7 @@ import {
   DeleteOutlined,
 } from "@mui/icons-material";
 import { RootState } from "@/store/store";
-import { clear } from "@/shared/redux/cart/cartSlice";
+import { clear } from "@/redux/slices/cart/cartSlice";
 import CustomButton from "@/components/ui/CustomButton";
 
 export default function CartSummary() {

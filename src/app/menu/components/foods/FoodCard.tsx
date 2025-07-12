@@ -9,7 +9,7 @@ import {
 import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
 import CustomButton from "@/components/ui/CustomButton";
 import { RootState } from "@/store/store";
-import { addItem } from "@/shared/redux/cart/cartSlice";
+import { addItem } from "@/redux/slices/cart/cartSlice";
 import { ProductType } from "@/lib/api/getProducts";
 import { calculateDiscountPrice } from "@/lib/utils/calculateDiscountPrice";
 
@@ -45,7 +45,9 @@ function FoodImage({ image, title }: FoodImageProps) {
 function FoodDetails({ foodItem }: { foodItem: ProductType }) {
   const { id, title, description, price, discount } = foodItem;
 
-  const discountedPrice = formatToPersianStyle(calculateDiscountPrice(price, discount));
+  const discountedPrice = formatToPersianStyle(
+    calculateDiscountPrice(price, discount)
+  );
 
   const dispatch = useDispatch();
 

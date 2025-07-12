@@ -1,5 +1,5 @@
-import { CartState } from "../shared/redux/cart/cartSlice";
-import { AddressState } from "../shared/redux/address/addressSlice";
+import { CartState } from "../redux/slices/cart/cartSlice";
+import { AddressState } from "../redux/slices/address/addressSlice";
 
 export type RootState = {
   cart: CartState;
