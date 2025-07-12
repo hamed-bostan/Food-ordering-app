@@ -7,11 +7,11 @@ import {
   StarBorderOutlined,
 } from "@mui/icons-material";
 import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
-import discountPrice from "@/lib/utils/discountPrice";
 import CustomButton from "@/components/ui/CustomButton";
 import { RootState } from "@/store/store";
 import { addItem } from "@/shared/redux/cart/cartSlice";
 import { ProductType } from "@/lib/api/getProducts";
+import { calculateDiscountPrice } from "@/lib/utils/calculateDiscountPrice";
 
 type FoodCardProps = {
   foodItem: ProductType; // The product type
@@ -45,7 +45,7 @@ function FoodImage({ image, title }: FoodImageProps) {
 function FoodDetails({ foodItem }: { foodItem: ProductType }) {
   const { id, title, description, price, discount } = foodItem;
 
-  const discountedPrice = formatToPersianStyle(discountPrice(price, discount));
+  const discountedPrice = formatToPersianStyle(calculateDiscountPrice(price, discount));
 
   const dispatch = useDispatch();
 

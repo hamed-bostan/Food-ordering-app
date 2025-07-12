@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
-import discountPrice from "@/lib/utils/discountPrice";
 import { CartItem } from "@/shared/redux/cart/cartSlice";
+import { calculateDiscountPrice } from "@/lib/utils/calculateDiscountPrice";
 
 type FoodCardProps = {
   item: CartItem;
@@ -11,7 +11,7 @@ type FoodCardProps = {
 
 export default function FoodCard({ item }: FoodCardProps) {
   const { title, price, discount, image, quantity } = item;
-  const discountedPrice = formatToPersianStyle(discountPrice(price, discount));
+  const discountedPrice = formatToPersianStyle(calculateDiscountPrice(price, discount));
 
   return (
     <div className="text-xs border border-[#CBCBCB] rounded-lg overflow-hidden">
@@ -21,7 +21,7 @@ export default function FoodCard({ item }: FoodCardProps) {
           alt={title}
           width={110}
           height={110}
-          className="h-12 w-full object-cover md:h-20"
+          className="object-cover w-full h-12 md:h-20"
         />
         <span className="text-[#417F56] absolute bottom-1 left-1 bg-[#FFFFFF] p-0.5 rounded-sm">
           {formatToPersianStyle(quantity)} x

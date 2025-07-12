@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
-import discountPrice from "@/lib/utils/discountPrice";
 import { useDispatch, useSelector } from "react-redux";
 import CustomButton from "@/components/ui/CustomButton";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
@@ -10,6 +9,7 @@ import { RootState } from "@/store/store";
 import { addItem } from "@/shared/redux/cart/cartSlice";
 import starRateFillIcon from "@/assets/images/icons/star-rate-fill.svg";
 import { ProductType } from "@/lib/api/getProducts";
+import { calculateDiscountPrice } from "@/lib/utils/calculateDiscountPrice";
 
 type ProductItemProps = {
   item: ProductType;
@@ -39,7 +39,9 @@ function DisplayingImage({ item }: ProductItemProps) {
 
 function OfferDetails({ item }: ProductItemProps) {
   const { id, title, price, discount } = item;
-  const discountedPrice = formatToPersianStyle(discountPrice(price, discount));
+  const discountedPrice = formatToPersianStyle(
+    calculateDiscountPrice(price, discount)
+  );
 
   const dispatch = useDispatch();
 

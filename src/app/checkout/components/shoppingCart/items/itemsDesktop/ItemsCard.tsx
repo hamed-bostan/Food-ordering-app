@@ -2,11 +2,11 @@ import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import QuantitySelector from "@/components/ui/QuantitySelector";
 import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
-import discountPrice from "@/lib/utils/discountPrice";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { FullCartProduct } from "..";
 import { RootState } from "@/store/store";
 import { decrease, increase, removeItem } from "@/shared/redux/cart/cartSlice";
+import { calculateDiscountPrice } from "@/lib/utils/calculateDiscountPrice";
 
 type FoodItemProps = {
   foodItem: FullCartProduct;
@@ -39,7 +39,7 @@ function FoodImage({ image, title }: FoodImageProps) {
 function FoodDetails({ foodItem }: FoodItemProps) {
   const { id, title, description, price, discount } = foodItem;
 
-  const discountedPricePerItem = discountPrice(price, discount); // Price of a single item
+  const discountedPricePerItem = calculateDiscountPrice(price, discount); // Price of a single item
 
   const dispatch = useDispatch();
   const selectedItems = useSelector(
