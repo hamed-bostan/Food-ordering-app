@@ -1,5 +1,5 @@
 import ItemsCard from "./ItemsCard";
-import { useCheckoutTab } from "@/context/CheckoutTabContext";
+import { useCheckoutTab } from "@/app/checkout/context/CheckoutTabContext";
 import { ProductType } from "@/lib/api/getProducts";
 import { Divider } from "@mui/material";
 

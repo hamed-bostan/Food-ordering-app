@@ -7,7 +7,7 @@ import Payments from "./payments";
 import {
   CheckoutTabProvider,
   useCheckoutTab,
-} from "@/context/CheckoutTabContext";
+} from "@/app/checkout/context/CheckoutTabContext";
 import ShoppingCart from "./shoppingCart";
 
 export default function Checkout() {
@@ -21,7 +21,7 @@ export default function Checkout() {
 function CheckoutContent() {
   const { activeTab } = useCheckoutTab();
 
-  const tabs:React.ComponentType[]  = [ShoppingCart, OrderOverview, Payments];
+  const tabs: React.ComponentType[] = [ShoppingCart, OrderOverview, Payments];
   const ActiveTabComponent = tabs[activeTab];
 
   return (

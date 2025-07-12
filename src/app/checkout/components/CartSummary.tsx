@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
-import { useCheckoutTab } from "@/context/CheckoutTabContext";
+import { useCheckoutTab } from "@/app/checkout/context/CheckoutTabContext";
 import ItemsOverviewMobile from "./itemsOverviewMobile";
 import { Divider, IconButton } from "@mui/material";
 import {

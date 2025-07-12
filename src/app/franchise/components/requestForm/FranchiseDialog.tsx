@@ -8,7 +8,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useFranchiseDialog } from "@/context/FranchiseContext";
+import { useFranchiseDialog } from "@/app/franchise/context/FranchiseContext";
 
 export function FranchiseDialog() {
   const { isFranchiseDialogOpen, closeFranchiseDialog, submittedData } =

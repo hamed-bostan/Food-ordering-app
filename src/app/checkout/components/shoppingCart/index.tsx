@@ -3,7 +3,7 @@
 import { useSelector } from "react-redux";
 import Items from "./items";
 import EmptyStateMessage from "@/components/common/EmptyStateMessage";
-import { useCheckoutTab } from "@/context/CheckoutTabContext";
+import { useCheckoutTab } from "@/app/checkout/context/CheckoutTabContext";
 import CartSummary from "../CartSummary";
 import { RootState } from "@/store/store";
 

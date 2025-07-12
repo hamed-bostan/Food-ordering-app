@@ -5,7 +5,7 @@ import Highlights from "./Highlights";
 import Privilege from "./Privilege";
 import RequestForm from "./requestForm";
 import image1 from "@/assets/images/bannerImages/banner-06.webp";
-import { FranchiseDialogProvider } from "@/context/FranchiseContext";
+import { FranchiseDialogProvider } from "@/app/franchise/context/FranchiseContext";
 import Banner from "@/components/ui/Banner";
 
 export default function Franchise() {

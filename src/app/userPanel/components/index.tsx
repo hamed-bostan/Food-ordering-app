@@ -6,7 +6,7 @@ import Sidebar from "./Sidebar";
 import Profile from "./profile";
 import HeaderMobile from "./header/HeaderMobile";
 import MyAddresses from "./myAddresses";
-import { LogoutDialogProvider } from "@/context/LogoutContext";
+import { LogoutDialogProvider } from "@/app/userPanel/context/LogoutContext";
 
 export default function UserPanel() {
   const [activeTab, setActiveTab] = useState<number>(0);

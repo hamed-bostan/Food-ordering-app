@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import provinces from "@/data/province.json";
 import cities from "@/data/cities.json";
 import { FranchiseDialog } from "./FranchiseDialog";
-import { useFranchiseDialog } from "@/context/FranchiseContext";
+import { useFranchiseDialog } from "@/app/franchise/context/FranchiseContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

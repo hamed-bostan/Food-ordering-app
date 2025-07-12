@@ -2,7 +2,7 @@
 
 import { useDispatch, useSelector } from "react-redux";
 import { tabsConfig } from "./TabsConfig";
-import { useCheckoutTab } from "@/context/CheckoutTabContext";
+import { useCheckoutTab } from "@/app/checkout/context/CheckoutTabContext";
 import {
   ArrowBackOutlined,
   ArrowForwardOutlined,

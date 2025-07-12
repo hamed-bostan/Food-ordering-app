@@ -3,7 +3,7 @@
 import CustomButton from "@/components/ui/CustomButton";
 import { Dialog, DialogTitle, DialogContent, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useLogoutDialog } from "@/context/LogoutContext";
+import { useLogoutDialog } from "@/app/userPanel/context/LogoutContext";
 import Link from "next/link";
 
 export default function Logout() {

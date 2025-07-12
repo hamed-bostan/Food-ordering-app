@@ -1,4 +1,4 @@
-import { useCheckoutTab } from "@/context/CheckoutTabContext";
+import { useCheckoutTab } from "@/app/checkout/context/CheckoutTabContext";
 import { tabsConfig } from "./TabsConfig";
 
 export default function HeaderDesktop() {

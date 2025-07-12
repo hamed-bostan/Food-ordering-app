@@ -6,7 +6,7 @@ import image1 from "@/assets/images/avatars/01.png";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchUserById } from "@/lib/api/fetchUserById";
-import { useLogoutDialog } from "@/context/LogoutContext";
+import { useLogoutDialog } from "@/app/userPanel/context/LogoutContext";
 import { Dispatch, SetStateAction } from "react";
 import { userMenuItems } from "@/components/common/UserMenuItems";
 
