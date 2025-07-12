@@ -15,7 +15,7 @@ import { AddressContext } from "@/context/AddressContext";
 import {
   fetchAddress,
   handleGetCurrentLocation,
-} from "@/components/utils/locationUtils";
+} from "@/lib/utils/locationUtils";
 import { useAddressDialog } from "@/context/AddressDialogContext";
 import CustomButton from "@/components/ui/CustomButton";
 
