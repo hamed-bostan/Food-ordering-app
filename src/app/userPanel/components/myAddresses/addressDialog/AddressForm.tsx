@@ -11,7 +11,7 @@ import { AddressContext } from "@/context/AddressContext";
 import { useAddressDialog } from "@/context/AddressDialogContext";
 import Input from "@/components/ui/Input";
 import CustomButton from "@/components/ui/CustomButton";
-import { Address, NewAddress } from "@/redux/reducers/types";
+import { Address, NewAddress } from "@/redux/types/address";
 
 export default function AddressForm() {
   // Local state to hold title and phone number

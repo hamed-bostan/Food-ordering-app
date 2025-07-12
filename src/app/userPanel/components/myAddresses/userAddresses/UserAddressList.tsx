@@ -7,7 +7,7 @@ import { RootState } from "@/store/store";
 import { ModeEditOutlineOutlined, DeleteOutlined } from "@mui/icons-material";
 import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Address } from "@/redux/reducers/types";
+import { Address } from "@/redux/types/address";
 
 export default function UserAddressList() {
   const dispatch = useDispatch();
