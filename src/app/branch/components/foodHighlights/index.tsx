@@ -2,7 +2,7 @@
 
 import FoodList from "./FoodList";
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "@/lib/api/productApi";
+import { getProducts } from "@/lib/api/getProducts";
 
 export default function FoodHighlights() {
   const {

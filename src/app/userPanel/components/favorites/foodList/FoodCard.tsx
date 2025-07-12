@@ -6,7 +6,7 @@ import formatToPersianStyle from "@/lib/formattedPrice";
 import discountPrice from "@/lib/discountPrice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { ProductType } from "@/lib/api/productApi";
+import { ProductType } from "@/lib/api/getProducts";
 
 type FoodCardProps = {
   item: ProductType;

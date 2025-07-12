@@ -11,7 +11,7 @@ import discountPrice from "@/lib/discountPrice";
 import CustomButton from "@/components/ui/CustomButton";
 import { RootState } from "@/store/store";
 import { addItem } from "@/shared/redux/cart/cartSlice";
-import { ProductType } from "@/lib/api/productApi";
+import { ProductType } from "@/lib/api/getProducts";
 
 type FoodCardProps = {
   foodItem: ProductType; // The product type

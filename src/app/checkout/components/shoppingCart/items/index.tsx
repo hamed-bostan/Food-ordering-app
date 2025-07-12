@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import ItemsDesktop from "./itemsDesktop";
 import { RootState } from "@/store/store";
-import { ProductType } from "@/lib/api/productApi";
+import { ProductType } from "@/lib/api/getProducts";
 import ItemsOverviewMobile from "../../itemsOverviewMobile";
 
 // Extend Product to include quantity from CartItem
