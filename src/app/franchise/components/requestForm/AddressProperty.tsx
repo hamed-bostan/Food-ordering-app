@@ -1,6 +1,6 @@
 "use client";
 
-import { getErrorMessage } from "@/utils/formHelpers";
+import { getErrorMessage } from "@/lib/utils/formHelpers";
 import { useFormContext, Controller, useWatch } from "react-hook-form";
 import {
   FormControl,

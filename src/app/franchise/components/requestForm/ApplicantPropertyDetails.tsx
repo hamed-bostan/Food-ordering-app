@@ -1,6 +1,6 @@
 import Input from "@/components/ui/Input";
 import useNumericField from "@/hooks/useNumericField";
-import { getErrorMessage } from "@/utils/formHelpers";
+import { getErrorMessage } from "@/lib/utils/formHelpers";
 import {
   FormControl,
   InputLabel,

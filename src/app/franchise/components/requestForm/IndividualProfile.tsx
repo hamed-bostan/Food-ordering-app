@@ -1,5 +1,5 @@
 import { useFormContext } from "react-hook-form";
-import { getErrorMessage } from "@/utils/formHelpers";
+import { getErrorMessage } from "@/lib/utils/formHelpers";
 import useNumericField from "@/hooks/useNumericField";
 import Input from "@/components/ui/Input";
 
