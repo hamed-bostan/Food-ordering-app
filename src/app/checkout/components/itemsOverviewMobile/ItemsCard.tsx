@@ -1,7 +1,7 @@
 import QuantitySelector from "@/components/ui/QuantitySelector";
 import { useDispatch, useSelector } from "react-redux";
-import formatToPersianStyle from "@/lib/formattedPrice";
-import discountPrice from "@/lib/discountPrice";
+import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
+import discountPrice from "@/lib/utils/discountPrice";
 import { RootState } from "@/store/store";
 import { decrease, increase, removeItem } from "@/shared/redux/cart/cartSlice";
 import { ProductType } from "@/lib/api/getProducts";

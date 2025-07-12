@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { Favorite, Star } from "@mui/icons-material";
-import formatToPersianStyle from "@/lib/formattedPrice";
-import discountPrice from "@/lib/discountPrice";
+import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
+import discountPrice from "@/lib/utils/discountPrice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { ProductType } from "@/lib/api/getProducts";

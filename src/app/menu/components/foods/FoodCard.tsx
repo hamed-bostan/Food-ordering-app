@@ -6,8 +6,8 @@ import {
   FavoriteBorderOutlined,
   StarBorderOutlined,
 } from "@mui/icons-material";
-import formatToPersianStyle from "@/lib/formattedPrice";
-import discountPrice from "@/lib/discountPrice";
+import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
+import discountPrice from "@/lib/utils/discountPrice";
 import CustomButton from "@/components/ui/CustomButton";
 import { RootState } from "@/store/store";
 import { addItem } from "@/shared/redux/cart/cartSlice";

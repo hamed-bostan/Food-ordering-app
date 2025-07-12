@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import QuantitySelector from "@/components/ui/QuantitySelector";
-import formatToPersianStyle from "@/lib/formattedPrice";
-import discountPrice from "@/lib/discountPrice";
+import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
+import discountPrice from "@/lib/utils/discountPrice";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { FullCartProduct } from "..";
 import { RootState } from "@/store/store";

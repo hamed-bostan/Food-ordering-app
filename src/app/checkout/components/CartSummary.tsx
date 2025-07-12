@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import formatToPersianStyle from "@/lib/formattedPrice";
+import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
 import { useCheckoutTab } from "@/context/CheckoutTabContext";
 import ItemsOverviewMobile from "./itemsOverviewMobile";
 import { Divider, IconButton } from "@mui/material";

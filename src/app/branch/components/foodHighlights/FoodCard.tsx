@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import formatToPersianStyle from "@/lib/formattedPrice";
-import discountPrice from "@/lib/discountPrice";
+import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
+import discountPrice from "@/lib/utils/discountPrice";
 import { useDispatch, useSelector } from "react-redux";
 import CustomButton from "@/components/ui/CustomButton";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";

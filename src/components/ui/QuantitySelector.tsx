@@ -1,4 +1,4 @@
-import formatToPersianStyle from "@/lib/formattedPrice";
+import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
 import {
   DeleteOutlineOutlined,
   AddOutlined,
