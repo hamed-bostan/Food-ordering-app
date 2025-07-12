@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { FranchiseFormValues } from "@/schemas/franchise-form-schema";
+import { FranchiseFormValues } from "@/app/franchise/lib/franchise-form-schema";
 
 type FranchiseDialogContextProps = {
   isFranchiseDialogOpen: boolean;
@@ -23,7 +23,7 @@ export const FranchiseDialogProvider = ({
 
   const openFranchiseDialog = () => setIsFranchiseDialogOpen(true);
   const closeFranchiseDialog = () => setIsFranchiseDialogOpen(false);
-  
+
   const setFranchiseSubmittedData = (data: FranchiseFormValues) => {
     setSubmittedData(data);
   };

@@ -6,7 +6,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useFormContext } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ProfileSchema } from "@/schemas/profile-schema";
+import { ProfileSchema } from "@/app/userPanel/components/profile/profile-schema";
 import useNumericField from "@/hooks/useNumericField";
 import { ChangeEvent, useState } from "react";
 import Image from "next/image";

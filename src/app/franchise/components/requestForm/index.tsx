@@ -3,7 +3,7 @@
 import {
   franchiseFormSchema,
   FranchiseFormValues,
-} from "@/schemas/franchise-form-schema";
+} from "@/app/franchise/lib/franchise-form-schema";
 import AddressProperty from "./AddressProperty";
 import ApplicantPropertyDetails from "./ApplicantPropertyDetails";
 import FacilityProperty from "./FacilityProperty";
