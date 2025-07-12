@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { generateOtp, sendOtp } from "@/lib/otp/helpers";
-import { getDb } from "@/lib/getDB";
+import { getDb } from "@/lib/db/getDB";
 import { phoneSchema } from "@/lib/otp/otpValidationSchemas";
 
 export const POST = async (req: Request) => {
