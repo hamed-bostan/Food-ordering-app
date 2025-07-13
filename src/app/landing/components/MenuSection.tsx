@@ -1,37 +1,5 @@
-import Image, { StaticImageData } from "next/image";
-import image1 from "@/assets/images/firstPageImages/01.png";
-import image2 from "@/assets/images/firstPageImages/02.png";
-import image3 from "@/assets/images/firstPageImages/03.png";
-import image4 from "@/assets/images/firstPageImages/04.png";
-
-type MenuItem = {
-  id: number;
-  image: StaticImageData;
-  text: string;
-};
-
-const menuInformation: MenuItem[] = [
-  {
-    id: 1,
-    image: image1,
-    text: "غذای اصلی",
-  },
-  {
-    id: 2,
-    image: image2,
-    text: "پیش غذا",
-  },
-  {
-    id: 3,
-    image: image3,
-    text: "دسر",
-  },
-  {
-    id: 4,
-    image: image4,
-    text: "نوشیدنی",
-  },
-];
+import Image from "next/image";
+import { menuInformation } from "../lib/menu-data";
 
 export default function MenuSection() {
   return (
@@ -42,7 +10,7 @@ export default function MenuSection() {
       <ul className="grid grid-cols-2 place-items-center gap-x-4 md:gap-x-6 gap-y-16 md:grid-cols-4 xl:gap-x-24">
         {menuInformation.map((item) => (
           <li
-            className="relative flex justify-center w-full h-28 lg:h-36 list-none"
+            className="relative flex justify-center w-full list-none h-28 lg:h-36"
             key={item.id}
           >
             <figure className="flex justify-center">

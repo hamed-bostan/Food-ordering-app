@@ -1,43 +1,9 @@
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import {
-  Person2Outlined,
-  TrendingUpOutlined,
-  WifiOutlined,
-  EventNoteOutlined,
-  SvgIconComponent,
-} from "@mui/icons-material";
 import Image from "next/image";
 import image1 from "@/assets/images/bannerImages/banner-02.webp";
 import CustomButton from "@/components/ui/CustomButton";
-
-type CardItem = {
-  id: number;
-  icon: SvgIconComponent;
-  text: string;
-};
-
-const cardItems: CardItem[] = [
-  {
-    id: 1,
-    icon: Person2Outlined,
-    text: "پرسنلی مجرب و حرفه‌ای",
-  },
-  {
-    id: 2,
-    icon: TrendingUpOutlined,
-    text: "کیفیت بالای غذاها",
-  },
-  {
-    id: 3,
-    icon: WifiOutlined,
-    text: "محیطی دلنشین و آرام",
-  },
-  {
-    id: 4,
-    icon: EventNoteOutlined,
-    text: "منوی متنوع",
-  },
-];
+import { cardItems } from "../lib/card-items";
+import { CardSectionProps } from "../lib/types";
 
 export default function DescriptionSection() {
   return (
@@ -86,10 +52,6 @@ function DescriptionDetails() {
     </section>
   );
 }
-
-type CardSectionProps = {
-  data: CardItem[];
-};
 
 function CardSection({ data }: CardSectionProps) {
   return (
