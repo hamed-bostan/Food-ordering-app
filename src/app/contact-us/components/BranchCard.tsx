@@ -2,11 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import expandDesktopIcon from "@/assets/images/icons/expand-desktop.svg";
 import CustomButton from "@/components/ui/CustomButton";
-import { BranchesProp } from "../lib/types";
-
-type BranchCardProps = {
-  branchItem: BranchesProp;
-};
+import { BranchCardProps } from "../lib/types";
 
 export default function BranchCard({ branchItem }: BranchCardProps) {
   const { title, image, address, phoneNumber, workTime } = branchItem;

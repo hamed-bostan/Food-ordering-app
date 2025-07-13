@@ -8,3 +8,7 @@ export type BranchesProp = {
   phoneNumber: string;
   workTime: string;
 };
+
+export type BranchCardProps = {
+  branchItem: BranchesProp;
+};
