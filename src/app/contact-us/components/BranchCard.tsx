@@ -1,15 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Branch } from "./BranchList";
 import expandDesktopIcon from "@/assets/images/icons/expand-desktop.svg";
 import CustomButton from "@/components/ui/CustomButton";
+import { BranchesProp } from "../lib/types";
 
 type BranchCardProps = {
-  data: Branch;
+  branchItem: BranchesProp;
 };
 
-export default function BranchCard({ data }: BranchCardProps) {
-  const { title, image, address, phoneNumber, workTime } = data;
+export default function BranchCard({ branchItem }: BranchCardProps) {
+  const { title, image, address, phoneNumber, workTime } = branchItem;
 
   return (
     <article className="border border-[#CBCBCB] rounded-sm overflow-hidden md:grid md:grid-cols-2 md:h-52 group md:rounded-lg md:hover:shadow-md">
