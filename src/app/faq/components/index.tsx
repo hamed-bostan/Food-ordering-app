@@ -3,10 +3,14 @@
 import { useState } from "react";
 import ContentSection from "./ContentSection";
 import image1 from "@/assets/images/bannerImages/banner-10.webp";
-import { tabDetails } from "@/lib/faq";
+import { tabDetails } from "@/app/faq/lib/faq";
 import Banner from "@/components/ui/Banner";
-
-type ActiveTab = "faq" | "rules" | "privacyPolicy";
+import {
+  ActiveTab,
+  CategoryNavigationProps,
+  ContentDisplayProps,
+  Tab,
+} from "../lib/types";
 
 export default function FAQ() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("faq");
@@ -30,16 +34,6 @@ export default function FAQ() {
     </>
   );
 }
-
-type CategoryNavigationProps = {
-  handleTabClick: (tab: ActiveTab) => void;
-  activeTab: ActiveTab;
-};
-
-type Tab = {
-  id: ActiveTab;
-  label: string;
-};
 
 function CategoryNavigation({
   handleTabClick,
@@ -69,10 +63,6 @@ function CategoryNavigation({
     </nav>
   );
 }
-
-type ContentDisplayProps = {
-  activeTab: ActiveTab;
-};
 
 function ContentDisplay({ activeTab }: ContentDisplayProps) {
   const filteredSections = tabDetails.filter(
