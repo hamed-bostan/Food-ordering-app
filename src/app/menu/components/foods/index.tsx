@@ -1,12 +1,5 @@
-import { ProductType } from "@/lib/api/getProducts";
+import { FoodsProps } from "../../lib/types";
 import FoodList from "./FoodList";
-
-type FoodsProps = {
-  selectedCategory: string;
-  products: ProductType[];
-  loading: boolean;
-  error: string | null;
-};
 
 export default function Foods({
   selectedCategory,

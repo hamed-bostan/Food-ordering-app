@@ -1,19 +1,15 @@
-import { FoodCategory } from ".";
+import { FoodTypesProps } from "../../lib/food-types-list";
 
-type FoodTypesCardProps = {
-  item: FoodCategory;
-};
-
-export default function FoodTypesCard({ item }: FoodTypesCardProps) {
+export default function FoodTypesItem({ type }: FoodTypesProps) {
   return (
     <p
       className={`border-b transition-all ${
-        item.type === "غذای اصلی"
+        type === "غذای اصلی"
           ? "font-medium text-[#417F56] border-[#417F56] md:font-bold"
           : "border-transparent text-sm text-[#717171] md:text-base"
       }`}
     >
-      {item.type}
+      {type}
     </p>
   );
 }

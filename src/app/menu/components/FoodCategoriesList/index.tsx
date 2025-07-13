@@ -1,5 +1,5 @@
+import { FoodCategoriesListProps } from "../../lib/types";
 import FoodCategoriesCard from "./FoodCategoriesCard";
-import { FoodCategoriesListProps } from "./types";
 
 export default function FoodCategoriesList({
   setSelectedCategory,
@@ -14,7 +14,7 @@ export default function FoodCategoriesList({
   ];
 
   return (
-    <ul className="flex gap-2 flex-wrap md:gap-3 px-5 lg:px-10 2xl:px-28">
+    <ul className="flex flex-wrap gap-2 px-5 md:gap-3 lg:px-10 2xl:px-28">
       {FoodCategories.map((item, index) => (
         <li key={index}>
           <FoodCategoriesCard

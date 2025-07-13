@@ -1,5 +1,5 @@
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
-import { FoodCategoriesCardProps } from "./types";
+import { FoodCategoriesCardProps } from "../../lib/types";
 
 export default function FoodCategoriesCard({
   item,

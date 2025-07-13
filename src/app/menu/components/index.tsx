@@ -4,7 +4,7 @@ import { useState } from "react";
 import Banner from "../../../components/ui/Banner";
 import FoodCategoriesList from "./FoodCategoriesList";
 import Foods from "./foods";
-import FoodTypesList from "./FoodTypesList";
+import FoodTypesList from "./foodTypesList";
 import CheckoutButton from "./CheckoutButton";
 import image1 from "@/assets/images/bannerImages/banner-05.webp";
 import { useQuery } from "@tanstack/react-query";

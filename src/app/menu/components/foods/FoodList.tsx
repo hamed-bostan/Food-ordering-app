@@ -1,11 +1,5 @@
-import { ProductType } from "@/lib/api/getProducts";
+import { FoodListProps } from "../../lib/types";
 import FoodCard from "./FoodCard";
-
-type FoodListProps = {
-  filter: string;
-  title?: string;
-  products: ProductType[];
-};
 
 export default function FoodList({ filter, title, products }: FoodListProps) {
   const filteredFood = products.filter((item) => item.category === filter);
