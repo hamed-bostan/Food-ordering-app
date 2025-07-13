@@ -3,7 +3,7 @@
 import { useState } from "react";
 import ContentSection from "./ContentSection";
 import image1 from "@/assets/images/bannerImages/banner-10.webp";
-import { tabDetails } from "@/app/faq/lib/faq";
+import { tabDetails } from "@/app/faq/lib/tab-details";
 import Banner from "@/components/ui/Banner";
 import {
   ActiveTab,
