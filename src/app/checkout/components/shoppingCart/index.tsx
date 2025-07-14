@@ -2,10 +2,10 @@
 
 import { useSelector } from "react-redux";
 import Items from "./items";
-import EmptyStateMessage from "@/components/common/EmptyStateMessage";
 import { useCheckoutTab } from "@/app/checkout/context/CheckoutTabContext";
 import CartSummary from "../CartSummary";
 import { RootState } from "@/store/store";
+import EmptyStateMessage from "@/components/shared/EmptyStateMessage";
 
 export default function ShoppingCart() {
   const { activeTab } = useCheckoutTab();

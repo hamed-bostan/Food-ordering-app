@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchUserById } from "@/lib/api/fetchUserById";
 import { useLogoutDialog } from "@/app/userPanel/context/LogoutContext";
 import { Dispatch, SetStateAction } from "react";
-import { userMenuItems } from "@/components/common/UserMenuItems";
+import { userMenuItems } from "@/components/shared/UserMenuItems";
 
 type SidebarProps = {
   setActiveTab: Dispatch<SetStateAction<number>>;

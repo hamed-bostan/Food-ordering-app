@@ -1,13 +1,13 @@
 import "./globals.css";
-import Footer from "@/components/common/footer";
 import ProviderWrapper from "@/app/_providers/ProviderWrapper";
 import SessionProviderWrapper from "@/app/_providers/SessionProviderWrapper";
 import ThemeRegistry from "@/lib/theme/ThemeRegistry";
-import AppHeader from "@/components/common/appHeader";
 import { ReactNode } from "react";
 import QueryProvider from "@/app/_providers/QueryProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
+import AppHeader from "@/components/shared/appHeader";
+import Footer from "@/components/shared/footer";
 
 export const metadata = {
   title: "Food ordering app",
