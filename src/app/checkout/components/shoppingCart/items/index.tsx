@@ -1,13 +1,8 @@
 import { useSelector } from "react-redux";
 import ItemsDesktop from "./itemsDesktop";
 import { RootState } from "@/store/store";
-import { ProductType } from "@/lib/api/getProducts";
 import ItemsOverviewMobile from "../../itemsOverviewMobile";
-
-// Extend Product to include quantity from CartItem
-export type FullCartProduct = ProductType & {
-  quantity: number;
-};
+import { FullCartProduct } from "../lib/types";
 
 export default function Items() {
   const selectedItems: FullCartProduct[] = useSelector(

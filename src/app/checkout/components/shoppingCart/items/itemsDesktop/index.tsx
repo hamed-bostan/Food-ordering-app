@@ -1,11 +1,7 @@
 "use client";
 
-import { FullCartProduct } from "..";
+import { ItemsDesktopProps } from "../../lib/types";
 import ItemsCard from "./ItemsCard";
-
-type ItemsDesktopProps = {
-  selectedItems: FullCartProduct[];
-};
 
 export default function ItemsDesktop({ selectedItems }: ItemsDesktopProps) {
   return (
