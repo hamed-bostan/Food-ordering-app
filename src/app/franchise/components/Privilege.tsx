@@ -1,21 +1,6 @@
 import Image from "next/image";
 import franchiseIcon from "@/assets/images/icons/franchise-icon.svg";
-
-type PrivilegeDetail = {
-  id: number;
-  text: string;
-};
-
-const PrivilegeDetails: PrivilegeDetail[] = [
-  { id: 1, text: "استفاده از برند شناخته شده ترخینه" },
-  { id: 2, text: "مشاوره در امور حقوقی، مالی و مالیاتی" },
-  { id: 3, text: "به حداقل رساندن ریسک سرمایه گذاری" },
-  { id: 4, text: "پشتیبانی بازاریابی و منابع انسانی" },
-  { id: 5, text: "تسریع روند بازگشت سرمایه" },
-  { id: 6, text: "دریافت مشاوره جهت تامین مواد اولیه و تجهیزات" },
-  { id: 7, text: "مشاوره های تخصصی جهت مدیریت رستوران" },
-  { id: 8, text: "طرح های تشویقی برای ارتقا فروش" },
-];
+import { PrivilegeDetails } from "../lib/PrivilegeDetails";
 
 export default function Privilege() {
   return (

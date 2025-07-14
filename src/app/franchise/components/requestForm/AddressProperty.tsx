@@ -104,7 +104,6 @@ export default function AddressProperty() {
           </FormHelperText>
         </FormControl>
 
-        {/* Region Input */}
         <Input
           label="منطقه"
           {...register("region")}
@@ -112,7 +111,6 @@ export default function AddressProperty() {
           helperText={getErrorMessage(errors.region)}
         />
 
-        {/* Address Input */}
         <Input
           label="آدرس دقیق"
           multiline
