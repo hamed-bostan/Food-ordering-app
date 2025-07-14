@@ -15,3 +15,8 @@ export type FoodItemProps = {
 
 // Reuse properties from FullCartProduct
 export type FoodImageProps = Pick<FullCartProduct, "image" | "title">;
+
+export type ItemsOverviewMobileProps = {
+  selectedItems: ProductType[];
+  containerStyle?: string;
+};

@@ -1,12 +1,7 @@
 import ItemsCard from "./ItemsCard";
 import { useCheckoutTab } from "@/app/checkout/context/CheckoutTabContext";
-import { ProductType } from "@/lib/api/getProducts";
 import { Divider } from "@mui/material";
-
-type ItemsOverviewMobileProps = {
-  selectedItems: ProductType[];
-  containerStyle?: string;
-};
+import { ItemsOverviewMobileProps } from "../../shoppingCart/lib/types";
 
 export default function ItemsOverviewMobile({
   selectedItems,
