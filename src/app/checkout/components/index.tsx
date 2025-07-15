@@ -1,6 +1,6 @@
 "use client";
 
-import Header from "./header";
+import Header from "./shared/header";
 import OrderOverview from "./orderOverview";
 import Payments from "./payments";
 
