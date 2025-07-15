@@ -6,8 +6,7 @@ import MoreInformation from "./MoreInformation";
 import { useState } from "react";
 import InPersonPickup from "./InPersonPickup";
 import MyAddresses from "@/app/userPanel/components/myAddresses";
-
-export type OrderMethodType = "courier" | "pickup";
+import { OrderMethodType } from "./lib/types";
 
 export default function OrderOverview() {
   const [selectedTab, setSelectedTab] = useState<OrderMethodType>("courier");

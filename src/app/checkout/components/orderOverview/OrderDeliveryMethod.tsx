@@ -4,13 +4,7 @@ import {
   ShoppingBagOutlined,
   LocalShippingOutlined,
 } from "@mui/icons-material";
-import { OrderMethodType } from ".";
-import { Dispatch, SetStateAction } from "react";
-
-type OrderDeliveryMethodProps = {
-  selectedTab: OrderMethodType;
-  setSelectedTab: Dispatch<SetStateAction<OrderMethodType>>;
-};
+import { OrderDeliveryMethodProps, OrderMethodType } from "./lib/types";
 
 export default function OrderDeliveryMethod({
   selectedTab,
@@ -22,7 +16,7 @@ export default function OrderDeliveryMethod({
 
   return (
     <div className="border border-[#CBCBCB] rounded-lg text-xs text-[#717171] p-4 md:text-sm md:flex justify-between mb-3 md:mb-5">
-      <div className="flex gap-x-1 items-center mb-2 md:mb-0">
+      <div className="flex items-center mb-2 gap-x-1 md:mb-0">
         <LocalShippingOutlined
           sx={{
             color: "#353535",
@@ -34,7 +28,7 @@ export default function OrderDeliveryMethod({
         </span>
       </div>
       <Divider className="md:hidden" />
-      <div className="flex items-center gap-x-1 lg:gap-x-2 mt-2 mb-4 md:my-0">
+      <div className="flex items-center mt-2 mb-4 gap-x-1 lg:gap-x-2 md:my-0">
         <Checkbox
           size="small"
           checked={selectedTab === "courier"}
@@ -54,7 +48,7 @@ export default function OrderDeliveryMethod({
           <label htmlFor="term1" className="text-nowrap">
             ارسال توسط پیک
           </label>
-          <span className="hidden lg:block text-xs">
+          <span className="hidden text-xs lg:block">
             توسط پیک رستوران ارسال شود.
           </span>
         </div>
@@ -65,7 +59,7 @@ export default function OrderDeliveryMethod({
           }}
         />
       </div>
-      <div className="flex items-center gap-x-1 lg:gap-x-2 mb-4 md:mb-0">
+      <div className="flex items-center mb-4 gap-x-1 lg:gap-x-2 md:mb-0">
         <Checkbox
           id="term2"
           checked={selectedTab === "pickup"}
@@ -85,7 +79,7 @@ export default function OrderDeliveryMethod({
           <label htmlFor="term2" className="text-nowrap">
             تحویل حضوری
           </label>
-          <span className="hidden lg:block text-xs text-nowrap">
+          <span className="hidden text-xs lg:block text-nowrap">
             حضوری تحویل میگیرم.
           </span>
         </div>
