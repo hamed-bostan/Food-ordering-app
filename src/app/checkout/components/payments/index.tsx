@@ -6,8 +6,8 @@ import DiscountCode from "./DiscountCode";
 import PaymentMethod from "./PaymentMethod";
 import OnlinePayment from "./OnlinePayment";
 import PayOnDelivery from "./PayOnDelivery";
+import { PaymentMethodType } from "./lib/types";
 
-export type PaymentMethodType = "OnlinePayment" | "PayOnDelivery";
 
 export default function Payments() {
   const [selectedTab, setSelectedTab] =
