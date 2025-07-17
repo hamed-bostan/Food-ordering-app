@@ -1,9 +1,8 @@
-// ProviderWrapper.tsx
 "use client";
 
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { store, persistor } from "@/store/store"; // Import from store.ts
+import { store, persistor } from "@/store/store";
 import { AddressDialogProvider } from "@/context/AddressDialogContext";
 import { ReactNode } from "react";
 
