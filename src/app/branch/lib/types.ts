@@ -1,4 +1,5 @@
 import { ProductType } from "@/lib/api/getProducts";
+import { StaticImageData } from "next/image";
 
 export type FoodListProps = {
   title: string;
@@ -8,7 +9,14 @@ export type FoodListProps = {
   products: ProductType[];
 };
 
-
 export type ProductItemProps = {
   item: ProductType;
+};
+
+export type TestimonialProps = {
+  id: number;
+  image: StaticImageData;
+  name: string;
+  date: string;
+  comment: string;
 };

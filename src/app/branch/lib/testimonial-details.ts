@@ -1,4 +1,3 @@
-import { StaticImageData } from "next/image";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -6,16 +5,9 @@ import image1 from "@/assets/images/avatars/01.png";
 import image2 from "@/assets/images/avatars/02.png";
 import image3 from "@/assets/images/avatars/03.png";
 import image4 from "@/assets/images/avatars/04.png";
+import { TestimonialProps } from "./types";
 
-type Testimonial = {
-  id: number;
-  image: StaticImageData;
-  name: string;
-  date: string;
-  comment: string;
-};
-
-export const testimonialDetails: Testimonial[] = [
+export const testimonialDetails: TestimonialProps[] = [
   {
     id: 1,
     image: image1,

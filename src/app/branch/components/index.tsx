@@ -3,8 +3,8 @@ import ActionButton from "./ActionButton";
 import Address from "./Address";
 import BranchList from "./BranchList";
 import FoodHighlights from "./foodHighlights";
-import Testimonials from "./Testimonials";
 import image1 from "@/assets/images/bannerImages/banner-04.webp";
+import TestimonialSlider from "./TestimonialSlider";
 
 export default function RestaurantBranch() {
   return (
@@ -16,7 +16,7 @@ export default function RestaurantBranch() {
         <BranchList />
         <Address />
       </div>
-      <Testimonials />
+      <TestimonialSlider />
     </section>
   );
 }
