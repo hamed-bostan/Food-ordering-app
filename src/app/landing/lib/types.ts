@@ -1,14 +1,14 @@
 import { SvgIconComponent } from "@mui/icons-material";
 import { StaticImageData } from "next/image";
 
-export type CardItem = {
+export type CardItemProps = {
   id: number;
   icon: SvgIconComponent;
   text: string;
 };
 
 export type CardSectionProps = {
-  data: CardItem[];
+  data: CardItemProps[];
 };
 
 export type BranchProps = {

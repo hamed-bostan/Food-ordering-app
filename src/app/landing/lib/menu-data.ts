@@ -4,13 +4,13 @@ import image2 from "@/assets/images/firstPageImages/02.png";
 import image3 from "@/assets/images/firstPageImages/03.png";
 import image4 from "@/assets/images/firstPageImages/04.png";
 
-type MenuItem = {
+export type MenuItemProps = {
   id: number;
   image: StaticImageData;
   text: string;
 };
 
-export const menuInformation: MenuItem[] = [
+export const menuInformation: MenuItemProps[] = [
   {
     id: 1,
     image: image1,

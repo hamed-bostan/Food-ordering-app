@@ -4,9 +4,9 @@ import {
   WifiOutlined,
   EventNoteOutlined,
 } from "@mui/icons-material";
-import { CardItem } from "./types";
+import { CardItemProps } from "./types";
 
-export const cardItems: CardItem[] = [
+export const cardItems: CardItemProps[] = [
   {
     id: 1,
     icon: Person2Outlined,

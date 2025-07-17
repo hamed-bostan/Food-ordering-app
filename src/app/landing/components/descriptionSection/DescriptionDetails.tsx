@@ -1,27 +1,7 @@
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import Image from "next/image";
-import image1 from "@/assets/images/bannerImages/banner-02.webp";
 import CustomButton from "@/components/ui/CustomButton";
-import { cardItems } from "../lib/card-items";
-import { CardSectionProps } from "../lib/types";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
-export default function DescriptionSection() {
-  return (
-    <section className="relative px-5 py-4 md:h-80 md:grid md:grid-cols-2 md:place-items-center lg:gap-x-10 lg:px-10 2xl:px-28">
-      <Image
-        src={image1}
-        alt="description background"
-        fill
-        className="object-cover object-center -z-10"
-        priority
-      />
-      <DescriptionDetails />
-      <CardSection data={cardItems} />
-    </section>
-  );
-}
-
-function DescriptionDetails() {
+export default function DescriptionDetails() {
   return (
     <section className="text-[#FFFFFF] mb-6 md:mb-0">
       <h2 className="block mb-2 md:text-lg md:mb-4">
@@ -50,21 +30,5 @@ function DescriptionDetails() {
         اطلاعات بیشتر
       </CustomButton>
     </section>
-  );
-}
-
-function CardSection({ data }: CardSectionProps) {
-  return (
-    <ul className="grid grid-cols-2 gap-x-12 gap-y-4 md:gap-6 md:mr-auto">
-      {data.map((item) => (
-        <li
-          key={item.id}
-          className="flex flex-col items-center gap-y-1 md:gap-y-3 text-[#FFFFFF]"
-        >
-          <item.icon sx={{ fontSize: { xs: 23, md: 28 } }} />
-          <p className="block text-xs text-center md:text-sm">{item.text}</p>
-        </li>
-      ))}
-    </ul>
   );
 }
