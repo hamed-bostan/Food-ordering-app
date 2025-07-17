@@ -1,6 +1,6 @@
 import Image from "next/image";
 import expandDesktopIcon from "@/assets/images/icons/expand-desktop.svg";
-import { DisplayImageProps } from "../lib/types";
+import { DisplayImageProps } from "../../lib/types";
 
 export default function DisplayImage({ image, title }: DisplayImageProps) {
   return (

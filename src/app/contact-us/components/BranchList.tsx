@@ -1,5 +1,5 @@
 import { branches } from "../lib/branch-list";
-import BranchCard from "./BranchCard";
+import BranchCard from "./branchCard";
 
 export default function BranchList() {
   return (

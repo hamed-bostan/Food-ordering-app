@@ -1,4 +1,4 @@
-import { BranchesProp } from "../lib/types";
+import { BranchesProp } from "../../lib/types";
 import ActionButtons from "./ActionButtons";
 import BranchContent from "./BranchContent";
 import DisplayImage from "./DisplayImage";

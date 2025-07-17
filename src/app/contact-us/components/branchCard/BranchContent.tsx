@@ -1,4 +1,4 @@
-import { BranchContentProps } from "../lib/types";
+import { BranchContentProps } from "../../lib/types";
 
 export default function BranchContent({
   title,
