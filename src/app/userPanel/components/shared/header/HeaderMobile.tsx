@@ -23,7 +23,6 @@ export default function HeaderMobile({
 
     if (activeTab === 1) {
       openLogoutDialog();
-      console.log("active");
     }
   }
 

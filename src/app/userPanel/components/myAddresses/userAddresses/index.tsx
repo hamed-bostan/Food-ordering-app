@@ -1,4 +1,4 @@
-import HeaderDesktop from "../../header/HeaderDesktop";
+import HeaderDesktop from "../../shared/header/HeaderDesktop";
 import { useAddressDialog } from "@/context/AddressDialogContext";
 import UserAddressList from "./UserAddressList";
 import { usePathname } from "next/navigation";

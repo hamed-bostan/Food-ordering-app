@@ -4,7 +4,7 @@ import { ComponentType, useState } from "react";
 import Logout from "./logout";
 import Sidebar from "./Sidebar";
 import Profile from "./profile";
-import HeaderMobile from "./header/HeaderMobile";
+import HeaderMobile from "./shared/header/HeaderMobile";
 import MyAddresses from "./myAddresses";
 import { LogoutDialogProvider } from "@/app/userPanel/context/LogoutContext";
 

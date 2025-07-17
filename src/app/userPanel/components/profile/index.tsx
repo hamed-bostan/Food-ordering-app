@@ -1,6 +1,6 @@
 "use client";
 
-import HeaderDesktop from "../header/HeaderDesktop";
+import HeaderDesktop from "../shared/header/HeaderDesktop";
 import { FormProvider, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { CircularProgress } from "@mui/material";
