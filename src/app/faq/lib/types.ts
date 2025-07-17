@@ -5,7 +5,7 @@ export type CategoryNavigationProps = {
   activeTab: ActiveTab;
 };
 
-export type Tab = {
+export type categoryNavigationItemsProps = {
   id: ActiveTab;
   label: string;
 };
