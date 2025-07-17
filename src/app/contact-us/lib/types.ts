@@ -9,6 +9,6 @@ export type BranchesProp = {
   workTime: string;
 };
 
-export type BranchCardProps = {
-  branchItem: BranchesProp;
-};
+export type BranchContentProps = Omit<BranchesProp, "id" | "image">;
+
+export type DisplayImageProps = Pick<BranchesProp, "image" | "title">;

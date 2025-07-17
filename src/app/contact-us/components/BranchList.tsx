@@ -7,7 +7,7 @@ export default function BranchList() {
       <ul className="flex flex-col gap-y-7">
         {branches.map((item) => (
           <li key={item.id}>
-            <BranchCard branchItem={item} />
+            <BranchCard {...item} />
           </li>
         ))}
       </ul>
