@@ -2,7 +2,7 @@
 
 import { ComponentType, useState } from "react";
 import Logout from "./logout";
-import Sidebar from "./Sidebar";
+import Sidebar from "./shared/sidebar";
 import Profile from "./profile";
 import HeaderMobile from "./shared/header/HeaderMobile";
 import MyAddresses from "./myAddresses";
