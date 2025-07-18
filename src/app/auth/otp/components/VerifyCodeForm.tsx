@@ -11,7 +11,6 @@ export default function VerifyCodeForm({
   goBack,
   phone,
   resendOtp,
-  setOtpStatus,
 }: VerifyCodeFormProps) {
   const inputsRef = useRef<HTMLInputElement[]>([]);
   const [otpValues, setOtpValues] = useState<string[]>(["", "", "", "", ""]);
@@ -38,7 +37,7 @@ export default function VerifyCodeForm({
     setOtpValues(newOtpValues);
 
     const otpString = newOtpValues.join("");
-    setOtpValue("otp", otpString); // correct react-hook-form state update
+    setOtpValue("otp", otpString);
 
     if (val && index < 4) {
       inputsRef.current[index + 1]?.focus();
@@ -49,6 +48,14 @@ export default function VerifyCodeForm({
     if (e.key === "Backspace" && !otpValues[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
     }
+  };
+
+  const handleResendClick = () => {
+    resendOtp();
+    setOtpValues(["", "", "", "", ""]);
+    setOtpValue("otp", "");
+    setTimeLeft(120);
+    inputsRef.current[0]?.focus();
   };
 
   return (
@@ -71,7 +78,7 @@ export default function VerifyCodeForm({
               value={val}
               onChange={(e) => handleChange(e, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              autoFocus={index === 0} // focus on first input
+              autoFocus={index === 0}
               className={`h-8 text-center border rounded w-[3.125rem] transition-colors outline-none focus:border-2 focus:border-[#717171] ${
                 otpStatus === "success"
                   ? "border-[#417F56] border-2"
@@ -91,14 +98,7 @@ export default function VerifyCodeForm({
             <button
               type="button"
               className="ml-auto text-[#417F56]"
-              onClick={() => {
-                resendOtp();
-                setTimeLeft(120); // reset timer after resending
-                setOtpValues(["", "", "", "", ""]); // clear inputs
-                setOtpValue("otp", ""); // clear react-hook-form state
-                inputsRef.current[0]?.focus(); // focus first input again
-                setOtpStatus("");
-              }}
+              onClick={handleResendClick}
             >
               دریافت مجدد کد
             </button>

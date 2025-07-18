@@ -21,7 +21,6 @@ export type VerifyCodeFormProps = {
   errors: FieldErrors<{ otp: string }>;
   onSubmit: (e?: BaseSyntheticEvent) => void;
   otpStatus: "success" | "error" | "";
-  setOtpStatus: (status: "success" | "error" | "") => void;
   goBack: () => void;
   phone: string;
   resendOtp: () => void;
