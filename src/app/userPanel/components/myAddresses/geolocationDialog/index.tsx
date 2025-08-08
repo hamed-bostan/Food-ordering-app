@@ -33,9 +33,9 @@ export function GeolocationDialog() {
             padding: { xs: 1, md: 2 },
           }}
         >
-          <button className="text-sm md:text-base text-[#353535]">
+          <p className="text-sm md:text-base text-[#353535] select-none">
             افزودن آدرس
-          </button>
+          </p>
         </DialogTitle>
         <DialogActions>
           <Button onClick={closeGeolocationDialog} sx={{ color: "#717171" }}>
