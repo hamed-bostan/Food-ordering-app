@@ -1,5 +1,7 @@
 "use client";
+
 import { useState } from "react";
+import axios from "axios";
 import LocationPicker from "./LocationPicker";
 
 type Coordinates = {
@@ -12,13 +14,20 @@ export default function AddressRetrieval() {
   const [address, setAddress] = useState<string | null>(null);
 
   // Function to get address from coordinates
-  const fetchAddress = async (lat: number, lon: number): Promise<string> => {
+  const getAddress = async (lat: number, lon: number): Promise<string> => {
     try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`
+      const response = await axios.get(
+        "https://nominatim.openstreetmap.org/reverse",
+        {
+          params: {
+            format: "json",
+            lat,
+            lon,
+          },
+        }
       );
-      const data = await response.json();
-      return data.display_name || "Address not found"; // Full address and Ensure a valid fallback
+
+      return response.data.display_name || "Address not found"; // Full address and Ensure a valid fallback
     } catch (error) {
       console.error("Error fetching address:", error);
       return "Address not found";
@@ -32,7 +41,7 @@ export default function AddressRetrieval() {
   ): Promise<void> => {
     setLocation({ lat, lon });
 
-    const fetchedAddress = await fetchAddress(lat, lon);
+    const fetchedAddress = await getAddress(lat, lon);
     setAddress(fetchedAddress);
   };
 
