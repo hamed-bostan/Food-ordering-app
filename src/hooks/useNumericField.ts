@@ -1,4 +1,4 @@
-import { getErrorMessage } from "@/utils/formHelpers";
+import { getErrorMessage } from "@/lib/utils/formHelpers";
 import { ChangeEvent } from "react";
 import { useFormContext } from "react-hook-form";
 

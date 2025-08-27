@@ -1,0 +1,16 @@
+import MenuSection from "./MenuSection";
+import DescriptionSection from "./descriptionSection";
+import BranchOverview from "./branchOverview";
+import image1 from "@/assets/images/bannerImages/banner-01.webp";
+import Banner from "@/components/ui/Banner";
+
+export default function Landing() {
+  return (
+    <>
+      <Banner imageSrc={image1} text="تجربه غذای سالم و گیاهی به سبک ترخینه" />
+      <MenuSection />
+      <DescriptionSection />
+      <BranchOverview />
+    </>
+  );
+}

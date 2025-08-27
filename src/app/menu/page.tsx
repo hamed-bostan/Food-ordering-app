@@ -1,4 +1,4 @@
-import RestaurantMenu from "@/components/RestaurantMenu";
+import RestaurantMenu from "./components";
 
 export default function RestaurantMenuPage() {
   return <RestaurantMenu />;

@@ -1,9 +1,9 @@
 "use client";
-import UserPanel from "@/components/userPanel";
 
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import UserPanel from "./components";
 
 export default function UserPanelPage() {
   const { data: session, status } = useSession();
