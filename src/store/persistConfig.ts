@@ -3,7 +3,7 @@ import storage from "redux-persist/lib/storage"; // Default local storage for we
 const persistConfig = {
   key: "root", // key to store the persisted state
   storage, // storage engine (localStorage for web)
-  whitelist: ["cart", "address"], // list of reducers to persist (cart and address in your case)
+  whitelist: ["cart"], // list of reducers to persist
 };
 
 export default persistConfig;
