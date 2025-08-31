@@ -1,17 +1,12 @@
 import { combineReducers } from "redux";
 import cartReducer, { CartState } from "../redux/slices/cart/cartSlice";
-import addressReducer, {
-  AddressState,
-} from "../redux/slices/address/addressSlice";
 
 const rootReducer = combineReducers({
   cart: cartReducer,
-  address: addressReducer,
 });
 
 export type RootState = {
   cart: CartState;
-  address: AddressState;
 };
 
 // Ensure that the initial state is not undefined
@@ -27,7 +22,6 @@ const combinedReducer = (
         totalPrice: 0,
         checkout: false,
       },
-      address: { addresses: [] },
     };
   }
 

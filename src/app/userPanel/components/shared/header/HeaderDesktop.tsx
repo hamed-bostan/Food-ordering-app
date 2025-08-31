@@ -5,34 +5,23 @@ import CustomButton from "@/components/ui/CustomButton";
 
 type HeaderDesktopProps = {
   label: string;
-  style?: string; // Optional style prop
-  button?: boolean; // Optional button prop
-  openGeolocationDialog?: () => void; // Optional function for opening geolocation dialog
+  style?: string;
+  button?: boolean;
+  handleClick?: () => void;
 };
 
-export default function HeaderDesktop({
-  label,
-  style,
-  button,
-  openGeolocationDialog,
-}: HeaderDesktopProps) {
+export default function HeaderDesktop({ label, style, button, handleClick }: HeaderDesktopProps) {
   const pathname = usePathname();
 
   return (
-    <div
-      className={`${pathname === "/userPanel" && "hidden"} md:block ${style}`}
-    >
+    <div className={`${pathname === "/userPanel" && "hidden"} md:block ${style}`}>
       <div className="flex items-center justify-between mb-2">
         <p className="block text-[#353535]">{label}</p>
         {button && (
           <CustomButton
             variant="outlined"
-            onClick={openGeolocationDialog}
-            startIcon={
-              <AddCircleOutlineOutlinedIcon
-                sx={{ width: "18px", height: "18px" }}
-              />
-            }
+            onClick={handleClick}
+            startIcon={<AddCircleOutlineOutlinedIcon sx={{ width: "18px", height: "18px" }} />}
             sx={{
               display: {
                 xs: pathname === "/checkout" ? "flex" : "none",
