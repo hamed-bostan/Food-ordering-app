@@ -1,9 +1,7 @@
 import { Button } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 import CustomButton from "../ui/CustomButton";
-import { useAddressDialog } from "../../context/AddressDialogContext";
 import svgIcon from "@/assets/images/icons/empty-icon.svg";
 
 type EmptyStateMessageProps = {
@@ -11,16 +9,10 @@ type EmptyStateMessageProps = {
   button?: boolean;
   buttonText?: string;
   href?: string;
+  onClick?: () => void;
 };
 
-export default function EmptyStateMessage({
-  text,
-  button,
-  buttonText,
-  href,
-}: EmptyStateMessageProps) {
-  const { openGeolocationDialog } = useAddressDialog(); // Access the context values
-
+export default function EmptyStateMessage({ text, button, buttonText, href, onClick }: EmptyStateMessageProps) {
   return (
     <div className="relative border border-[#CBCBCB] rounded-lg min-h-96">
       <Image
@@ -58,8 +50,8 @@ export default function EmptyStateMessage({
           </Link>
         ) : (
           <Button
+            onClick={onClick}
             variant="outlined"
-            onClick={openGeolocationDialog}
             sx={{
               color: "#417F56",
               borderColor: "#417F56",

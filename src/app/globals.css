@@ -1,31 +1,27 @@
 @font-face {
   font-family: "CustomFont";
-  src: url("/fonts/woff2/Estedad-Regular.woff2") format("woff2"),
-    url("/fonts/ttf/Estedad-Regular.ttf") format("ttf");
+  src: url("/fonts/woff2/Estedad-Regular.woff2") format("woff2"), url("/fonts/ttf/Estedad-Regular.ttf") format("ttf");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
   font-family: "CustomFont";
-  src: url("/fonts/woff2/Estedad-Medium.woff2") format("woff2"),
-    url("/fonts/ttf/Estedad-Medium.ttf") format("ttf");
+  src: url("/fonts/woff2/Estedad-Medium.woff2") format("woff2"), url("/fonts/ttf/Estedad-Medium.ttf") format("ttf");
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
   font-family: "CustomFont";
-  src: url("/fonts/woff2/Estedad-SemiBold.woff2") format("woff2"),
-    url("/fonts/ttf/Estedad-SemiBold.ttf") format("ttf");
+  src: url("/fonts/woff2/Estedad-SemiBold.woff2") format("woff2"), url("/fonts/ttf/Estedad-SemiBold.ttf") format("ttf");
   font-weight: 600;
   font-style: normal;
 }
 
 @font-face {
   font-family: "CustomFont";
-  src: url("/fonts/woff2/Estedad-Bold.woff2") format("woff2"),
-    url("/fonts/ttf/Estedad-Bold.ttf") format("ttf");
+  src: url("/fonts/woff2/Estedad-Bold.woff2") format("woff2"), url("/fonts/ttf/Estedad-Bold.ttf") format("ttf");
   font-weight: 700;
   font-style: normal;
 }
@@ -40,4 +36,24 @@
 
 body {
   font-family: var(--font-custom); /* Use your custom font */
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.5rem;
+}
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+  background-color: #ffffff !important;
+  color: #417f56 !important;
+  border-radius: 0.25rem !important;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
 }
