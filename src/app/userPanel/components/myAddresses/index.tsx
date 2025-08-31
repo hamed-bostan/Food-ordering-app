@@ -40,15 +40,15 @@ export default function MyAddresses() {
     setEditIndex(null);
   };
 
-  const saveContactInfo = (newAddress: ContactInfo) => {
+  const saveContactInfo = (newContactInfo: ContactInfo) => {
     let updated: ContactInfo[];
     if (editIndex !== null) {
       // ✏️ Edit mode
       updated = [...contactInfo];
-      updated[editIndex] = newAddress;
+      updated[editIndex] = newContactInfo;
     } else {
       // ➕ Add mode
-      updated = [...contactInfo, newAddress];
+      updated = [...contactInfo, newContactInfo];
     }
     setContactInfo(updated);
     localStorage.setItem("addressForm", JSON.stringify(updated));
