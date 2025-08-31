@@ -11,12 +11,12 @@ export type ContactInfoProps = {
 
 type UserAddressProps = {
   contactInfo: ContactInfoProps[];
-  handleClick: () => void;
-  onDelete: (index: number) => void; // new
-  onEdit: (index: number) => void; // new
+  onOpenDialog: () => void;
+  onDelete: (index: number) => void;
+  onEdit: (index: number) => void;
 };
 
-export default function UserAddresses({ contactInfo, handleClick, onDelete, onEdit }: UserAddressProps) {
+export default function UserAddresses({ contactInfo, onOpenDialog, onDelete, onEdit }: UserAddressProps) {
   const pathname = usePathname();
 
   return (
@@ -25,13 +25,12 @@ export default function UserAddresses({ contactInfo, handleClick, onDelete, onEd
         pathname === "/checkout" ? "border border-[#CBCBCB] p-4 pb-6 rounded-lg" : ""
       }`}
     >
-      <HeaderDesktop label="آدرس ها" style="mb-4" button={true} handleClick={handleClick} />
+      <HeaderDesktop label="آدرس ها" style="mb-4" button={true} handleClick={onOpenDialog} />
 
-      {/* 🔽 Pass down handlers */}
-      <UserAddressList contactInfo={contactInfo} onDelete={onDelete} onEdit={onEdit} onAddClick={handleClick} />
+      <UserAddressList contactInfo={contactInfo} onDelete={onDelete} onEdit={onEdit} />
 
       <CustomButton
-        onClick={handleClick}
+        onClick={onOpenDialog}
         variant="outlined"
         sx={{
           display: pathname === "/checkout" ? "none" : { xs: "flex", md: "none" },

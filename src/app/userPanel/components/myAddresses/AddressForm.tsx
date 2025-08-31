@@ -7,12 +7,12 @@ import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import { AddressContext } from "./context/addressContext";
 
 type AddressFormProps = {
-  onSaveAddress: (newAddress: { name: string; phone_number: string; address: string }) => void;
+  onSaveContactInfo: (newAddress: { name: string; phone_number: string; address: string }) => void;
   onClose: () => void;
   defaultValues?: { name: string; phone_number: string; address: string }; // ✨ added
 };
 
-export default function AddressForm({ onSaveAddress, onClose, defaultValues }: AddressFormProps) {
+export default function AddressForm({ onSaveContactInfo, onClose, defaultValues }: AddressFormProps) {
   const { selectedAddress } = useContext(AddressContext)!;
 
   const [formData, setFormData] = useState({
@@ -39,7 +39,7 @@ export default function AddressForm({ onSaveAddress, onClose, defaultValues }: A
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSaveAddress(formData);
+    onSaveContactInfo(formData);
   };
 
   return (
