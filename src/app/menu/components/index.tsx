@@ -7,8 +7,8 @@ import Foods from "./foods";
 import CheckoutButton from "./CheckoutButton";
 import image1 from "@/assets/images/bannerImages/banner-05.webp";
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "@/lib/api/getProducts";
 import FoodTypesList from "./FoodTypesList";
+import { getProducts } from "@/lib/api/products";
 
 export default function RestaurantMenu() {
   const {

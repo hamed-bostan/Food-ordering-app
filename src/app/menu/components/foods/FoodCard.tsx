@@ -1,4 +1,4 @@
-import { ProductType } from "@/lib/api/getProducts";
+import { ProductType } from "@/lib/schemas/product.schema";
 import FoodDetails from "./FoodDetails";
 import FoodImage from "./FoodImage";
 

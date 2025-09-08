@@ -1,8 +1,8 @@
 "use client";
 
+import { getProducts } from "@/lib/api/products";
 import FoodList from "./FoodList";
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "@/lib/api/getProducts";
 
 export default function FoodHighlights() {
   const {

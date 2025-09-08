@@ -1,18 +1,18 @@
 import { NextResponse } from "next/server";
+import { insertTestimonialToDb, fetchTestimonialsFromDb, mapToTestimonialType } from "@/lib/db/testimonials"; // Adjust path if needed
 import { ZodError } from "zod";
-import { supabaseAdmin } from "@/lib/supabase/admin"; // Use centralized client
-import { productInputSchema, ProductType, NewProductType } from "@/lib/schemas/product.schema";
 import crypto from "crypto";
-import { insertProductToDb, fetchProductsFromDb, mapToProductType } from "@/lib/db/products";
+import { supabaseAdmin } from "@/lib/supabase/admin";
+import { NewTestimonialType, testimonialInputSchema, TestimonialType } from "@/app/branch/lib/testimonial.schema";
 
-const BUCKET_NAME = "food-images";
+const BUCKET_NAME = "testimonials";
 
 export async function GET() {
   try {
-    const products = await fetchProductsFromDb();
-    return NextResponse.json(products);
+    const testimonials = await fetchTestimonialsFromDb();
+    return NextResponse.json(testimonials);
   } catch (error) {
-    console.error("❌ Failed to fetch products:", error);
+    console.error("❌ Failed to fetch testimonials:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json({ error: "ServerError", message: errorMessage }, { status: 500 });
   }
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       }
     }
 
-    const validated = productInputSchema.parse(fields);
+    const validated = testimonialInputSchema.parse(fields);
 
     const image = formData.get("image") as File | null;
     if (!image) {
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     }
 
     const fileExtension = image.name.split(".").pop() || "jpg";
-    const filePath = `products/${crypto.randomUUID()}.${fileExtension}`;
+    const filePath = `testimonials/${crypto.randomUUID()}.${fileExtension}`;
     const { error: uploadError } = await supabaseAdmin.storage.from(BUCKET_NAME).upload(filePath, image);
     if (uploadError) {
       console.error("❌ Supabase upload error:", uploadError);
@@ -50,12 +50,12 @@ export async function POST(req: Request) {
     const { data: urlData } = supabaseAdmin.storage.from(BUCKET_NAME).getPublicUrl(filePath);
     const imageUrl = urlData.publicUrl;
 
-    const product: NewProductType = { ...validated, image: imageUrl };
+    const testimonial: NewTestimonialType = { ...validated, image: imageUrl };
 
-    const _id = await insertProductToDb(product);
-    const createdProduct: ProductType = mapToProductType(product, _id.toString());
+    const _id = await insertTestimonialToDb(testimonial);
+    const createdTestimonial: TestimonialType = mapToTestimonialType(testimonial, _id.toString());
 
-    return NextResponse.json(createdProduct, { status: 201 });
+    return NextResponse.json(createdTestimonial, { status: 201 });
   } catch (error) {
     console.error("❌ Route handler error:", error);
     if (error instanceof ZodError) {

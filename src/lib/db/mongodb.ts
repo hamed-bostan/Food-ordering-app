@@ -4,10 +4,11 @@ const uri = process.env.MONGODB_URI!;
 const options = {};
 
 declare global {
+  // eslint-disable-next-line no-var
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-let client;
+let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 if (!process.env.MONGODB_URI) {
@@ -25,4 +26,7 @@ if (process.env.NODE_ENV === "development") {
   clientPromise = client.connect();
 }
 
-export default clientPromise;
+export const connectToDatabase = async (dbName = "test") => {
+  const connectedClient = await clientPromise;
+  return connectedClient.db(dbName);
+};

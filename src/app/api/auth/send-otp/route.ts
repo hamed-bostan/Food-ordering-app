@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { generateOtp, sendOtp } from "@/lib/otp/helpers";
-import { getDb } from "@/lib/db/getDB";
 import { phoneSchema } from "@/lib/otp/otpValidationSchemas";
+import { connectToDatabase } from "@/lib/db/mongodb";
 
 export const POST = async (req: Request) => {
   try {
@@ -21,7 +21,7 @@ export const POST = async (req: Request) => {
     const { userPhoneNumber } = result.data;
 
     const code = generateOtp();
-    const db = await getDb();
+    const db = await connectToDatabase();
     const collection = db.collection("otps");
 
     // Remove any existing OTPs for this phone number

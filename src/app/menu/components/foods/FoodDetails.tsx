@@ -9,8 +9,8 @@ import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
 import CustomButton from "@/components/ui/CustomButton";
 import { RootState } from "@/store/store";
 import { addItem } from "@/redux/slices/cart/cartSlice";
-import { ProductType } from "@/lib/api/getProducts";
 import { calculateDiscountPrice } from "@/lib/utils/calculateDiscountPrice";
+import { ProductType } from "@/lib/schemas/product.schema";
 
 // second way for just using some of the types
 export default function FoodDetails({ foodItem }: { foodItem: ProductType }) {
