@@ -2,7 +2,7 @@
 
 import { toast } from "react-toastify";
 import { useUpdateUserRole, useUsers } from "@/lib/hooks/useUser";
-import { BaseUser, User } from "@/lib/user/user.types";
+import { User } from "@/lib/user/user.types";
 
 export default function UsersTable() {
   const { data: users = [], isLoading } = useUsers();

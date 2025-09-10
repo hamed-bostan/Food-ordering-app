@@ -12,7 +12,7 @@ export default function AuthPage() {
         <p className="text-[#353535] font-[700] text-lg mb-6">ورود / ثبت‌نام</p>
         <div className="flex flex-col items-center mb-5 gap-y-6">
           <Link
-            href="/api/auth/signin?callbackUrl=/userPanel"
+            href="/api/auth/signin?callbackUrl=/userpanel"
             className="bg-[#417F56] text-white px-4 py-2 rounded hover:bg-[#2f6341] transition min-w-56 text-center"
           >
             از طریق ایمیل و یا گیت هاب

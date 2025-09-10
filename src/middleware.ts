@@ -26,7 +26,7 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Protect /userPanel (any logged-in user)
+  // Protect /userpanel (any logged-in user)
   if (pathname.startsWith("/userpanel")) {
     if (!token) {
       return redirectToHome(req);
