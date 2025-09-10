@@ -8,7 +8,7 @@ import HeaderMobile from "./shared/header/HeaderMobile";
 import MyAddresses from "./myAddresses";
 import { LogoutDialogProvider } from "../context/LogoutContext";
 
-export default function UserPanel() {
+export default function UserPanelComponent() {
   const [activeTab, setActiveTab] = useState<number>(0);
 
   const tabs: ComponentType[] = [Profile, MyAddresses, Logout];
