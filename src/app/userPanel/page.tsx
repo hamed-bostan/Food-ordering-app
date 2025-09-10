@@ -1,23 +1,13 @@
-"use client";
-
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import UserPanel from "./components";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "../api/auth/[...nextauth]/authOptions";
 
-export default function UserPanelPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+export default async function UserPanelPage() {
+  const session = await getServerSession(authOptions);
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.replace("/api/auth/signin?callbackUrl=/userPanel");
-    }
-  }, [status, router]);
-
-  if (status === "loading") return <div>Loading...</div>;
-
-  if (!session) return <div>Redirecting...</div>;
+  // Redirect if not logged in
+  if (!session) redirect("/auth/otp");
 
   return <UserPanel />;
 }

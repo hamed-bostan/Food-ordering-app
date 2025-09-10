@@ -1,7 +1,19 @@
-import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CustomButton from "@/components/ui/CustomButton";
-import { VerifyCodeFormProps } from "@/types/otpForm";
+import { UseFormSetValue } from "react-hook-form";
+import { OtpOnlyFormData } from "../lib/schema/otpSchema";
+
+type VerifyCodeFormProps = {
+  loading: boolean;
+  onSubmit: (e?: React.BaseSyntheticEvent) => void;
+  setOtpValue: UseFormSetValue<OtpOnlyFormData>;
+  otpStatus: "success" | "error" | "";
+  goBack: () => void;
+  phone: string;
+  resendOtp: () => void;
+  otpCode?: string;
+};
 
 export default function VerifyCodeForm({
   loading,
@@ -11,6 +23,7 @@ export default function VerifyCodeForm({
   goBack,
   phone,
   resendOtp,
+  otpCode,
 }: VerifyCodeFormProps) {
   const inputsRef = useRef<HTMLInputElement[]>([]);
   const [otpValues, setOtpValues] = useState<string[]>(["", "", "", "", ""]);
@@ -28,7 +41,7 @@ export default function VerifyCodeForm({
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const val = e.target.value;
     if (!/^\d?$/.test(val)) return;
 
@@ -44,7 +57,7 @@ export default function VerifyCodeForm({
     }
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Backspace" && !otpValues[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
     }
@@ -61,9 +74,8 @@ export default function VerifyCodeForm({
   return (
     <>
       <p className="text-lg font-bold text-[#353535]">کد تایید</p>
-      <p className="text-[#717171] text-sm">
-        کد تایید پنج‌رقمی به شماره {phone} ارسال شد.
-      </p>
+      <p className="text-[#717171] text-sm">کد تایید پنج‌رقمی به شماره {phone} ارسال شد.</p>
+
       <form onSubmit={onSubmit} className="flex flex-col">
         <div className="flex gap-4 mb-2" dir="ltr">
           {otpValues.map((val, index) => (
@@ -85,7 +97,8 @@ export default function VerifyCodeForm({
                   : otpStatus === "error"
                   ? "border-[#C30000] border-2"
                   : "border-[#717171]"
-              }`}
+              }
+              `}
             />
           ))}
         </div>
@@ -95,11 +108,7 @@ export default function VerifyCodeForm({
           {timeLeft > 0 ? (
             <p className="ml-auto">{formatTime()} تا دریافت مجدد کد</p>
           ) : (
-            <button
-              type="button"
-              className="ml-auto text-[#417F56]"
-              onClick={handleResendClick}
-            >
+            <button type="button" className="ml-auto text-[#417F56]" onClick={handleResendClick}>
               دریافت مجدد کد
             </button>
           )}
@@ -113,6 +122,8 @@ export default function VerifyCodeForm({
           {loading ? "در حال تایید..." : "تایید"}
         </CustomButton>
       </form>
+
+      {otpCode && <p className="mt-2 text-xs text-red-500">کد ارسال شده: {otpCode}</p>}
     </>
   );
 }

@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "@/store/store";
 import { ReactNode } from "react";
-import { AddressProvider } from "../userPanel/components/myAddresses/context/addressContext";
+import { AddressProvider } from "../userpanel/components/myAddresses/context/addressContext";
 
 type ProviderWrapperProps = {
   children: ReactNode;

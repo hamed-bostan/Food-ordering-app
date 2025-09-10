@@ -1,4 +1,4 @@
-import { ProductType } from "@/lib/api/getProducts";
+import { ProductType } from "@/lib/schemas/product.schema";
 import { StaticImageData } from "next/image";
 
 export type FoodListProps = {
@@ -14,8 +14,7 @@ export type ProductItemProps = {
 };
 
 export type TestimonialProps = {
-  id: number;
-  image: StaticImageData;
+  image: string | StaticImageData;
   name: string;
   date: string;
   comment: string;

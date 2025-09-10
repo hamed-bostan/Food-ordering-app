@@ -1,4 +1,4 @@
-import { ProductType } from "@/lib/api/getProducts";
+import { ProductType } from "@/lib/schemas/product.schema";
 
 // Extend Product to include quantity from CartItem
 export type FullCartProduct = ProductType & {

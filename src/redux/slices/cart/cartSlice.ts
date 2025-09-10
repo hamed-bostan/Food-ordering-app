@@ -1,4 +1,4 @@
-import { ProductType } from "@/lib/api/getProducts";
+import { ProductType } from "@/lib/schemas/product.schema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // CartItem extends Product by adding quantity
@@ -51,7 +51,7 @@ const cartSlice = createSlice({
       state.checkout = false;
     },
 
-    increase: (state, action: PayloadAction<{ id: number }>) => {
+    increase: (state, action: PayloadAction<{ id: string }>) => {
       const item = state.selectedItems.find(
         (item) => item.id === action.payload.id
       );
@@ -61,7 +61,7 @@ const cartSlice = createSlice({
       state.totalPrice = totals.totalPrice;
     },
 
-    decrease: (state, action: PayloadAction<{ id: number }>) => {
+    decrease: (state, action: PayloadAction<{ id: string }>) => {
       const item = state.selectedItems.find(
         (item) => item.id === action.payload.id
       );
@@ -76,7 +76,7 @@ const cartSlice = createSlice({
       state.totalPrice = totals.totalPrice;
     },
 
-    removeItem: (state, action: PayloadAction<{ id: number }>) => {
+    removeItem: (state, action: PayloadAction<{ id: string }>) => {
       state.selectedItems = state.selectedItems.filter(
         (item) => item.id !== action.payload.id
       );

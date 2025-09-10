@@ -27,25 +27,32 @@ export default function MyAddresses() {
   });
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
-  const handleClose = () => {
+  const handleOpenDialog = () => {
+    setIsOpen(true);
+    setStep("location");
+    setEditIndex(null);
+    resetAddress();
+  };
+
+  const handleCloseDialog = () => {
     setIsOpen(false);
     setStep("location");
     setEditIndex(null);
   };
 
-  const saveAddress = (newAddress: ContactInfo) => {
+  const saveContactInfo = (newContactInfo: ContactInfo) => {
     let updated: ContactInfo[];
     if (editIndex !== null) {
       // ✏️ Edit mode
       updated = [...contactInfo];
-      updated[editIndex] = newAddress;
+      updated[editIndex] = newContactInfo;
     } else {
       // ➕ Add mode
-      updated = [...contactInfo, newAddress];
+      updated = [...contactInfo, newContactInfo];
     }
     setContactInfo(updated);
     localStorage.setItem("addressForm", JSON.stringify(updated));
-    handleClose();
+    handleCloseDialog();
   };
 
   const handleDelete = (index: number) => {
@@ -60,13 +67,6 @@ export default function MyAddresses() {
     setStep("addressForm"); // directly go to form
   };
 
-  const handleOpen = () => {
-    setIsOpen(true);
-    setStep("location");
-    setEditIndex(null);
-    resetAddress(); // reset location/address whenever opening the dialog for a new address
-  };
-
   return (
     <div>
       {contactInfo.length === 0 ? (
@@ -74,20 +74,20 @@ export default function MyAddresses() {
           text="شما در حال حاضر هیچ آدرسی ثبت نکرده‌اید!"
           button={true}
           buttonText="افزودن آدرس"
-          onClick={handleOpen}
+          onClick={handleOpenDialog}
         />
       ) : (
         <UserAddresses
           contactInfo={contactInfo}
-          handleClick={handleOpen}
-          onDelete={handleDelete} // pass down
-          onEdit={handleEdit} // pass down
+          onOpenDialog={handleOpenDialog}
+          onDelete={handleDelete}
+          onEdit={handleEdit}
         />
       )}
 
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={handleCloseDialog}
         sx={{
           "& .MuiDialog-paper": {
             width: "100%",
@@ -107,7 +107,7 @@ export default function MyAddresses() {
             </p>
           </DialogTitle>
           <DialogActions>
-            <Button onClick={handleClose} sx={{ color: "#717171" }}>
+            <Button onClick={handleCloseDialog} sx={{ color: "#717171" }}>
               <CloseIcon />
             </Button>
           </DialogActions>
@@ -122,8 +122,8 @@ export default function MyAddresses() {
             <AddressSelector onSubmitLocation={() => setStep("addressForm")} />
           ) : (
             <AddressForm
-              onSaveAddress={saveAddress}
-              onClose={handleClose}
+              onSaveContactInfo={saveContactInfo}
+              onClose={handleCloseDialog}
               defaultValues={editIndex !== null ? contactInfo[editIndex] : undefined}
             />
           )}

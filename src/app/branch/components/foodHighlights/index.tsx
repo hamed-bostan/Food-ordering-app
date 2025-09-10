@@ -1,8 +1,8 @@
 "use client";
 
+import { getProducts } from "@/lib/api/product.api";
 import FoodList from "./FoodList";
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "@/lib/api/getProducts";
 
 export default function FoodHighlights() {
   const {
@@ -20,11 +20,7 @@ export default function FoodHighlights() {
 
   return (
     <section>
-      <FoodList
-        title="پیشنهاد ویژه"
-        filter="پیشنهاد ویژه"
-        products={products}
-      />
+      <FoodList title="پیشنهاد ویژه" filter="پیشنهاد ویژه" products={products} />
       <FoodList
         title="غذاهای محبوب"
         filter="غذاهای محبوب"
@@ -32,11 +28,7 @@ export default function FoodHighlights() {
         titleStyle="text-[#fff]"
         products={products}
       />
-      <FoodList
-        title="غذاهای غیر ایرانی"
-        filter="غذاهای غیر ایرانی"
-        products={products}
-      />
+      <FoodList title="غذاهای غیر ایرانی" filter="غذاهای غیر ایرانی" products={products} />
     </section>
   );
 }

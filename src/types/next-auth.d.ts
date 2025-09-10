@@ -1,32 +1,41 @@
 import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import { DefaultUser } from "next-auth";
+
+import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
+import { JWT } from "next-auth/jwt";
+import { UserRole } from "@/lib/user/user.types";
 
 declare module "next-auth" {
-  type UserRole = "GitHub User" | "Google User" | string;
-
-  type SessionUser = {
+  // Strongly typed user object for session
+  export type SessionUser = {
     id: string;
     name?: string | null;
     email?: string | null;
     image?: string | null;
     role?: UserRole;
+    phoneNumber?: string;
   };
 
-  interface Session {
+  export interface Session {
     user: SessionUser;
   }
 
-  interface User extends DefaultUser {
+  export interface User extends DefaultUser {
     role?: UserRole;
+    phoneNumber?: string;
   }
 }
 
 declare module "next-auth/jwt" {
-  interface JWT {
+  import { UserRole } from "@/lib/user/user.types";
+
+  export interface JWT {
     id?: string;
     name?: string | null;
     email?: string | null;
     image?: string | null;
-    role?: string;
+    role?: UserRole;
+    phoneNumber?: string;
   }
 }

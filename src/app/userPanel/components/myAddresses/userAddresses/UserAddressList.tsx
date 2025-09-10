@@ -5,12 +5,10 @@ export default function UserAddressList({
   contactInfo,
   onDelete,
   onEdit,
-  onAddClick,
 }: {
   contactInfo: ContactInfoProps[];
   onDelete: (index: number) => void;
   onEdit: (index: number) => void;
-  onAddClick: () => void;
 }) {
   return (
     <div className="grid gap-4 lg:grid-cols-2">

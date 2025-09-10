@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
-import { useLogoutDialog } from "@/app/userPanel/context/LogoutContext";
+import { useLogoutDialog } from "../../context/LogoutContext";
 import TitleContent from "./TitleContent";
 import MainContent from "./MainContent";
 

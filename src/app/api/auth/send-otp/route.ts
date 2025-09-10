@@ -1,45 +1,24 @@
-import { NextResponse } from "next/server";
-import { generateOtp, sendOtp } from "@/lib/otp/helpers";
-import { getDb } from "@/lib/db/getDB";
-import { phoneSchema } from "@/lib/otp/otpValidationSchemas";
+import { NextRequest, NextResponse } from "next/server";
+import { phoneSchema } from "@/app/auth/otp/lib/schema/otpSchema";
+import { ZodError } from "zod";
+import { otpService } from "@/app/auth/otp/lib/otp.service";
 
-export const POST = async (req: Request) => {
+export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const result = phoneSchema.safeParse(body);
+    const validated = phoneSchema.parse(body);
 
-    if (!result.success) {
-      return NextResponse.json(
-        {
-          message: "شماره معتبر نیست",
-          details: result.error.flatten().fieldErrors,
-        },
-        { status: 400 }
-      );
+    const result = await otpService.sendOtp(validated.phoneNumber);
+
+    return NextResponse.json(result, { status: 200 });
+  } catch (error) {
+    console.error("❌ Send OTP error:", error);
+
+    if (error instanceof ZodError) {
+      return NextResponse.json({ error: "ValidationError", details: error.errors }, { status: 400 });
     }
 
-    const { userPhoneNumber } = result.data;
-
-    const code = generateOtp();
-    const db = await getDb();
-    const collection = db.collection("otps");
-
-    // Remove any existing OTPs for this phone number
-    await collection.deleteMany({ userPhoneNumber });
-
-    // Store the new OTP
-    await collection.insertOne({
-      userPhoneNumber,
-      code,
-      createdAt: new Date(),
-    });
-
-    // Send OTP via SMS
-    await sendOtp(userPhoneNumber, code);
-
-    return NextResponse.json({ message: "کد ارسال شد." }, { status: 200 });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ message: "خطا در ارسال کد" }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    return NextResponse.json({ error: "ServerError", message: errorMessage }, { status: 500 });
   }
-};
+}

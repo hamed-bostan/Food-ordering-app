@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
 import { RootState } from "@/store/store";
 import { decrease, increase, removeItem } from "@/redux/slices/cart/cartSlice";
-import { ProductType } from "@/lib/api/getProducts";
 import { calculateDiscountPrice } from "@/lib/utils/calculateDiscountPrice";
+import { ProductType } from "@/lib/schemas/product.schema";
 
 type ItemsCardProps = {
   foodItem: ProductType;

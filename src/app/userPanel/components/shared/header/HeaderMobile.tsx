@@ -3,7 +3,7 @@
 import { ArrowBackOutlined, ArrowForwardOutlined } from "@mui/icons-material";
 import { tabsConfig } from "./TabsConfig";
 import { Dispatch, SetStateAction } from "react";
-import { useLogoutDialog } from "@/app/userPanel/context/LogoutContext";
+import { useLogoutDialog } from "@/app/userpanel/context/LogoutContext";
 
 type HeaderMobileProps = {
   setActiveTab: Dispatch<SetStateAction<number>>;

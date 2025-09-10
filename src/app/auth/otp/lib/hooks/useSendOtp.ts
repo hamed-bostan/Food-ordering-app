@@ -1,14 +1,15 @@
 "use client";
 
+import api from "@/lib/axios";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+
+type SendOtpInput = { phoneNumber: string };
+type SendOtpResponse = { message: string; otp: string };
 
 export function useSendOtp() {
-  return useMutation({
-    mutationFn: async (userPhoneNumber: string) => {
-      const response = await axios.post("/api/auth/send-otp", {
-        userPhoneNumber,
-      });
+  return useMutation<SendOtpResponse, Error, SendOtpInput>({
+    mutationFn: async (data: SendOtpInput) => {
+      const response = await api.post<SendOtpResponse>("/auth/send-otp", data);
       return response.data;
     },
   });

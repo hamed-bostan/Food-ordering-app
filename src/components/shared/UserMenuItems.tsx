@@ -1,30 +1,20 @@
-import {
-  Person2Outlined,
-  LocationOnOutlined,
-  LogoutOutlined,
-} from "@mui/icons-material";
+import { Person2Outlined, LocationOnOutlined, LogoutOutlined } from "@mui/icons-material";
 import { SvgIconProps } from "@mui/material";
 import { ComponentType } from "react";
 
-type MenuItem = {
+type BaseMenuItem = {
   label: string;
   icon: ComponentType<SvgIconProps>;
-  tabIndex: number;
-  href: string;
+  tabIndex?: number;
 };
 
+export type LinkMenuItem = BaseMenuItem & { href: string };
+export type ActionMenuItem = BaseMenuItem & { action: "logout" };
+
+export type MenuItem = LinkMenuItem | ActionMenuItem;
+
 export const userMenuItems: MenuItem[] = [
-  { label: "پروفایل", icon: Person2Outlined, tabIndex: 0, href: "/userPanel" },
-  {
-    label: "آدرس‌های من",
-    icon: LocationOnOutlined,
-    tabIndex: 1,
-    href: "/userPanel",
-  },
-  {
-    label: "خروج",
-    icon: LogoutOutlined,
-    tabIndex: 2,
-    href: "/api/auth/signout?callbackUrl=/",
-  },
+  { label: "پروفایل", icon: Person2Outlined, href: "/userpanel" },
+  { label: "آدرس‌های من", icon: LocationOnOutlined, href: "/userpanel" },
+  { label: "خروج", icon: LogoutOutlined, action: "logout" },
 ];

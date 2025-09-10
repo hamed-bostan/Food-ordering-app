@@ -5,15 +5,13 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { testimonialDetails } from "../lib/testimonial-details";
 import TestimonialCard from "./TestimonialCard";
+import { TestimonialType } from "../lib/testimonial.schema";
 
-export default function TestimonialSlider() {
+export default function TestimonialSlider({ testimonialDetails }: { testimonialDetails: TestimonialType[] }) {
   return (
     <div className="px-5 py-6 lg:py-7 lg:px-10 2xl:px-28 mt-10 md:mt-[3.75rem] lg:mt-20">
-      <h2 className="block text-center font-bold text-[#353535] mb-3 text-sm md:text-base md:mb-4">
-        نظرات کاربران
-      </h2>
+      <h2 className="block text-center font-bold text-[#353535] mb-3 text-sm md:text-base md:mb-4">نظرات کاربران</h2>
       <Swiper
         modules={[Navigation, Pagination]}
         spaceBetween={20}
