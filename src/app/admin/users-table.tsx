@@ -2,7 +2,7 @@
 
 import { toast } from "react-toastify";
 import { useUpdateUserRole, useUsers } from "@/lib/hooks/useUser";
-import { BaseUser } from "@/lib/user/user.types";
+import { BaseUser, User } from "@/lib/user/user.types";
 
 export default function UsersTable() {
   const { data: users = [], isLoading } = useUsers();
@@ -38,8 +38,8 @@ export default function UsersTable() {
         </tr>
       </thead>
       <tbody>
-        {users.map((user: BaseUser) => (
-          <tr key={user._id}>
+        {users.map((user: User) => (
+          <tr key={user.id}>
             <td className="p-2 border">{user.name}</td>
             <td className="p-2 border">{user.phoneNumber}</td>
             <td className="p-2 border">{user.email}</td>
