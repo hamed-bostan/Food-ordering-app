@@ -1,6 +1,6 @@
 import { userApi } from "../user/user.api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { BaseUser, User } from "@/lib/user/user.types";
+import { BaseUser, User, UserRole } from "@/lib/user/user.types";
 
 // Hook to fetch a single user
 export function useUser(id?: string) {
@@ -23,17 +23,15 @@ export function useUsers() {
 export function useUpdateUserRole() {
   const queryClient = useQueryClient();
 
-  return useMutation<
-    void, // mutation returns nothing special
-    Error, // error type
-    { phoneNumber: string; role: "user" | "admin" } // variables passed in
-  >({
+  return useMutation<User, Error, { phoneNumber: string; role: UserRole }>({
     mutationFn: ({ phoneNumber, role }) => userApi.updateUserRole(phoneNumber, role),
-    onSuccess: (_, { phoneNumber, role }) => {
-      // Optimistically update cache
+    onSuccess: (updatedUser, { phoneNumber }) => {
+      // Update cached users
       queryClient.setQueryData<BaseUser[]>(["users"], (cachedUsers) =>
-        cachedUsers?.map((user) => (user.phoneNumber === phoneNumber ? { ...user, role } : user))
+        cachedUsers?.map((user) => (user.phoneNumber === phoneNumber ? { ...user, role: updatedUser.role } : user))
       );
+      // Also update single user cache
+      queryClient.setQueryData<User>(["user", updatedUser.id], updatedUser);
     },
   });
 }
