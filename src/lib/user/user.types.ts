@@ -10,5 +10,5 @@ export type User = BaseUser & {
   name?: string | null;
   email?: string | null;
   image?: string | null;
-  createdAt?: string;
+  createdAt?: string | null;
 };
