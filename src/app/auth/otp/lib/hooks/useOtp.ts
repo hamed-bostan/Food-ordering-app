@@ -2,87 +2,111 @@
 
 import { useState } from "react";
 import { useSendOtp } from "./useSendOtp";
-import { useVerifyOtp } from "./useVerifyOtp";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
-export function useOtp() {
+type OtpStatus = "success" | "error" | "";
+
+type UseOtpState = {
+  message: string;
+  otpSent: boolean;
+  phoneNumber: string;
+  otpStatus: OtpStatus;
+  otpCode?: string;
+};
+
+type UseOtpHandlers = {
+  handleSendOtp: (args: { phoneNumber: string }) => Promise<void>;
+  handleResendOtp: () => Promise<void>;
+  handleVerifyOtp: (args: { otp: string }) => Promise<void>;
+  handleGoBack: () => void;
+};
+
+type UseOtpLoading = {
+  sending: boolean;
+  verifying: boolean;
+};
+
+type UseOtpReturn = {
+  state: UseOtpState;
+  handlers: UseOtpHandlers;
+  loading: UseOtpLoading;
+};
+
+export function useOtp(): UseOtpReturn {
   const [message, setMessage] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-  const [phone, setPhone] = useState("");
-  const [otpStatus, setOtpStatus] = useState<"success" | "error" | "">("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otpStatus, setOtpStatus] = useState<OtpStatus>("");
+  const [otpCode, setOtpCode] = useState<string>();
+  const [verifying, setVerifying] = useState(false);
 
   const sendOtpMutation = useSendOtp();
-  const verifyOtpMutation = useVerifyOtp();
+  const router = useRouter();
 
-  const handleSendOtp = ({ userPhoneNumber }: { userPhoneNumber: string }) => {
+  const handleSendOtp = async ({ phoneNumber }: { phoneNumber: string }) => {
     setMessage("");
-    sendOtpMutation.mutate(userPhoneNumber, {
-      onSuccess: () => {
-        setOtpSent(true);
-        setPhone(userPhoneNumber);
-        setMessage("کد تایید ارسال شد.");
-      },
-      onError: (error: any) => {
-        console.error("Send OTP error:", error);
-        setMessage(
-          error.response?.data?.message || "ارسال کد تایید با خطا مواجه شد."
-        );
-      },
-    });
+    try {
+      const res = await sendOtpMutation.mutateAsync({ phoneNumber });
+      setOtpSent(true);
+      setPhoneNumber(phoneNumber);
+      setMessage(res.message);
+      setOtpCode(res.otp);
+    } catch (error: any) {
+      console.error("Send OTP error:", error);
+      setMessage(error.response?.data?.message || "ارسال کد تایید با خطا مواجه شد.");
+    }
   };
 
-  const handleResendOtp = () => {
+  const handleResendOtp = async () => {
+    setMessage("");
+    try {
+      const res = await sendOtpMutation.mutateAsync({ phoneNumber });
+      setMessage("کد تایید مجددا ارسال شد.");
+      setOtpCode(res.otp);
+    } catch (error: any) {
+      console.error("Resend OTP error:", error);
+      setMessage(error.response?.data?.message || "ارسال مجدد کد تایید با خطا مواجه شد.");
+    }
+  };
+
+  const handleVerifyOtp = async ({ otp }: { otp: string }) => {
     setMessage("");
     setOtpStatus("");
-    sendOtpMutation.mutate(phone, {
-      onSuccess: () => setMessage("کد تایید مجددا ارسال شد."),
-      onError: (error: any) => {
-        console.error("Resend OTP error:", error);
-        setMessage(
-          error.response?.data?.message ||
-            "ارسال مجدد کد تایید با خطا مواجه شد."
-        );
-      },
-    });
-  };
+    setVerifying(true);
 
-  const handleVerifyOtp = ({ otp }: { otp: string }) => {
-    setMessage("");
-    verifyOtpMutation.mutate(
-      { userPhoneNumber: phone, otp },
-      {
-        onSuccess: () => {
-          setOtpStatus("success");
-          setMessage("کد تایید صحیح است");
-        },
-        onError: (error: any) => {
-          setOtpStatus("error");
-          setMessage(error.response?.data?.message || "خطا در برقراری ارتباط");
-        },
+    try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        phoneNumber,
+        otp,
+      });
+
+      if (res?.error) {
+        setOtpStatus("error");
+        setMessage(res.error);
+      } else {
+        setOtpStatus("success");
+        setMessage("ورود موفقیت‌آمیز بود");
+        router.push("/dashboard/products");
       }
-    );
+    } catch (error: any) {
+      setOtpStatus("error");
+      setMessage(error.message || "خطا در برقراری ارتباط");
+    } finally {
+      setVerifying(false);
+    }
   };
 
   const handleGoBack = () => {
     setOtpSent(false);
     setOtpStatus("");
+    setOtpCode(undefined);
   };
 
   return {
-    state: {
-      message,
-      otpSent,
-      phone,
-      otpStatus,
-    },
-    handlers: {
-      handleSendOtp,
-      handleResendOtp,
-      handleVerifyOtp,
-      handleGoBack,
-    },
-    loading: {
-      sending: sendOtpMutation.isPending,
-      verifying: verifyOtpMutation.isPending,
-    },
+    state: { message, otpSent, phoneNumber, otpStatus, otpCode },
+    handlers: { handleSendOtp, handleResendOtp, handleVerifyOtp, handleGoBack },
+    loading: { sending: sendOtpMutation.isPending, verifying },
   };
 }

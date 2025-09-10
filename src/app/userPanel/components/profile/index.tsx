@@ -4,12 +4,9 @@ import HeaderDesktop from "../shared/header/HeaderDesktop";
 import { FormProvider, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { CircularProgress } from "@mui/material";
-import {
-  profileSchema,
-  ProfileSchema,
-} from "@/app/userPanel/components/profile/profile-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import UserInformation from "./UserInformation";
+import { profileSchema, ProfileSchema } from "./profile-schema";
 
 export default function Profile() {
   const { data: session, status } = useSession();

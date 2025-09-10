@@ -14,7 +14,7 @@ export default function HeaderDesktop({ label, style, button, handleClick }: Hea
   const pathname = usePathname();
 
   return (
-    <div className={`${pathname === "/userPanel" && "hidden"} md:block ${style}`}>
+    <div className={`${pathname === "/userpanel" && "hidden"} md:block ${style}`}>
       <div className="flex items-center justify-between mb-2">
         <p className="block text-[#353535]">{label}</p>
         {button && (

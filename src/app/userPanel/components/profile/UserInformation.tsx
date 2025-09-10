@@ -6,13 +6,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useFormContext } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ProfileSchema } from "@/app/userPanel/components/profile/profile-schema";
 import useNumericField from "@/hooks/useNumericField";
 import { ChangeEvent, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 import { Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { ProfileSchema } from "./profile-schema";
 
 type UserIdProps = {
   userId: string; // pass logged-in user's id here
@@ -33,7 +33,8 @@ export default function UserInformation({ userId }: UserIdProps) {
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
-  const phone = useNumericField("phone_number", 11, "09");
+  const phone = useNumericField("phoneNumber", 11, "09");
+
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -50,8 +51,7 @@ export default function UserInformation({ userId }: UserIdProps) {
       queryClient.invalidateQueries({ queryKey: ["user", userId] });
     },
     onError: (error: any) => {
-      const message =
-        error?.response?.data?.error || "Failed to update user info";
+      const message = error?.response?.data?.error || "Failed to update user info";
       toast.error(message);
     },
   });
@@ -122,12 +122,7 @@ export default function UserInformation({ userId }: UserIdProps) {
           borderColor={phone.borderColor}
           inputProps={phone.inputProps}
         />
-        <Input
-          label="ایمیل"
-          {...register("email")}
-          error={!!errors.email}
-          helperText={errors.email?.message}
-        />
+        <Input label="ایمیل" {...register("email")} error={!!errors.email} helperText={errors.email?.message} />
         {/* <div>
           <Button
             variant="outlined"

@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/db/mongodb";
 import { ObjectId } from "mongodb";
 
-export async function GET(
-  _: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
 
@@ -24,16 +21,13 @@ export async function GET(
     }
 
     return NextResponse.json({
-      phone_number: user.phone_number ?? "",
+      phoneNumber: user.phoneNumber ?? "",
       name: user.name ?? "",
       email: user.email ?? "",
       image: user.image ?? "",
     });
   } catch (error) {
     console.error("Fetch user error:", error);
-    return NextResponse.json(
-      { message: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }

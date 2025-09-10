@@ -19,20 +19,16 @@ export async function POST(req: Request) {
 
   const filePath = `${session.user.email}/${Date.now()}-${file.name}`;
 
-  const { error: uploadError } = await supabaseAdmin.storage
-    .from("user-profile-images")
-    .upload(filePath, file, {
-      cacheControl: "3600",
-      upsert: false,
-    });
+  const { error: uploadError } = await supabaseAdmin.storage.from("user-profile-images").upload(filePath, file, {
+    cacheControl: "3600",
+    upsert: false,
+  });
 
   if (uploadError) {
     return NextResponse.json({ error: uploadError.message }, { status: 500 });
   }
 
-  const { data } = supabaseAdmin.storage
-    .from("user-profile-images")
-    .getPublicUrl(filePath);
+  const { data } = supabaseAdmin.storage.from("user-profile-images").getPublicUrl(filePath);
 
   return NextResponse.json({ url: data.publicUrl });
 }

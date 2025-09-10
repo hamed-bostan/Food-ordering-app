@@ -5,7 +5,7 @@ import BranchList from "./BranchList";
 import FoodHighlights from "./foodHighlights";
 import image1 from "@/assets/images/bannerImages/banner-04.webp";
 import TestimonialSlider from "./TestimonialSlider";
-import { getTestimonials } from "@/lib/api/testimonial";
+import { getTestimonials } from "@/lib/api/testimonial.api";
 
 export default async function RestaurantBranch() {
   const testimonialDetails = await getTestimonials();

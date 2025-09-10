@@ -3,7 +3,7 @@ import { ZodError } from "zod";
 import { supabaseAdmin } from "@/lib/supabase/admin"; // Use centralized client
 import { productInputSchema, ProductType, NewProductType } from "@/lib/schemas/product.schema";
 import crypto from "crypto";
-import { insertProductToDb, fetchProductsFromDb, mapToProductType } from "@/lib/db/products";
+import { insertProductToDb, fetchProductsFromDb, mapToProductType } from "@/lib/db/product.repository";
 
 const BUCKET_NAME = "food-images";
 

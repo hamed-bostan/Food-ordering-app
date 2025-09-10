@@ -30,3 +30,6 @@ export const connectToDatabase = async (dbName = "test") => {
   const connectedClient = await clientPromise;
   return connectedClient.db(dbName);
 };
+
+// Needed for NextAuth adapter
+export default clientPromise;
