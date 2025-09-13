@@ -1,70 +1,84 @@
-import { NextResponse } from "next/server";
-import { ZodError } from "zod";
-import { supabaseAdmin } from "@/lib/supabase/admin"; // Use centralized client
+import { supabaseAdmin } from "@/lib/supabase/admin";
 import { productInputSchema, ProductType, NewProductType } from "@/lib/schemas/product.schema";
 import crypto from "crypto";
 import { insertProductToDb, fetchProductsFromDb, mapToProductType } from "@/lib/db/product.repository";
+import { NextRequest, NextResponse } from "next/server";
+import { verifyJWT } from "@/lib/auth/verifyJWT";
+import { handleApiError } from "@/lib/errors/handleApiError";
 
 const BUCKET_NAME = "food-images";
 
+/**
+ * GET /api/products
+ * Fetch all products
+ */
 export async function GET() {
   try {
     const products = await fetchProductsFromDb();
-    return NextResponse.json(products);
-  } catch (error) {
-    console.error("❌ Failed to fetch products:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    return NextResponse.json({ error: "ServerError", message: errorMessage }, { status: 500 });
+    return NextResponse.json({ message: "Products fetched successfully", result: products }, { status: 200 });
+  } catch (error: unknown) {
+    return handleApiError(error, "Products API - GET");
   }
 }
 
-export async function POST(req: Request) {
-  try {
-    const formData = await req.formData();
+/**
+ * POST /api/products
+ * Create a new product (admin only)
+ */
 
+export async function POST(req: NextRequest) {
+  try {
+    // Verify JWT and admin role
+    const payload = verifyJWT(req);
+    if (payload.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden", message: "Admins only" }, { status: 403 });
+    }
+
+    // Parse form data
+    const formData = await req.formData();
     const fields: Record<string, string> = {};
     for (const [key, value] of formData.entries()) {
-      if (key !== "image" && typeof value === "string") {
-        fields[key] = value;
-      }
+      if (key !== "image" && typeof value === "string") fields[key] = value;
     }
 
+    // Validate input schema
     const validated = productInputSchema.parse(fields);
 
+    // Handle image upload
     const image = formData.get("image") as File | null;
     if (!image) {
-      return NextResponse.json(
-        { error: "ValidationError", details: [{ message: "Image is required" }] },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "ValidationError", message: "Image is required" }, { status: 400 });
     }
+
+    const arrayBuffer = await image.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
 
     const fileExtension = image.name.split(".").pop() || "jpg";
     const filePath = `products/${crypto.randomUUID()}.${fileExtension}`;
-    const { error: uploadError } = await supabaseAdmin.storage.from(BUCKET_NAME).upload(filePath, image);
-    if (uploadError) {
-      console.error("❌ Supabase upload error:", uploadError);
-      throw uploadError;
-    }
+
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from(BUCKET_NAME)
+      .upload(filePath, buffer, { contentType: image.type });
+
+    if (uploadError) throw new Error("Failed to upload image");
 
     const { data: urlData } = supabaseAdmin.storage.from(BUCKET_NAME).getPublicUrl(filePath);
     const imageUrl = urlData.publicUrl;
 
+    // Save to MongoDB
     const product: NewProductType = { ...validated, image: imageUrl };
+    const insertedId = await insertProductToDb(product);
+    const createdProduct: ProductType = mapToProductType(product, insertedId.toString());
 
-    const _id = await insertProductToDb(product);
-    const createdProduct: ProductType = mapToProductType(product, _id.toString());
-
-    return NextResponse.json(createdProduct, { status: 201 });
-  } catch (error) {
-    console.error("❌ Route handler error:", error);
-    if (error instanceof ZodError) {
-      return NextResponse.json({ error: "ValidationError", details: error.errors }, { status: 400 });
-    }
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    // Return response
     return NextResponse.json(
-      { error: "ServerError", message: errorMessage || "Internal Server Error" },
-      { status: 500 }
+      {
+        message: "Product created successfully",
+        result: createdProduct,
+      },
+      { status: 201 }
     );
+  } catch (error: unknown) {
+    return handleApiError(error, "Products API - POST");
   }
 }

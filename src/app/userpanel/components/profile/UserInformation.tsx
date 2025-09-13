@@ -5,14 +5,10 @@ import CustomButton from "@/components/ui/CustomButton";
 import EditIcon from "@mui/icons-material/Edit";
 import { useFormContext } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useNumericField from "@/hooks/useNumericField";
-import { ChangeEvent, useState } from "react";
-import Image from "next/image";
-import axios from "axios";
-import { Button } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import { ProfileSchema } from "./profile-schema";
+import { updateUserProfile } from "@/lib/user/user.api";
+import { getSession } from "next-auth/react";
 
 type UserIdProps = {
   userId: string; // pass logged-in user's id here
@@ -24,47 +20,38 @@ export default function UserInformation({ userId }: UserIdProps) {
     handleSubmit,
     formState: { errors },
     reset,
-    setValue,
-    watch,
   } = useFormContext<ProfileSchema>();
-
-  const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
-
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const phone = useNumericField("phoneNumber", 11, "09");
 
-  const queryClient = useQueryClient();
+  const updateUser = async (data: ProfileSchema) => {
+    try {
+      const session = await getSession();
+      const token = session?.accessToken;
+      if (!token) throw new Error("No access token found");
 
-  const mutation = useMutation({
-    mutationFn: async (data: ProfileSchema) => {
-      const res = await axios.post("/api/user/update", {
-        userId,
-        ...data,
-      });
-      return res.data; // axios stores the response data in `res.data`
-    },
-    onSuccess: (data) => {
-      toast.success(data.message || "User updated");
-      reset(); // Optional — see earlier note about whether you want to reset the form
-      queryClient.invalidateQueries({ queryKey: ["user", userId] });
-    },
-    onError: (error: any) => {
-      const message = error?.response?.data?.error || "Failed to update user info";
-      toast.error(message);
-    },
-  });
+      const { message, result } = await updateUserProfile(userId, data, token);
 
-  async function handleImageChange(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
+      const normalizedUser = {
+        name: result.name ?? undefined,
+        phoneNumber: result.phoneNumber ?? undefined,
+        email: result.email ?? undefined,
+        image: result.image ?? undefined,
+      };
 
-    setSelectedImage(file);
-    setPreview(URL.createObjectURL(file)); // show image preview
-  }
+      toast.success(message);
+      reset(normalizedUser);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("خطا در بروزرسانی اطلاعات");
+      }
+    }
+  };
 
-  async function onSubmit(data: ProfileSchema) {
+  const onSubmit = (data: ProfileSchema) => {
+    // Filter out empty strings
     const filtered: ProfileSchema = {};
     for (const key in data) {
       const value = data[key as keyof ProfileSchema];
@@ -73,38 +60,8 @@ export default function UserInformation({ userId }: UserIdProps) {
       }
     }
 
-    if (selectedImage) {
-      const formData = new FormData();
-      formData.append("file", selectedImage);
-      formData.append("userId", userId);
-
-      setUploading(true);
-      try {
-        const res = await axios.post("/api/upload-image", formData);
-        const result = res.data;
-
-        filtered.image = result.url;
-        setValue("image", result.url);
-        toast.success("تصویر با موفقیت آپلود شد");
-      } catch (err: any) {
-        const message = err?.response?.data?.error || "خطا در آپلود تصویر";
-        toast.error(message);
-        setUploading(false);
-        return;
-      } finally {
-        setUploading(false);
-      }
-    }
-
-    mutation.mutate(filtered, {
-      onSuccess: () => {
-        setSelectedImage(null); // Clear the image file
-        setPreview(null); // Clear the preview URL
-      },
-    });
-  }
-
-  const currentImage = watch("image");
+    updateUser(filtered);
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -123,38 +80,6 @@ export default function UserInformation({ userId }: UserIdProps) {
           inputProps={phone.inputProps}
         />
         <Input label="ایمیل" {...register("email")} error={!!errors.email} helperText={errors.email?.message} />
-        {/* <div>
-          <Button
-            variant="outlined"
-            component="label"
-            endIcon={<AddIcon />}
-            sx={{
-              color: "#717171",
-              borderColor: "#CBCBCB",
-              width: "100%",
-              mb: 3,
-              fontSize: { xs: "12px", lg: "14px" },
-              height: { xs: "34.2px", lg: "37px" },
-            }}
-          >
-            اضافه کردن آواتار
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={handleImageChange}
-            />
-          </Button>
-          {preview || currentImage ? (
-            <Image
-              src={preview || currentImage || ""}
-              alt="Profile preview"
-              width={100}
-              height={100}
-              className="object-cover w-24 h-24 rounded-full"
-            />
-          ) : null}
-        </div> */}
       </div>
       <CustomButton
         type="submit"

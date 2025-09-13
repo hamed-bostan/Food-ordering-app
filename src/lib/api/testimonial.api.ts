@@ -1,54 +1,71 @@
 import { TestimonialType } from "@/app/branch/lib/testimonial.schema";
 import api from "../axios";
 import { ApiErrorResponse } from "@/types/api-error";
-import { AxiosError } from "axios";
+import axios from "axios";
 
-export const getTestimonials = async (): Promise<TestimonialType[]> => {
+export type GetTestimonialsResponse = { message: string; result: TestimonialType[] };
+export type CreateTestimonialResponse = { message: string; result: TestimonialType };
+
+// Fetch testimonials
+export const getTestimonials = async (): Promise<GetTestimonialsResponse> => {
   try {
-    const { data } = await api.get<TestimonialType[]>("/testimonials");
+    const { data } = await api.get<GetTestimonialsResponse>("/testimonials");
+
+    if (!Array.isArray(data.result)) throw new Error("Invalid server response");
+
     return data;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("❌ [API] Failed to fetch testimonials:", error);
 
-    if (error instanceof AxiosError) {
-      const responseData = error.response?.data as ApiErrorResponse | undefined;
+    if (axios.isAxiosError(error)) {
+      const response = error.response?.data as ApiErrorResponse | undefined;
 
-      if (responseData?.error === "ServerError") {
-        throw new Error(responseData.message || "Failed to fetch testimonials");
+      if (response?.error === "ValidationError" && response.details?.length) {
+        const messages = response.details.map((d) => d.message).join(", ");
+        throw new Error(messages || response.message);
       }
 
-      if (responseData?.error === "ValidationError") {
-        const validationMessages = responseData.details.map((issue) => issue.message).join(", ");
-        throw new Error(validationMessages || "Validation failed");
+      if (response?.error === "ServerError" || response?.error === "NotFound") {
+        throw new Error(response.message);
       }
     }
 
-    throw error;
+    throw new Error("Unexpected error while fetching testimonials");
   }
 };
 
-export const createTestimonial = async (formData: FormData): Promise<TestimonialType> => {
+// Create a new testimonial
+export const createTestimonial = async (
+  formData: FormData,
+  token?: string
+): Promise<CreateTestimonialResponse> => {
   try {
-    const { data } = await api.post<TestimonialType>("/testimonials", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
+    const { data } = await api.post<CreateTestimonialResponse>("/testimonials", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
     });
+
+    if (!data.result) throw new Error("Testimonial creation failed");
+
     return data;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("❌ [API] Failed to create testimonial:", error);
 
-    if (error instanceof AxiosError) {
-      const responseData = error.response?.data as ApiErrorResponse | undefined;
+    if (axios.isAxiosError(error)) {
+      const response = error.response?.data as ApiErrorResponse | undefined;
 
-      if (responseData?.error === "ValidationError") {
-        const validationMessages = responseData.details.map((issue) => issue.message).join(", ");
-        throw new Error(validationMessages || "Validation failed");
+      if (response?.error === "ValidationError" && response.details?.length) {
+        const messages = response.details.map((d) => d.message).join(", ");
+        throw new Error(messages || response.message);
       }
 
-      if (responseData?.error === "ServerError") {
-        throw new Error(responseData.message || "Failed to upload testimonial");
+      if (response?.error === "ServerError" || response?.error === "NotFound") {
+        throw new Error(response.message);
       }
     }
 
-    throw error;
+    throw new Error("Unexpected error while creating testimonial");
   }
 };

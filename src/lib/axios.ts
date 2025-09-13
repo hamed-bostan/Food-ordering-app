@@ -1,9 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  // Use relative URL for browser requests
   baseURL: typeof window !== "undefined" ? "/api" : process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true, // send cookies automatically
+  withCredentials: true, // optional for JWT, harmless to leave
 });
 
 // Optional: response interceptor

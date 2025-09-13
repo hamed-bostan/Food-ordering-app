@@ -2,12 +2,22 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "../api/auth/[...nextauth]/authOptions";
 import UserPanelComponent from "./components";
+import { getUserById } from "@/lib/user/user.api";
+export const dynamic = "force-dynamic";
 
 export default async function UserPanelPage() {
   const session = await getServerSession(authOptions);
 
-  // Redirect if not logged in
-  if (!session) redirect("/auth/otp");
+  // Redirect if not logged in or missing essentials
+  if (!session || !session.user?.id || !session.accessToken) {
+    redirect("/auth/otp");
+  }
 
-  return <UserPanelComponent />;
+  try {
+    const { result: user } = await getUserById(session.user.id, session.accessToken);
+    return <UserPanelComponent user={user} />;
+  } catch (error) {
+    console.error("❌ Failed to fetch user in UserPanelPage:", error);
+    redirect("/500"); // or a custom error page
+  }
 }

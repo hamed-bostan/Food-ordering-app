@@ -8,7 +8,7 @@ import "swiper/css/pagination";
 import TestimonialCard from "./TestimonialCard";
 import { TestimonialType } from "../lib/testimonial.schema";
 
-export default function TestimonialSlider({ testimonialDetails }: { testimonialDetails: TestimonialType[] }) {
+export default function TestimonialSlider({ testimonial }: { testimonial: TestimonialType[] }) {
   return (
     <div className="px-5 py-6 lg:py-7 lg:px-10 2xl:px-28 mt-10 md:mt-[3.75rem] lg:mt-20">
       <h2 className="block text-center font-bold text-[#353535] mb-3 text-sm md:text-base md:mb-4">نظرات کاربران</h2>
@@ -23,7 +23,7 @@ export default function TestimonialSlider({ testimonialDetails }: { testimonialD
         }}
         className="[&_.swiper-pagination-bullet]:bg-[#417F56]"
       >
-        {testimonialDetails.map((item, index) => (
+        {testimonial.map((item, index) => (
           <SwiperSlide key={index}>
             <TestimonialCard {...item} />
           </SwiperSlide>

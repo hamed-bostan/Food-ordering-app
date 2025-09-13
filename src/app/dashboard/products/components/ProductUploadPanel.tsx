@@ -1,13 +1,13 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
-import { Box, Typography, Button, Checkbox, FormControlLabel } from "@mui/material";
+import { Box, Typography, Checkbox, FormControlLabel } from "@mui/material";
 import { toast } from "react-toastify";
 import Input from "@/components/ui/Input";
 import { createProduct } from "@/lib/api/product.api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productFormSchema, ProductFormType } from "@/lib/schemas/product-form.schema";
+import { useSession } from "next-auth/react";
 
 export const defaultProduct: Partial<ProductFormType> = {
   category: "پیتزاها",
@@ -21,6 +21,10 @@ export const defaultProduct: Partial<ProductFormType> = {
 };
 
 export default function ProductUploadPanel() {
+  const { data: session } = useSession();
+  const token = session?.accessToken;
+  const userRole = session?.user?.role;
+
   const {
     register,
     handleSubmit,
@@ -31,39 +35,33 @@ export default function ProductUploadPanel() {
     defaultValues: defaultProduct,
   });
 
-  const mutation = useMutation({
-    mutationFn: createProduct,
-    onSuccess: (product) => {
-      toast.success(`Product "${product.title}" uploaded!`);
-      reset();
-    },
-    onError: (error: Error) => {
-      // Rely on createProduct to format error messages
-      toast.error(error.message || "Failed to upload product");
-    },
-  });
+  const onSubmit = async (data: ProductFormType) => {
+    if (!token || userRole !== "admin") return toast.error("Unauthorized");
 
-  const onSubmit = (data: ProductFormType) => {
-    // Validate file type and size before sending
     const file = data.image[0];
-    if (file && !["image/jpeg", "image/png"].includes(file.type)) {
-      toast.error("Only JPEG or PNG images are allowed");
-      return;
+    if (!file) return toast.error("Image is required");
+
+    if (!["image/jpeg", "image/png"].includes(file.type)) {
+      return toast.error("Only JPEG or PNG images are allowed");
     }
-    if (file && file.size > 5 * 1024 * 1024) {
-      // 5MB limit
-      toast.error("Image size must be less than 5MB");
-      return;
+    if (file.size > 5 * 1024 * 1024) {
+      return toast.error("Image size must be less than 5MB");
     }
 
     const formData = new FormData();
-    formData.append("image", file); // Single file
+    formData.append("image", file);
     Object.entries(data).forEach(([key, value]) => {
-      if (key !== "image") {
-        formData.append(key, value.toString());
-      }
+      if (key !== "image") formData.append(key, value.toString());
     });
-    mutation.mutate(formData);
+
+    try {
+      const product = await createProduct(formData, token);
+      toast.success(`Product "${product.result.title}" uploaded!`);
+      reset();
+    } catch (error: unknown) {
+      if (error instanceof Error) toast.error(error.message);
+      else toast.error("Unexpected error while uploading product");
+    }
   };
 
   return (

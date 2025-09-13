@@ -3,9 +3,8 @@ import ProviderWrapper from "@/app/_providers/ProviderWrapper";
 import SessionProviderWrapper from "@/app/_providers/SessionProviderWrapper";
 import ThemeRegistry from "@/lib/theme/ThemeRegistry";
 import { ReactNode } from "react";
-import QueryProvider from "@/app/_providers/QueryProvider";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; 
+import "react-toastify/dist/ReactToastify.css";
 import AppHeader from "@/components/shared/appHeader";
 import Footer from "@/components/shared/footer";
 
@@ -28,11 +27,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <ThemeRegistry>
           <SessionProviderWrapper>
             <ProviderWrapper>
-              <QueryProvider>
-                <AppHeader />
-                <main>{children}</main>
-                <Footer />
-              </QueryProvider>
+              <AppHeader />
+              <main>{children}</main>
+              <Footer />
             </ProviderWrapper>
           </SessionProviderWrapper>
         </ThemeRegistry>

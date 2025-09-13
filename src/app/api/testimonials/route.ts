@@ -1,85 +1,88 @@
-import { NextResponse } from "next/server";
-import {
-  insertTestimonialToDb,
-  fetchTestimonialsFromDb,
-  mapToTestimonialType,
-  TestimonialDocument,
-} from "@/lib/db/testimonials.repository"; // Adjust path if needed
-import { ZodError } from "zod";
+import { insertTestimonialToDb, fetchTestimonialsFromDb, mapToTestimonialType } from "@/lib/db/testimonials.repository";
 import crypto from "crypto";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { NewTestimonialType, testimonialInputSchema } from "@/app/branch/lib/testimonial.schema";
+import { NextRequest, NextResponse } from "next/server";
+import { verifyJWT } from "@/lib/auth/verifyJWT";
+import { handleApiError } from "@/lib/errors/handleApiError";
 
 const BUCKET_NAME = "testimonials";
 
+/**
+ * GET /api/testimonials
+ * Fetch all testimonials
+ */
 export async function GET() {
   try {
     const testimonials = await fetchTestimonialsFromDb();
-    return NextResponse.json(testimonials, { status: 200 });
-  } catch (error) {
-    console.error("❌ Failed to fetch testimonials:", error);
-    return NextResponse.json({ error: "ServerError", message: "Failed to fetch testimonials" }, { status: 500 });
+    return NextResponse.json({ message: "Testimonials fetched successfully", result: testimonials }, { status: 200 });
+  } catch (error: unknown) {
+    return handleApiError(error, "Testimonials API - GET");
   }
 }
 
-export async function POST(request: Request) {
-  try {
-    const formData = await request.formData();
+/**
+ * POST /api/testimonials
+ * Create a new testimonial (admin only)
+ */
 
-    // extract text fields
+export async function POST(req: NextRequest) {
+  try {
+    // Verify JWT and admin role
+    const payload = verifyJWT(req);
+    if (payload.role !== "admin") {
+      return NextResponse.json({ error: "Forbidden", message: "Admins only" }, { status: 403 });
+    }
+
+    // Parse form data
+    const formData = await req.formData();
     const fields: Record<string, string> = {};
     for (const [key, value] of formData.entries()) {
-      if (key !== "image" && typeof value === "string") {
-        fields[key] = value;
-      }
+      if (key !== "image" && typeof value === "string") fields[key] = value;
     }
 
-    // validate input
+    // Validate input
     const validated = testimonialInputSchema.parse(fields);
 
-    // image upload required
+    // Handle image upload
     const image = formData.get("image") as File | null;
     if (!image) {
-      return NextResponse.json(
-        { error: "ValidationError", details: [{ message: "Image is required" }] },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "ValidationError", message: "Image is required" }, { status: 400 });
     }
 
-    // upload to supabase
+    // Convert File → Buffer (best practice)
+    const arrayBuffer = await image.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Unique file path
     const fileExtension = image.name.split(".").pop() || "jpg";
     const filePath = `${BUCKET_NAME}/${crypto.randomUUID()}.${fileExtension}`;
-    const { error: uploadError } = await supabaseAdmin.storage.from(BUCKET_NAME).upload(filePath, image);
 
-    if (uploadError) {
-      console.error("❌ Supabase upload error:", uploadError);
-      throw new Error("Failed to upload image");
-    }
+    // Upload with contentType
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from(BUCKET_NAME)
+      .upload(filePath, buffer, { contentType: image.type });
 
+    if (uploadError) throw new Error("Failed to upload image");
+
+    // Get public URL
     const { data: urlData } = supabaseAdmin.storage.from(BUCKET_NAME).getPublicUrl(filePath);
     const imageUrl = urlData.publicUrl;
 
-    // save to db
+    // Save testimonial to DB
     const testimonial: NewTestimonialType = { ...validated, image: imageUrl };
     const insertedId = await insertTestimonialToDb(testimonial);
-    const testimonialDocument: TestimonialDocument = {
-      ...testimonial,
-      _id: insertedId,
-    };
+    const createdTestimonial = mapToTestimonialType({ ...testimonial, _id: insertedId });
 
-    const createdTestimonial = mapToTestimonialType(testimonialDocument);
-
-    return NextResponse.json(createdTestimonial, { status: 201 });
-  } catch (error) {
-    console.error("❌ Route handler error:", error);
-
-    if (error instanceof ZodError) {
-      return NextResponse.json({ error: "ValidationError", details: error.errors }, { status: 400 });
-    }
-
+    // Standardized response
     return NextResponse.json(
-      { error: "ServerError", message: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
+      {
+        message: "Testimonial created successfully",
+        result: createdTestimonial,
+      },
+      { status: 201 }
     );
+  } catch (error: unknown) {
+    return handleApiError(error, "Testimonials API - POST");
   }
 }

@@ -12,3 +12,14 @@ export type User = BaseUser & {
   image?: string | null;
   createdAt?: string | null;
 };
+
+// Define the raw shape as it comes from MongoDB
+export type MongoUser = {
+  _id: string;
+  phoneNumber: string;
+  role: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  createdAt?: string | null;
+};

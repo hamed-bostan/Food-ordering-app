@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  franchiseFormSchema,
-  FranchiseFormValues,
-} from "@/app/franchise/lib/franchise-form-schema";
+import { franchiseFormSchema, FranchiseFormValues } from "@/app/franchise/lib/franchise-form-schema";
 import AddressProperty from "./AddressProperty";
 import ApplicantPropertyDetails from "./ApplicantPropertyDetails";
 import FacilityProperty from "./FacilityProperty";
@@ -17,18 +14,16 @@ import { useFranchiseDialog } from "@/app/franchise/context/FranchiseContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useMutation } from "@tanstack/react-query";
 
 export default function RequestForm() {
-  const { openFranchiseDialog, setFranchiseSubmittedData } =
-    useFranchiseDialog(); // Access the context values
+  const { openFranchiseDialog, setFranchiseSubmittedData } = useFranchiseDialog();
 
   const methods = useForm<FranchiseFormValues>({
     resolver: zodResolver(franchiseFormSchema),
     mode: "onBlur",
     defaultValues: {
-      nationalId: "0", // required for useNumericField to start with correct leading
-      phone: "09", // required to ensure useNumericField works correctly
+      nationalId: "0",
+      phone: "09",
       hasBusinessLicense: false,
       hasParking: false,
       hasKitchen: false,
@@ -40,42 +35,36 @@ export default function RequestForm() {
     },
   });
 
-  const mutation = useMutation({
-    mutationFn: async (data: FranchiseFormValues) => {
-      const provinceName =
-        provinces.find((prov) => String(prov.id) === data.province)?.title ||
-        "نامشخص";
-      const cityName =
-        cities.find((city) => String(city.id) === data.city)?.title || "نامشخص";
+  const onSubmit = async (data: FranchiseFormValues) => {
+    try {
+      const provinceName = provinces.find((prov) => String(prov.id) === data.province)?.title || "نامشخص";
+      const cityName = cities.find((city) => String(city.id) === data.city)?.title || "نامشخص";
 
-      const submission = {
-        ...data,
-        province: provinceName,
-        city: cityName,
-      };
+      const submission = { ...data, province: provinceName, city: cityName };
 
       const res = await axios.post("/api/franchise", submission);
-      return res.data.data; // This will become the argument in onSuccess
-    },
-    onSuccess: (submitted) => {
-      setFranchiseSubmittedData(submitted);
+
+      setFranchiseSubmittedData(res.data.data);
       openFranchiseDialog();
       toast.success("اطلاعات شما با موفقیت ثبت شد");
       methods.reset();
-    },
-    onError: (error) => {
+    } catch (error: unknown) {
       console.error("Submission failed:", error);
-      toast.error("ارسال اطلاعات با خطا مواجه شد");
-    },
-  });
+
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "ارسال اطلاعات با خطا مواجه شد");
+      } else if (error instanceof Error) {
+        toast.error(error.message || "ارسال اطلاعات با خطا مواجه شد");
+      } else {
+        toast.error("خطای ناشناخته در ارسال اطلاعات");
+      }
+    }
+  };
 
   return (
     <>
       <FormProvider {...methods}>
-        <form
-          onSubmit={methods.handleSubmit((data) => mutation.mutate(data))}
-          className="border border-[#CBCBCB] py-8 px-6 rounded-md my-9"
-        >
+        <form onSubmit={methods.handleSubmit(onSubmit)} className="border border-[#CBCBCB] py-8 px-6 rounded-md my-9">
           <span className="block text-center mb-11">فرم درخواست نمایندگی</span>
           <IndividualProfile />
           <AddressProperty />

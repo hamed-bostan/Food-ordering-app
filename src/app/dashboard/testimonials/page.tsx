@@ -1,27 +1,33 @@
 import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth/next";
-import { ObjectId } from "mongodb";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
-import { connectToDatabase } from "@/lib/db/mongodb";
 import TestimonialUploadPanel from "./components/TestimonialUploadPanel";
+import { getUserById } from "@/lib/user/user.api";
 
 export default async function TestimonialsPage() {
   const session = await getServerSession(authOptions);
 
-  // Redirect if not logged in
-  if (!session) redirect("/auth/otp");
+  // Redirect if not logged in or missing essentials
+  if (!session || !session.user?.id || !session.accessToken) {
+    redirect("/auth/otp");
+  }
+
+  // Quick client-side role check (cheap and fast)
+  if (session.user.role !== "admin") {
+    redirect("/403");
+  }
 
   try {
-    const databaseConnection = await connectToDatabase();
+    const { result: currentUser } = await getUserById(session.user.id, session.accessToken);
 
-    // Fetch current user from DB
-    const currentUser = await databaseConnection.collection("users").findOne({ _id: new ObjectId(session.user.id) });
+    // Extra guard: confirm user is still admin on server
+    if (currentUser.role !== "admin") {
+      redirect("/403");
+    }
 
-    // Redirect if user not found or not admin
-    if (!currentUser || currentUser.role !== "admin") redirect("/403");
-
-    return <TestimonialUploadPanel />;
-  } catch {
-    redirect("/403");
+    return <TestimonialUploadPanel accessToken={session.accessToken} />;
+  } catch (error) {
+    console.error("❌ Failed to fetch current user in TestimonialsPage:", error);
+    redirect("/500"); // or "/403" depending on your preference
   }
 }

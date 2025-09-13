@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useSendOtp } from "./useSendOtp";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { sendOtp, SendOtpResponse } from "@/lib/api/auth.api";
 
 type OtpStatus = "success" | "error" | "";
 
@@ -39,34 +39,39 @@ export function useOtp(): UseOtpReturn {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otpStatus, setOtpStatus] = useState<OtpStatus>("");
   const [otpCode, setOtpCode] = useState<string>();
+  const [sending, setSending] = useState(false);
   const [verifying, setVerifying] = useState(false);
-
-  const sendOtpMutation = useSendOtp();
   const router = useRouter();
 
   const handleSendOtp = async ({ phoneNumber }: { phoneNumber: string }) => {
     setMessage("");
+    setSending(true);
     try {
-      const res = await sendOtpMutation.mutateAsync({ phoneNumber });
+      const res: SendOtpResponse = await sendOtp({ phoneNumber });
       setOtpSent(true);
       setPhoneNumber(phoneNumber);
       setMessage(res.message);
-      setOtpCode(res.otp);
-    } catch (error: any) {
-      console.error("Send OTP error:", error);
-      setMessage(error.response?.data?.message || "ارسال کد تایید با خطا مواجه شد.");
+      setOtpCode(res.result.otp);
+    } catch (error) {
+      if (error instanceof Error) setMessage(error.message);
+      else setMessage("ارسال کد تایید با خطا مواجه شد.");
+    } finally {
+      setSending(false);
     }
   };
 
   const handleResendOtp = async () => {
     setMessage("");
+    setSending(true);
     try {
-      const res = await sendOtpMutation.mutateAsync({ phoneNumber });
+      const res: SendOtpResponse = await sendOtp({ phoneNumber });
       setMessage("کد تایید مجددا ارسال شد.");
-      setOtpCode(res.otp);
-    } catch (error: any) {
-      console.error("Resend OTP error:", error);
-      setMessage(error.response?.data?.message || "ارسال مجدد کد تایید با خطا مواجه شد.");
+      setOtpCode(res.result.otp);
+    } catch (error) {
+      if (error instanceof Error) setMessage(error.message);
+      else setMessage("ارسال مجدد کد تایید با خطا مواجه شد.");
+    } finally {
+      setSending(false);
     }
   };
 
@@ -74,7 +79,6 @@ export function useOtp(): UseOtpReturn {
     setMessage("");
     setOtpStatus("");
     setVerifying(true);
-
     try {
       const res = await signIn("credentials", {
         redirect: false,
@@ -84,15 +88,16 @@ export function useOtp(): UseOtpReturn {
 
       if (res?.error) {
         setOtpStatus("error");
-        setMessage(res.error);
+        setMessage(typeof res.error === "string" ? res.error : "کد تایید نامعتبر است.");
       } else {
         setOtpStatus("success");
         setMessage("ورود موفقیت‌آمیز بود");
         router.push("/dashboard/products");
       }
-    } catch (error: any) {
+    } catch (error) {
       setOtpStatus("error");
-      setMessage(error.message || "خطا در برقراری ارتباط");
+      if (error instanceof Error) setMessage(error.message);
+      else setMessage("خطا در برقراری ارتباط");
     } finally {
       setVerifying(false);
     }
@@ -107,6 +112,6 @@ export function useOtp(): UseOtpReturn {
   return {
     state: { message, otpSent, phoneNumber, otpStatus, otpCode },
     handlers: { handleSendOtp, handleResendOtp, handleVerifyOtp, handleGoBack },
-    loading: { sending: sendOtpMutation.isPending, verifying },
+    loading: { sending, verifying },
   };
 }

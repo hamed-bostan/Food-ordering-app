@@ -1,23 +1,9 @@
 "use client";
 
-import { getProducts } from "@/lib/api/product.api";
 import FoodList from "./FoodList";
-import { useQuery } from "@tanstack/react-query";
+import { ProductType } from "@/lib/schemas/product.schema";
 
-export default function FoodHighlights() {
-  const {
-    data: products = [],
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["products"],
-    queryFn: getProducts,
-  });
-
-  if (isLoading) return <div>در حال بارگزاری ...</div>;
-  if (isError) return <div>{(error as Error).message}</div>;
-
+export default function FoodHighlights({ products }: { products: ProductType[] }) {
   return (
     <section>
       <FoodList title="پیشنهاد ویژه" filter="پیشنهاد ویژه" products={products} />

@@ -7,8 +7,9 @@ import Profile from "./profile";
 import HeaderMobile from "./shared/header/HeaderMobile";
 import MyAddresses from "./myAddresses";
 import { LogoutDialogProvider } from "../context/LogoutContext";
+import { User } from "@/lib/user/user.types";
 
-export default function UserPanelComponent() {
+export default function UserPanelComponent({ user }: { user: User }) {
   const [activeTab, setActiveTab] = useState<number>(0);
 
   const tabs: ComponentType[] = [Profile, MyAddresses, Logout];
@@ -20,7 +21,7 @@ export default function UserPanelComponent() {
       <LogoutDialogProvider>
         <HeaderMobile setActiveTab={setActiveTab} activeTab={activeTab} />
         <div className="md:grid md:grid-cols-[auto_1fr] md:gap-x-5">
-          <Sidebar setActiveTab={setActiveTab} activeTab={activeTab} />
+          <Sidebar setActiveTab={setActiveTab} activeTab={activeTab} user={user} />
           <ActiveTabComponent />
         </div>
       </LogoutDialogProvider>

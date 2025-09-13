@@ -6,21 +6,10 @@ import FoodCategoriesList from "./FoodCategoriesList";
 import Foods from "./foods";
 import CheckoutButton from "./CheckoutButton";
 import image1 from "@/assets/images/bannerImages/banner-05.webp";
-import { useQuery } from "@tanstack/react-query";
 import FoodTypesList from "./FoodTypesList";
-import { getProducts } from "@/lib/api/product.api";
+import { ProductType } from "@/lib/schemas/product.schema";
 
-export default function RestaurantMenu() {
-  const {
-    data: products = [],
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["products"],
-    queryFn: getProducts,
-  });
-
+export default function RestaurantMenu({ products }: { products: ProductType[] }) {
   const [selectedCategory, setSelectedCategory] = useState<string>("نمایش همه");
 
   return (
@@ -39,12 +28,7 @@ export default function RestaurantMenu() {
       />
       <div className="px-5 py-6 mx-auto lg:px-10 2xl:px-28">
         <CheckoutButton />
-        <Foods
-          selectedCategory={selectedCategory}
-          products={products}
-          loading={isLoading}
-          error={isError ? (error as Error).message : null}
-        />
+        <Foods selectedCategory={selectedCategory} products={products} />
       </div>
     </section>
   );

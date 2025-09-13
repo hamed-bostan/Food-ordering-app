@@ -1,58 +1,141 @@
+import { User, UserRole } from "./user.types";
+import { ProfileSchema } from "@/app/userpanel/components/profile/profile-schema";
+import { getSession } from "next-auth/react";
+import { normalizeUser } from "./user.utils";
 import api from "../axios";
-import { BaseUser, User, UserRole } from "./user.types";
+import axios from "axios";
+import { ApiErrorResponse } from "@/types/api-error";
 
-// Define the raw shape as it comes from MongoDB
-export type MongoUser = {
-  _id: string;
-  phoneNumber: string;
-  role: string;
-  name?: string | null;
-  email?: string | null;
-  image?: string | null;
-  createdAt?: string | null;
+export type GetUserResponse = { message: string; result: User };
+export type GetUsersResponse = { message: string; result: User[] };
+export type UpdateUserResponse = { message: string; result: User };
+
+// Fetch a single user by ID
+export const getUserById = async (id: string, token: string): Promise<GetUserResponse> => {
+  try {
+    const { data } = await api.get<GetUserResponse>(`/user/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!data.result) throw new Error("User not found");
+
+    return { ...data, result: normalizeUser(data.result) };
+  } catch (error: unknown) {
+    console.error("❌ [API] Failed to fetch user by ID:", error);
+
+    if (axios.isAxiosError(error)) {
+      const response = error.response?.data as ApiErrorResponse | undefined;
+
+      if (response?.error === "ValidationError" && response.details?.length) {
+        const messages = response.details.map((d) => d.message).join(", ");
+        throw new Error(messages || response.message);
+      }
+
+      if (response?.error === "ServerError" || response?.error === "NotFound") {
+        throw new Error(response.message);
+      }
+    }
+
+    throw new Error("Unexpected error while fetching user by ID");
+  }
 };
 
-// Utility to safely normalize MongoDB documents into our User type
-function normalizeUser(mongoUser: MongoUser): User {
-  return {
-    id: mongoUser._id,
-    phoneNumber: mongoUser.phoneNumber,
-    role: mongoUser.role as UserRole,
-    name: mongoUser.name ?? null,
-    email: mongoUser.email ?? null,
-    image: mongoUser.image ?? null,
-    createdAt: mongoUser.createdAt ?? null,
-  };
-}
+// Fetch all users (requires admin JWT)
+export const getUsers = async (token: string): Promise<GetUsersResponse> => {
+  try {
+    const { data } = await api.get<GetUsersResponse>("/admin/users", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-export const userApi = {
-  async fetchUserById(id: string): Promise<User> {
-    try {
-      const response = await api.get<MongoUser>(`/user/${id}`);
-      return normalizeUser(response.data);
-    } catch (error: unknown) {
-      console.error("Error fetching user by ID:", error);
-      throw new Error("Failed to fetch user by ID. Please try again later.");
-    }
-  },
+    if (!Array.isArray(data.result)) throw new Error("Invalid server response");
 
-  async fetchUsers(): Promise<BaseUser[]> {
-    try {
-      const response = await api.get<MongoUser[]>("/admin/users");
-      return response.data.map((mongoUser: MongoUser) => normalizeUser(mongoUser));
-    } catch (error: unknown) {
-      console.error("Error fetching users:", error);
-      throw new Error("Failed to fetch users. Please try again later.");
-    }
-  },
+    return { ...data, result: data.result.map(normalizeUser) };
+  } catch (error: unknown) {
+    console.error("❌ [API] Failed to fetch users:", error);
 
-  async updateUserRole(phoneNumber: string, role: UserRole): Promise<User> {
-    try {
-      const response = await api.post<MongoUser>("/admin/set-role", { phoneNumber, role });
-      return normalizeUser(response.data);
-    } catch (error: unknown) {
-      console.error("Error updating user role:", error);
-      throw new Error("Failed to update user role. Please try again later.");
+    if (axios.isAxiosError(error)) {
+      const response = error.response?.data as ApiErrorResponse | undefined;
+
+      if (response?.error === "ValidationError" && response.details?.length) {
+        const messages = response.details.map((d) => d.message).join(", ");
+        throw new Error(messages || response.message);
+      }
+
+      if (response?.error === "ServerError" || response?.error === "NotFound") {
+        throw new Error(response.message);
+      }
     }
-  },
+
+    throw new Error("Unexpected error while fetching users");
+  }
+};
+
+// Update user role (admin only)
+export const updateUserRole = async (phoneNumber: string, role: UserRole): Promise<UpdateUserResponse> => {
+  try {
+    const session = await getSession();
+    const token = session?.accessToken;
+    if (!token) throw new Error("No access token found");
+
+    const { data } = await api.post<UpdateUserResponse>(
+      "/admin/set-role",
+      { phoneNumber, role },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (!data.result) throw new Error("Failed to update user role");
+
+    return { ...data, result: normalizeUser(data.result) };
+  } catch (error: unknown) {
+    console.error("❌ [API] Failed to update user role:", error);
+
+    if (axios.isAxiosError(error)) {
+      const response = error.response?.data as ApiErrorResponse | undefined;
+
+      if (response?.error === "ValidationError" && response.details?.length) {
+        const messages = response.details.map((d) => d.message).join(", ");
+        throw new Error(messages || response.message);
+      }
+
+      if (response?.error === "ServerError" || response?.error === "NotFound") {
+        throw new Error(response.message);
+      }
+    }
+
+    throw new Error("Unexpected error while updating user role");
+  }
+};
+
+// Update the logged-in user's profile
+export const updateUserProfile = async (
+  userId: string,
+  payload: Partial<ProfileSchema>,
+  token: string
+): Promise<UpdateUserResponse> => {
+  try {
+    const { data } = await api.put<UpdateUserResponse>(`/user/${userId}`, payload, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (!data.result) throw new Error("Failed to update user profile");
+
+    return { ...data, result: normalizeUser(data.result) };
+  } catch (error: unknown) {
+    console.error("❌ [API] Failed to update user profile:", error);
+
+    if (axios.isAxiosError(error)) {
+      const response = error.response?.data as ApiErrorResponse | undefined;
+
+      if (response?.error === "ValidationError" && response.details?.length) {
+        const messages = response.details.map((d) => d.message).join(", ");
+        throw new Error(messages || response.message);
+      }
+
+      if (response?.error === "ServerError" || response?.error === "NotFound") {
+        throw new Error(response.message);
+      }
+    }
+
+    throw new Error("Unexpected error while updating user profile");
+  }
 };

@@ -2,20 +2,24 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Box, Typography } from "@mui/material";
 import Input from "@/components/ui/Input";
 import { testimonialFormSchema, TestimonialFormType } from "@/app/branch/lib/testimonial-form.schema";
 import { createTestimonial } from "@/lib/api/testimonial.api";
 import { toast } from "react-toastify";
 
+type Props = {
+  accessToken: string;
+};
+
+// Default form values
 export const defaultTestimonial: Partial<TestimonialFormType> = {
   name: "محمد محمدی",
   date: "۱۴۰۳/۰۶/۰۱",
   comment: "نظر شما در مورد تجربه خودتان...",
 };
 
-export default function TestimonialUploadPanel() {
+export default function TestimonialUploadPanel({ accessToken }: Props) {
   const {
     register,
     handleSubmit,
@@ -26,29 +30,33 @@ export default function TestimonialUploadPanel() {
     defaultValues: defaultTestimonial,
   });
 
-  const mutation = useMutation({
-    mutationFn: createTestimonial,
-    onSuccess: (testimonial) => {
-      toast.success(`Testimonial from "${testimonial.name}" uploaded!`);
-      reset();
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to upload testimonial");
-    },
-  });
-
-  const onSubmit = (data: TestimonialFormType) => {
+  const onSubmit = async (data: TestimonialFormType) => {
     const file = data.image[0];
+    if (!file) {
+      toast.error("لطفا تصویر را انتخاب کنید");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("image", file);
     Object.entries(data).forEach(([key, value]) => {
-      if (key !== "image") {
+      if (key !== "image" && value !== undefined && value !== null) {
         formData.append(key, value.toString());
       }
     });
 
-    mutation.mutate(formData);
+    try {
+      const testimonial = await createTestimonial(formData, accessToken);
+      toast.success(`نظر "${testimonial.result.name}" با موفقیت ثبت شد!`);
+      reset();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message || "بارگذاری نظر با خطا مواجه شد");
+      } else {
+        toast.error("خطای ناشناخته هنگام بارگذاری نظر رخ داد");
+      }
+      console.error("❌ [TestimonialUploadPanel] onSubmit error:", error);
+    }
   };
 
   return (
@@ -94,10 +102,10 @@ export default function TestimonialUploadPanel() {
 
         <button
           type="submit"
-          disabled={isSubmitting || mutation.isPending}
+          disabled={isSubmitting}
           className="px-4 py-2 text-white bg-blue-600 rounded-xl disabled:opacity-50"
         >
-          {mutation.isPending ? "در حال بارگذاری..." : "ثبت نظر"}
+          {isSubmitting ? "در حال بارگذاری..." : "ثبت نظر"}
         </button>
       </form>
     </Box>

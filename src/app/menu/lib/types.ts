@@ -21,8 +21,6 @@ export type FoodCategoriesCardProps = CategorySetter & {
 export type FoodsProps = {
   selectedCategory: string;
   products: ProductType[];
-  loading: boolean;
-  error: string | null;
 };
 
 export type FoodListProps = {

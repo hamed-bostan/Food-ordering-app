@@ -1,29 +1,32 @@
 "use client";
 
 import { toast } from "react-toastify";
-import { useUpdateUserRole, useUsers } from "@/lib/hooks/useUser";
-import { User } from "@/lib/user/user.types";
+import { User, UserRole } from "@/lib/user/user.types";
+import { useState } from "react";
+import { updateUserRole } from "@/lib/user/user.api";
 
-export default function UsersTable() {
-  const { data: users = [], isLoading } = useUsers();
-  const updateUserRole = useUpdateUserRole();
+type UsersTableProps = {
+  initialUsers: User[];
+};
 
-  if (isLoading) return <p>در حال بارگذاری کاربران...</p>;
-  if (!users.length) return <p>کاربری وجود ندارد.</p>;
+export default function UsersTable({ initialUsers }: UsersTableProps) {
+  const [users, setUsers] = useState<User[]>(initialUsers);
 
-  const handleUpdate = (phoneNumber: string, role: "user" | "admin") => {
-    updateUserRole.mutate(
-      { phoneNumber, role },
-      {
-        onError: (error: unknown) => {
-          if (error instanceof Error) {
-            toast.error(error.message);
-          } else {
-            toast.error("Failed to update role");
-          }
-        },
+  const handleUpdate = async (phoneNumber: string, role: UserRole) => {
+    try {
+      const updatedUser = await updateUserRole(phoneNumber, role);
+
+      // Update local state with the updated User object
+      setUsers((prevUsers) => prevUsers.map((user) => (user.phoneNumber === phoneNumber ? updatedUser.result : user)));
+
+      toast.success(`User role updated to "${role}"`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to update role");
       }
-    );
+    }
   };
 
   return (
@@ -38,7 +41,7 @@ export default function UsersTable() {
         </tr>
       </thead>
       <tbody>
-        {users.map((user: User) => (
+        {users.map((user) => (
           <tr key={user.id}>
             <td className="p-2 border">{user.name}</td>
             <td className="p-2 border">{user.phoneNumber}</td>
