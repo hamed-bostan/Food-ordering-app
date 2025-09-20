@@ -1,37 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/db/mongodb";
-import { MongoUser } from "@/lib/user/user.types";
-import { normalizeUser } from "@/lib/user/user.utils";
-import { verifyJWT } from "@/lib/auth/verifyJWT";
-import { handleApiError } from "@/lib/errors/handleApiError";
+import clientPromise from "@/infrastructure/db/mongodb";
+import jwt from "jsonwebtoken";
+import { MongoUser, UserRole } from "@/types/user.types";
+import { normalizeUser } from "@/infrastructure/repositories/user.normalize";
+import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
+
 
 /**
  * GET /api/admin/users
- *
- * Admin-only endpoint
- * - Verifies JWT from Authorization header
- * - Ensures the user has "admin" role
- * - Returns a normalized list of all users
- * - Response includes message + result for frontend consistency
+ * Admin-only: Fetch all users
  */
 export async function GET(req: NextRequest) {
   try {
-    // Verify token & role
-    const payload = verifyJWT(req);
+    // Verify JWT from Authorization header
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return NextResponse.json({ error: "Forbidden", message: "Missing or invalid token" }, { status: 403 });
+    }
+    const token = authHeader.split(" ")[1];
+
+    let payload: { id?: string; role?: UserRole };
+    try {
+      payload = jwt.verify(token, process.env.NEXTAUTH_SECRET!) as { id?: string; role?: UserRole };
+    } catch {
+      return NextResponse.json({ error: "Forbidden", message: "Invalid token" }, { status: 403 });
+    }
+
+    // Admin only
     if (payload.role !== "admin") {
       return NextResponse.json({ error: "Forbidden", message: "Admins only" }, { status: 403 });
     }
 
     // Connect to MongoDB
-    const db = await connectToDatabase();
+    const client = await clientPromise;
+    const db = client.db();
+    const usersCollection = db.collection("users");
 
     // Fetch all users
-    const users = await db.collection("users").find({}).toArray();
+    const users = await usersCollection.find({}).toArray();
 
     // Normalize DB documents into safe user objects
     const normalizedUsers = users.map((u) => normalizeUser(u as MongoUser & { _id: any }));
 
-    // ✅ Return standardized message + result
+    // Standardized message + result
     return NextResponse.json(
       {
         message: "Users fetched successfully",
@@ -40,6 +51,6 @@ export async function GET(req: NextRequest) {
       { status: 200 }
     );
   } catch (error: unknown) {
-    return handleApiError(error, "Users API - GET");
+    return apiErrorHandler(error, "Admin Users API - GET");
   }
 }

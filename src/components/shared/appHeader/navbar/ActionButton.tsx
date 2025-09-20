@@ -8,7 +8,7 @@ import { ActionMenuItem, LinkMenuItem, MenuItem, userMenuItems } from "../../Use
 import { MouseEvent, useState } from "react";
 import { Divider } from "@mui/material";
 import Popover from "@mui/material/Popover";
-import { RootState } from "@/store/store";
+import { RootState } from "@/store";
 import { signOut, useSession } from "next-auth/react";
 
 function isLink(item: MenuItem): item is LinkMenuItem {

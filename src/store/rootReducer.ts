@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
-import cartReducer, { CartState } from "../redux/slices/cart/cartSlice";
+import cartReducer from "./cart.slice";
+import { CartState } from "./cart.types";
 
 const rootReducer = combineReducers({
   cart: cartReducer,
@@ -10,10 +11,7 @@ export type RootState = {
 };
 
 // Ensure that the initial state is not undefined
-const combinedReducer = (
-  state: RootState | undefined,
-  action: any
-): RootState => {
+const combinedReducer = (state: RootState | undefined, action: any): RootState => {
   if (state === undefined) {
     return {
       cart: {

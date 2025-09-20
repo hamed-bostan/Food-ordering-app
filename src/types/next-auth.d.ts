@@ -1,5 +1,5 @@
 import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
-import { UserRole } from "@/lib/user/user.types";
+import { UserRole } from "@/types/user.types";
 
 declare module "next-auth" {
   // Strongly typed user object for session

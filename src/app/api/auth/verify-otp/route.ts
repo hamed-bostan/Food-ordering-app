@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { otpSchema } from "@/app/auth/otp/lib/schema/otpSchema";
-import { otpService } from "@/app/auth/otp/lib/otp.service";
-import { handleApiError } from "@/lib/errors/handleApiError";
+import { otpSchema } from "@/domain/otpSchema";
+import { otpService } from "@/services/server/otp.service";
+import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 
 /**
  * POST /api/auth/verify-otp
  *
  * Verifies an OTP code for a given phone number.
- * - Validates input using Zod
- * - Delegates verification to otpService
- * - Returns a standardized message and result
  */
+
 export async function POST(req: NextRequest) {
   try {
     // Parse and validate request body
@@ -24,7 +22,7 @@ export async function POST(req: NextRequest) {
       {
         message: "OTP is valid",
         result: {
-          id: user._id.toString(),
+          id: user.id,
           phoneNumber: user.phoneNumber,
           role: user.role,
         },
@@ -32,6 +30,6 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error: unknown) {
-    return handleApiError(error, "Verify OTP API - POST");
+    return apiErrorHandler(error, "Verify OTP API - POST");
   }
 }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { phoneSchema } from "@/app/auth/otp/lib/schema/otpSchema";
-import { otpService } from "@/app/auth/otp/lib/otp.service";
-import { handleApiError } from "@/lib/errors/handleApiError";
+import { phoneSchema } from "@/domain/otpSchema";
+import { otpService } from "@/services/server/otp.service";
+import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 
 /**
  * POST /api/auth/send-otp
@@ -28,6 +28,6 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error: unknown) {
-    return handleApiError(error, "Send OTP API - POST");
+    return apiErrorHandler(error, "Send OTP API - POST");
   }
 }

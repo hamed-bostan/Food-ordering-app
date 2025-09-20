@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "@/lib/db/mongodb";
+import clientPromise from "@/infrastructure/db/mongodb";
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,10 +16,7 @@ export async function POST(req: NextRequest) {
     // 4. Return inserted document with _id
     const insertedDoc = { _id: result.insertedId, ...body };
 
-    return NextResponse.json(
-      { success: true, data: insertedDoc },
-      { status: 201 }
-    );
+    return NextResponse.json({ success: true, data: insertedDoc }, { status: 201 });
   } catch (error) {
     console.error("❌ Franchise submission failed:", error);
 

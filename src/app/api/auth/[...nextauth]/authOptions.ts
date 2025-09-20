@@ -1,4 +1,4 @@
-import clientPromise, { connectToDatabase } from "@/lib/db/mongodb";
+import clientPromise, { connectToDatabase } from "@/infrastructure/db/mongodb";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
@@ -6,7 +6,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
-import { UserRole } from "@/lib/user/user.types";
+import { UserRole } from "@/types/user.types";
 
 export const authOptions: NextAuthOptions = {
   providers: [
