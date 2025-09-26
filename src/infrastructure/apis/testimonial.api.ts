@@ -1,10 +1,10 @@
-import { TestimonialModel } from "@/domain/testimonial.schema";
+import { TestimonialType } from "@/application/schemas/testimonial.schema";
 import { ApiErrorResponse } from "@/types/api-error";
 import axios from "axios";
 import { api } from "../axios/api.client";
 
-export type GetTestimonialsResponse = { message: string; result: TestimonialModel[] };
-export type CreateTestimonialResponse = { message: string; result: TestimonialModel };
+export type GetTestimonialsResponse = { message: string; result: TestimonialType[] };
+export type CreateTestimonialResponse = { message: string; result: TestimonialType };
 
 // Fetch testimonials
 export const getTestimonials = async (): Promise<GetTestimonialsResponse> => {

@@ -1,5 +1,5 @@
 import { getProducts } from "@/infrastructure/apis/product.api";
-import RestaurantMenu from "./components";
+import RestaurantMenu from "@/presentation/features/menu";
 export const dynamic = "force-dynamic";
 
 export default async function RestaurantMenuPage() {

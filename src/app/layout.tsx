@@ -1,12 +1,12 @@
 import "./globals.css";
-import ProviderWrapper from "@/app/_providers/ProviderWrapper";
-import SessionProviderWrapper from "@/app/_providers/SessionProviderWrapper";
+import AuthProvider from "@/app/_providers/AuthProvider";
 import ThemeRegistry from "@/lib/theme/ThemeRegistry";
 import { ReactNode } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AppHeader from "@/components/shared/appHeader";
 import Footer from "@/components/shared/footer";
+import { AppProviders } from "./_providers/AppProviders";
 
 export const metadata = {
   title: "Food ordering app",
@@ -25,13 +25,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang="fa" dir="rtl">
       <body className="antialiased">
         <ThemeRegistry>
-          <SessionProviderWrapper>
-            <ProviderWrapper>
+          <AuthProvider>
+            <AppProviders>
               <AppHeader />
               <main>{children}</main>
               <Footer />
-            </ProviderWrapper>
-          </SessionProviderWrapper>
+            </AppProviders>
+          </AuthProvider>
         </ThemeRegistry>
         <ToastContainer rtl position="top-center" />
       </body>

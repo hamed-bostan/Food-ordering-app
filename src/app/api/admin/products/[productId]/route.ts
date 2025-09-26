@@ -1,76 +1,79 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/middleware/requireAdmin";
+import { UpdateProductDto, UpdateProductDtoType } from "@/application/schemas/product.schema";
 import { z } from "zod";
-import { verifyJWT } from "@/infrastructure/auth/jwt.util.ts";
-import {
-  findProductByIdInDb,
-  updateProductInDb,
-  deleteProductFromDb,
-} from "@/infrastructure/repositories/product.repository";
-import { productInputSchema } from "@/domain/product.schema";
+import { updateProductUseCase } from "@/domain/use-cases/products/updateProduct.usecase";
+import { deleteProductUseCase } from "@/domain/use-cases/products/deleteProduct.usecase";
+import { fetchProductByIdUseCase } from "@/domain/use-cases/products/productById.usecase";
 import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 
-// Allow partial updates (PATCH-like behavior in PUT)
-const productUpdateSchema = productInputSchema.partial();
-
 /**
- * GET /api/admin/products/[productId]
+ * GET /api/admin/products/:productId
  * Admin-only: Fetch single product
  */
 export async function GET(req: NextRequest, context: { params: Promise<{ productId: string }> }) {
   try {
-    const payload = verifyJWT(req);
-    if (payload.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden", message: "Admins only" }, { status: 403 });
-    }
+    await requireAdmin(req);
 
-    const { productId } = await context.params;
-    const product = await findProductByIdInDb(productId);
-    if (!product) {
-      return NextResponse.json({ error: "NotFound", message: "Product not found" }, { status: 404 });
-    }
+    const params = await context.params;
+    const { productId } = params;
 
-    return NextResponse.json({ result: product });
+    const product = await fetchProductByIdUseCase(productId);
+
+    return NextResponse.json({ result: product }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Admin Products API - GET one");
+    return apiErrorHandler(error, "Admin Products API - GET");
   }
 }
 
 /**
- * PUT /api/admin/products/[productId]
- * Admin-only: Update a product
- * Accepts multipart/form-data with optional image
+ * PUT /api/admin/products/:productId
+ * Update a product (with optional new image)
  */
+
 export async function PUT(req: NextRequest, context: { params: Promise<{ productId: string }> }) {
   try {
-    const payload = verifyJWT(req);
-    if (payload.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden", message: "Admins only" }, { status: 403 });
-    }
+    await requireAdmin(req);
 
-    const { productId } = await context.params;
+    const params = await context.params;
+    const { productId } = params;
 
-    let fields: Record<string, string> = {};
+    let validatedFields: UpdateProductDtoType;
+    let newImage: File | undefined;
 
-    if (req.headers.get("content-type")?.includes("multipart/form-data")) {
+    const contentType = req.headers.get("content-type") || "";
+
+    if (contentType.includes("multipart/form-data")) {
       const formData = await req.formData();
-      formData.forEach((value, key) => {
-        if (!(value instanceof File)) {
-          fields[key] = value.toString();
+
+      const rawFields: Record<string, unknown> = {};
+      for (const [key, value] of formData.entries()) {
+        if (key !== "image" && typeof value === "string") {
+          rawFields[key] = value; // leave as string, schema will coerce
         }
-      });
+      }
+
+      validatedFields = UpdateProductDto.parse(rawFields);
+
+      const imageFile = formData.get("image");
+      newImage = imageFile instanceof File ? imageFile : undefined;
     } else {
-      fields = await req.json();
+      const body = await req.json();
+      validatedFields = UpdateProductDto.parse(body);
+      newImage = undefined;
     }
 
-    const validatedData = productUpdateSchema.parse(fields);
+    const updatedProduct = await updateProductUseCase(productId, validatedFields, newImage);
 
-    const updatedProduct = await updateProductInDb(productId, validatedData);
-
-    return NextResponse.json({ message: "Product updated successfully", result: updatedProduct });
+    return NextResponse.json({ message: "Product updated successfully", result: updatedProduct }, { status: 200 });
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: "ValidationError", message: "Invalid input", details: error.errors },
+        {
+          error: "ValidationError",
+          message: "Invalid input",
+          details: error.errors,
+        },
         { status: 400 }
       );
     }
@@ -79,20 +82,19 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ product
 }
 
 /**
- * DELETE /api/admin/products/[productId]
- * Admin-only: Delete a product (with image cleanup)
+ * DELETE /api/admin/products/:productId
+ * Delete product (with optional image cleanup)
  */
 export async function DELETE(req: NextRequest, context: { params: Promise<{ productId: string }> }) {
   try {
-    const payload = verifyJWT(req);
-    if (payload.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden", message: "Admins only" }, { status: 403 });
-    }
+    await requireAdmin(req);
 
-    const { productId } = await context.params;
-    await deleteProductFromDb(productId);
+    const params = await context.params;
+    const { productId } = params;
 
-    return NextResponse.json({ message: "Product deleted successfully" });
+    await deleteProductUseCase(productId);
+
+    return NextResponse.json({ message: "Product deleted successfully" }, { status: 200 });
   } catch (error: unknown) {
     return apiErrorHandler(error, "Admin Products API - DELETE");
   }

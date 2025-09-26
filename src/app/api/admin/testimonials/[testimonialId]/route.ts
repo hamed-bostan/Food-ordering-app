@@ -1,75 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyJWT } from "@/infrastructure/auth/jwt.util.ts";
+import { requireAdmin } from "@/middleware/requireAdmin";
+import { TestimonialType, UpdateTestimonialDto } from "@/application/schemas/testimonial.schema";
 import { z } from "zod";
-import { updateTestimonialInDb, deleteTestimonialFromDb } from "@/infrastructure/repositories/testimonials.repository";
-import { testimonialInputSchema } from "@/domain/testimonial.schema";
-import { createTestimonialWithImage } from "@/services/server/testimonial.service";
+import { updateTestimonialUseCase } from "@/domain/use-cases/testimonial/updateTestimonial.usecase";
+import { deleteTestimonialUseCase } from "@/domain/use-cases/testimonial/deleteTestimonial.usecase";
 import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 
-// Allow partial updates (PATCH-like behavior in PUT)
-const testimonialUpdateSchema = testimonialInputSchema.partial();
-
 /**
- * POST /api/testimonials
- */
-export async function POST(req: NextRequest) {
-  try {
-    // Verify JWT
-    const payload = verifyJWT(req);
-    if (payload.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden", message: "Admins only" }, { status: 403 });
-    }
-
-    // Parse form data
-    const formData = await req.formData();
-    const fields: Record<string, string> = {};
-    for (const [key, value] of formData.entries()) {
-      if (key !== "image" && typeof value === "string") fields[key] = value;
-    }
-
-    // Check for image
-    const image = formData.get("image") as File | null;
-    if (!image) {
-      return NextResponse.json({ error: "ValidationError", message: "Image is required" }, { status: 400 });
-    }
-
-    // Delegate to service
-    const createdTestimonial = await createTestimonialWithImage(fields, image);
-
-    return NextResponse.json(
-      { message: "Testimonial created successfully", result: createdTestimonial },
-      { status: 201 }
-    );
-  } catch (error: unknown) {
-    return apiErrorHandler(error, "Testimonials API - POST");
-  }
-}
-
-/**
- * PUT /api/admin/testimonials/[testimonialId]
- * Admin-only: Update a testimonial
+ * PUT /api/admin/testimonials/:testimonialId
  */
 export async function PUT(req: NextRequest, context: { params: Promise<{ testimonialId: string }> }) {
   try {
-    const payload = verifyJWT(req);
-    if (payload.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden", message: "Admins only" }, { status: 403 });
-    }
-
+    await requireAdmin(req);
     const params = await context.params;
     const { testimonialId } = params;
-    const body = await req.json();
-    const validatedData = testimonialUpdateSchema.parse(body);
 
-    const updatedTestimonial = await updateTestimonialInDb(testimonialId, validatedData);
+    let validatedFields: Partial<Omit<TestimonialType, "id" | "image">>;
+    let newImage: File | undefined;
 
-    return NextResponse.json(
-      {
-        message: "Testimonial updated successfully",
-        result: updatedTestimonial,
-      },
-      { status: 200 }
-    );
+    const contentType = req.headers.get("content-type") ?? "";
+
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await req.formData();
+      const rawFields: Record<string, unknown> = {};
+
+      for (const [key, value] of formData.entries()) {
+        if (key !== "image" && typeof value === "string") {
+          rawFields[key] = value;
+        }
+      }
+
+      validatedFields = UpdateTestimonialDto.parse(rawFields);
+
+      const imageFile = formData.get("image");
+      if (imageFile instanceof File) newImage = imageFile;
+    } else {
+      const body = await req.json();
+      validatedFields = UpdateTestimonialDto.parse(body);
+    }
+
+    const updated = await updateTestimonialUseCase(testimonialId, validatedFields, newImage);
+    return NextResponse.json({ message: "Testimonial updated successfully", result: updated }, { status: 200 });
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -82,19 +53,15 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ testimo
 }
 
 /**
- * DELETE /api/admin/testimonials/[testimonialId]
- * Admin-only: Delete a testimonial
+ * DELETE /api/admin/testimonials/:testimonialId
  */
 export async function DELETE(req: NextRequest, context: { params: Promise<{ testimonialId: string }> }) {
   try {
-    const payload = verifyJWT(req);
-    if (payload.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden", message: "Admins only" }, { status: 403 });
-    }
-
+    await requireAdmin(req);
     const params = await context.params;
     const { testimonialId } = params;
-    await deleteTestimonialFromDb(testimonialId);
+
+    await deleteTestimonialUseCase(testimonialId);
 
     return NextResponse.json({ message: "Testimonial deleted successfully" }, { status: 200 });
   } catch (error: unknown) {

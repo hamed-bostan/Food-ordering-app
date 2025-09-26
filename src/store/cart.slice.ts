@@ -1,4 +1,4 @@
-import { ProductType } from "@/domain/product.schema";
+import { ProductType } from "@/application/schemas/product.schema";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CartItem, CartState } from "./cart.types";
 

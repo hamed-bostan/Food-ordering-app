@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { FranchiseFormValues } from "@/domain/franchise-form-schema";
+import { FranchiseFormValues } from "@/application/schemas/franchise.form-schema";
 
 type FranchiseDialogContextProps = {
   isFranchiseDialogOpen: boolean;

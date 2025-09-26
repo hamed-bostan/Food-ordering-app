@@ -1,14 +1,13 @@
-import { User } from "../../types/user.types";
-import { normalizeUser } from "../repositories/user.normalize";
 import axios from "axios";
 import { ApiErrorResponse } from "@/types/api-error";
-import { ProfileModel } from "@/domain/profile-schema";
+import { UserProfileType } from "@/application/schemas/profile-schema";
 import { api } from "../axios/api.client";
+import { UserSchema, UserType, UserRoleType } from "@/application/schemas/user.schema";
 
-export type GetUserResponse = { message: string; result: User };
-export type GetUsersResponse = { message: string; result: User[] };
-export type UpdateUserResponse = { message: string; result: User };
-export type AdminUpdateUserPayload = Partial<ProfileModel> & { role?: User["role"] };
+export type GetUserResponse = { message: string; result: UserType };
+export type GetUsersResponse = { message: string; result: UserType[] };
+export type UpdateUserResponse = { message: string; result: UserType };
+export type AdminUpdateUserPayload = Partial<UserProfileType> & { role?: UserRoleType };
 
 // Fetch a single user by ID
 export const getUserById = async (id: string, token: string): Promise<GetUserResponse> => {
@@ -19,7 +18,10 @@ export const getUserById = async (id: string, token: string): Promise<GetUserRes
 
     if (!data.result) throw new Error("User not found");
 
-    return { ...data, result: normalizeUser(data.result) };
+    // ✅ runtime validation
+    const validatedUser = UserSchema.parse(data.result);
+
+    return { ...data, result: validatedUser };
   } catch (error: unknown) {
     console.error("❌ [API] Failed to fetch user by ID:", error);
 
@@ -43,7 +45,7 @@ export const getUserById = async (id: string, token: string): Promise<GetUserRes
 // Update the logged-in user's profile
 export const updateUserProfile = async (
   userId: string,
-  payload: Partial<ProfileModel>,
+  payload: Partial<UserProfileType>,
   token: string
 ): Promise<UpdateUserResponse> => {
   try {
@@ -53,7 +55,10 @@ export const updateUserProfile = async (
 
     if (!data.result) throw new Error("Failed to update user profile");
 
-    return { ...data, result: normalizeUser(data.result) };
+    // ✅ runtime validation
+    const validatedUser = UserSchema.parse(data.result);
+
+    return { ...data, result: validatedUser };
   } catch (error: unknown) {
     console.error("❌ [API] Failed to update user profile:", error);
 

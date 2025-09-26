@@ -1,11 +1,13 @@
 import { ObjectId } from "mongodb";
-import { NewProductType, ProductType } from "@/domain/product.schema";
 import { connectToDatabase } from "@/infrastructure/db/mongodb";
+import { CreateProductDtoType, ProductType } from "@/application/schemas/product.schema";
 
 export const collectionName = "products";
 
+type NewProductForDb = CreateProductDtoType & { createdAt: string };
+
 /**
- * Map MongoDB document to ProductType
+ * Map MongoDB document to ProductModel
  */
 export function mapToProductType(doc: any): ProductType {
   return {
@@ -37,7 +39,7 @@ export async function findProductByIdInDb(productId: string): Promise<ProductTyp
 /**
  * Insert a new product
  */
-export async function insertProductToDb(product: NewProductType): Promise<ObjectId> {
+export async function insertProductToDb(product: NewProductForDb): Promise<ObjectId> {
   const db = await connectToDatabase();
   const result = await db.collection(collectionName).insertOne(product);
   return result.insertedId;

@@ -35,13 +35,13 @@ export const navigationItems: NavigationItem[] = [
   {
     id: 5,
     text: "درباره ما",
-    path: "/about-us",
+    path: "/about",
     image: profileUserIcon,
   },
   {
     id: 6,
     text: "تماس با ما",
-    path: "/contact-us",
+    path: "/contact",
     image: callCallingIcon,
   },
 ];

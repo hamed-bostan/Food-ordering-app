@@ -1,26 +1,32 @@
 import { ObjectId } from "mongodb";
-import { NewTestimonialModel, TestimonialModel } from "@/domain/testimonial.schema";
+import {
+  CreateTestimonialDtoType,
+  TestimonialSchema,
+  TestimonialType,
+  UpdateTestimonialDtoType,
+} from "@/application/schemas/testimonial.schema";
 import { connectToDatabase } from "@/infrastructure/db/mongodb";
 
 export const collectionName = "testimonials";
 
 /**
- * Map MongoDB document to TestimonialType
+ * Map MongoDB document to domain entity (TestimonialType)
  */
-export function mapToTestimonialType(doc: any): TestimonialModel {
-  return {
+export function mapToTestimonialType(doc: any): TestimonialType {
+  const mapped = {
     id: doc._id.toString(),
     image: doc.image,
     name: doc.name,
     date: doc.date,
     comment: doc.comment,
   };
+  return TestimonialSchema.parse(mapped); // validate before returning
 }
 
 /**
  * Fetch a single testimonial by MongoDB _id
  */
-export async function findTestimonialByIdInDb(testimonialId: string): Promise<TestimonialModel | null> {
+export async function findTestimonialByIdInDb(testimonialId: string): Promise<TestimonialType | null> {
   if (!ObjectId.isValid(testimonialId)) throw new Error("Invalid testimonial ID");
 
   const db = await connectToDatabase();
@@ -32,16 +38,18 @@ export async function findTestimonialByIdInDb(testimonialId: string): Promise<Te
 /**
  * Insert a new testimonial
  */
-export async function insertTestimonialToDb(testimonial: NewTestimonialModel): Promise<ObjectId> {
+export async function insertTestimonialToDb(
+  testimonial: CreateTestimonialDtoType & { createdAt: string }
+): Promise<string> {
   const db = await connectToDatabase();
   const result = await db.collection(collectionName).insertOne(testimonial);
-  return result.insertedId;
+  return result.insertedId.toString();
 }
 
 /**
  * Fetch all testimonials
  */
-export async function fetchTestimonialsFromDb(): Promise<TestimonialModel[]> {
+export async function fetchTestimonialsFromDb(): Promise<TestimonialType[]> {
   const db = await connectToDatabase();
   const docs = await db.collection(collectionName).find({}).toArray();
   return docs.map(mapToTestimonialType);
@@ -52,13 +60,12 @@ export async function fetchTestimonialsFromDb(): Promise<TestimonialModel[]> {
  */
 export async function updateTestimonialInDb(
   testimonialId: string,
-  update: Partial<Pick<TestimonialModel, "name" | "image" | "date" | "comment">>
-): Promise<TestimonialModel> {
+  update: UpdateTestimonialDtoType
+): Promise<TestimonialType> {
   if (!ObjectId.isValid(testimonialId)) throw new Error("Invalid testimonial ID");
 
-  if ("id" in update) delete (update as any).id; // Prevent overwriting _id/id
-
   const db = await connectToDatabase();
+
   const updateResult = await db
     .collection(collectionName)
     .updateOne({ _id: new ObjectId(testimonialId) }, { $set: update });

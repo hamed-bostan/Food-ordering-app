@@ -1,15 +1,22 @@
 export type ActiveTab = "faq" | "rules" | "privacyPolicy";
 
-export type CategoryNavigationProps = {
+export type FaqTabsProps = {
   handleTabClick: (tab: ActiveTab) => void;
   activeTab: ActiveTab;
 };
 
-export type categoryNavigationItemsProps = {
+export type FaqTab = {
   id: ActiveTab;
   label: string;
 };
 
-export type ContentDisplayProps = {
+export type FaqTabContentProps = {
   activeTab: ActiveTab;
+};
+
+export type FaqSection = {
+  id: string;
+  category: string;
+  title: string;
+  information: string;
 };

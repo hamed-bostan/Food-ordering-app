@@ -6,7 +6,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
-import { UserRole } from "@/types/user.types";
+import { UserRoleType } from "@/application/schemas/user.schema";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user._id.toString(),
           phoneNumber: user.phoneNumber,
-          role: user.role as UserRole,
+          role: user.role as UserRoleType,
         };
       },
     }),
@@ -77,7 +77,7 @@ export const authOptions: NextAuthOptions = {
       if (token.id) {
         const dbUser = await usersCollection.findOne({ _id: new ObjectId(token.id) });
         if (dbUser) {
-          token.role = dbUser.role as UserRole;
+          token.role = dbUser.role as UserRoleType;
         }
       }
 

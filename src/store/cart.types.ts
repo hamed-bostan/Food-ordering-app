@@ -1,4 +1,4 @@
-import { ProductType } from "@/domain/product.schema";
+import { ProductType } from "@/application/schemas/product.schema";
 
 // CartItem extends Product by adding quantity
 export type CartItem = ProductType & { quantity: number };
@@ -10,4 +10,3 @@ export type CartState = {
   totalPrice: number;
   checkout: boolean;
 };
-

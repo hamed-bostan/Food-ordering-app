@@ -1,30 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyJWT } from "@/infrastructure/auth/jwt.util.ts";
-import { deleteUserFromDb, updateUserInDb } from "@/infrastructure/repositories/user.repository";
 import { z } from "zod";
-import { adminProfileSchema } from "@/domain/profile-schema";
 import { ObjectId } from "mongodb";
+import { requireAdmin } from "@/middleware/requireAdmin";
+import { updateUserById } from "@/domain/use-cases/user/updateUserById.usecase";
+import { deleteUserById } from "@/domain/use-cases/user/deleteUserById.usecase";
 import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 
 /**
- * PUT /api/admin/users/[userId]
+ * PUT /api/admin/users/:userId
  * Admin-only: Update a user
  */
 export async function PUT(req: NextRequest, context: { params: Promise<{ userId: string }> }) {
   try {
-    const payload = verifyJWT(req);
-    if (payload.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden", message: "Admins only" }, { status: 403 });
-    }
+    await requireAdmin(req);
+    const { userId } = await context.params;
 
-    const params = await context.params;
-    const { userId } = params;
     const body = await req.json();
-
-    // Validate input against zod schema
-    const validatedData = adminProfileSchema.parse(body);
-
-    const updatedUser = await updateUserInDb(userId, validatedData);
+    const updatedUser = await updateUserById(userId, body);
 
     return NextResponse.json({ message: "User updated successfully", result: updatedUser }, { status: 200 });
   } catch (error: unknown) {
@@ -39,25 +31,19 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ userId:
 }
 
 /**
- * DELETE /api/admin/users/[userId]
+ * DELETE /api/admin/users/:userId
  * Admin-only: Delete a user
  */
 export async function DELETE(req: NextRequest, context: { params: Promise<{ userId: string }> }) {
   try {
-    const payload = verifyJWT(req);
-    if (payload.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden", message: "Admins only" }, { status: 403 });
-    }
+    await requireAdmin(req);
+    const { userId } = await context.params;
 
-    const params = await context.params;
-    const { userId } = params;
-
-    // Validate ID
     if (!userId || !ObjectId.isValid(userId)) {
       return NextResponse.json({ error: "ValidationError", message: "Invalid user ID" }, { status: 400 });
     }
 
-    await deleteUserFromDb(userId);
+    await deleteUserById(userId);
 
     return NextResponse.json({ message: "User deleted successfully" }, { status: 200 });
   } catch (error: unknown) {

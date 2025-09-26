@@ -92,7 +92,7 @@ export function useAuthOtp(): UseAuthOtpReturn {
       } else {
         setOtpStatus("success");
         setMessage("ورود موفقیت‌آمیز بود");
-        router.push("/dashboard/products");
+        router.push("/manage/users");
       }
     } catch (error) {
       setOtpStatus("error");

@@ -1,4 +1,4 @@
-import { ProductType } from "@/domain/product.schema";
+import { ProductType } from "@/application/schemas/product.schema";
 import { StaticImageData } from "next/image";
 
 export type FoodListProps = {

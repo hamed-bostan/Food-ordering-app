@@ -1,14 +1,13 @@
 import axios from "axios";
 import { ApiErrorResponse } from "@/types/api-error";
-import { ProfileModel } from "@/domain/profile-schema";
-import { User } from "@/types/user.types";
-import { normalizeUser } from "@/infrastructure/repositories/user.normalize";
+import { UserProfileType } from "@/application/schemas/profile-schema";
+import { UserSchema, UserType, UserRoleType } from "@/application/schemas/user.schema";
 import { api } from "@/infrastructure/axios/api.client";
 
-export type GetUserResponse = { message: string; result: User };
-export type GetUsersResponse = { message: string; result: User[] };
-export type UpdateUserResponse = { message: string; result: User };
-export type AdminUpdateUserPayload = Partial<ProfileModel> & { role?: User["role"] };
+export type GetUserResponse = { message: string; result: UserType };
+export type GetUsersResponse = { message: string; result: UserType[] };
+export type UpdateUserResponse = { message: string; result: UserType };
+export type AdminUpdateUserPayload = Partial<UserProfileType> & { role?: UserRoleType };
 
 // Fetch all users (requires admin JWT)
 export const getUsersAdmin = async (token: string): Promise<GetUsersResponse> => {
@@ -19,7 +18,10 @@ export const getUsersAdmin = async (token: string): Promise<GetUsersResponse> =>
 
     if (!Array.isArray(data.result)) throw new Error("Invalid server response");
 
-    return { ...data, result: data.result.map(normalizeUser) };
+    // ✅ runtime validation for each user
+    const validatedUsers = data.result.map((u) => UserSchema.parse(u));
+
+    return { ...data, result: validatedUsers };
   } catch (error: unknown) {
     console.error("❌ [API] Failed to fetch users:", error);
 
@@ -53,7 +55,10 @@ export const updateUserAdmin = async (
 
     if (!data.result) throw new Error("Failed to update user");
 
-    return { ...data, result: normalizeUser(data.result) };
+    // ✅ runtime validation
+    const validatedUser = UserSchema.parse(data.result);
+
+    return { ...data, result: validatedUser };
   } catch (error: unknown) {
     console.error("❌ [API] Admin failed to update user:", error);
 

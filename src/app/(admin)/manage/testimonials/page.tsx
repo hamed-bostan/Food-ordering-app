@@ -1,9 +1,9 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { redirect } from "next/navigation";
-import TestimonialsTable from "./components";
 import { getTestimonialsAdmin } from "@/infrastructure/apis/admin/testimonial.api";
-import { TestimonialModel } from "@/domain/testimonial.schema";
+import { TestimonialType } from "@/application/schemas/testimonial.schema";
+import TestimonialsTable from "@/presentation/features/admin/manage/testimonials";
 
 export default async function TestimonialsPage() {
   // Get session server-side
@@ -19,7 +19,7 @@ export default async function TestimonialsPage() {
     redirect("/403");
   }
 
-  let initialTestimonials: TestimonialModel[] = [];
+  let initialTestimonials: TestimonialType[] = [];
 
   try {
     const response = await getTestimonialsAdmin(session.accessToken);

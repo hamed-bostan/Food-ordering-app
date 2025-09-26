@@ -1,24 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyJWT } from "@/infrastructure/auth/jwt.util.ts";
-import { getUserByIdService, updateUserByIdService } from "@/services/server/user.service";
+import { getUserById } from "@/domain/use-cases/user/getUserById.usecase";
+import { updateUserById } from "@/domain/use-cases/user/updateUserById.usecase";
+import { adminProfileSchema } from "@/application/schemas/profile-schema";
+import { requireSelfOrAdmin } from "@/middleware/requireSelfOrAdmin";
 import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 
 /**
- * GET /api/user/[id]
+ * GET /api/user/:id
  * Fetch a user by ID (self or admin only)
  */
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = await params;
+    const params = await context.params;
+    const { id } = params;
 
-    // Verify JWT
-    const payload = verifyJWT(req);
-    if (payload.id !== id && payload.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden", message: "Access denied" }, { status: 403 });
-    }
+    await requireSelfOrAdmin(req, id);
 
-    const user = await getUserByIdService(id);
-
+    const user = await getUserById(id);
     return NextResponse.json({ message: "User fetched successfully", result: user }, { status: 200 });
   } catch (error: unknown) {
     return apiErrorHandler(error, "User API - GET");
@@ -26,23 +24,21 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 }
 
 /**
- * PUT /api/user/[id]
+ * PUT /api/user/:id
  * Update a user by ID (self or admin only)
  */
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = await params;
+    const params = await context.params;
+    const { id } = params;
 
-    // Verify JWT
-    const payload = verifyJWT(req);
-    if (payload.id !== id && payload.role !== "admin") {
-      return NextResponse.json({ error: "Forbidden", message: "Access denied" }, { status: 403 });
-    }
+    await requireSelfOrAdmin(req, id);
 
     const body = await req.json();
-    delete body._id; // ensure _id is never updated
+    delete body._id;
 
-    const updatedUser = await updateUserByIdService(id, body);
+    const validatedData = adminProfileSchema.parse(body);
+    const updatedUser = await updateUserById(id, validatedData);
 
     return NextResponse.json({ message: "User updated successfully", result: updatedUser }, { status: 200 });
   } catch (error: unknown) {

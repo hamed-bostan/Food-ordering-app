@@ -1,24 +1,24 @@
-import { ProductType } from "@/domain/product.schema";
+import { ProductType } from "@/application/schemas/product.schema";
 import { Dispatch, SetStateAction } from "react";
 
-export type CategorySetter = {
+// state
+export type CategoryState = {
+  selectedCategory: string;
   setSelectedCategory: Dispatch<SetStateAction<string>>;
 };
 
-export type CategorySelectionState = CategorySetter & {
-  selectedCategory: string;
-};
-
-export type FoodCategoriesListProps = CategorySelectionState & {
+// components
+export type CategoriesListProps = CategoryState & {
   products: ProductType[];
 };
 
-export type FoodCategoriesCardProps = CategorySetter & {
+export type CategoryCardProps = {
   item: string;
   isSelected: boolean;
+  setSelectedCategory: Dispatch<SetStateAction<string>>;
 };
 
-export type FoodsProps = {
+export type FoodProps = {
   selectedCategory: string;
   products: ProductType[];
 };

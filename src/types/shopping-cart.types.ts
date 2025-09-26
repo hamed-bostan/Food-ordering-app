@@ -1,4 +1,4 @@
-import { ProductType } from "@/domain/product.schema";
+import { ProductType } from "@/application/schemas/product.schema";
 
 // Extend Product to include quantity from CartItem
 export type FullCartProduct = ProductType & {

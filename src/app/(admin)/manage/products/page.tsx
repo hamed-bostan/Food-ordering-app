@@ -1,9 +1,9 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { redirect } from "next/navigation";
-import ProductsTable from "./components";
-import { ProductType } from "@/domain/product.schema";
+import { ProductType } from "@/application/schemas/product.schema";
 import { getProductsAdmin } from "@/infrastructure/apis/admin/product.api";
+import ProductsTable from "@/presentation/features/admin/manage/products";
 
 export default async function ProductsPage() {
   const session = await getServerSession(authOptions);

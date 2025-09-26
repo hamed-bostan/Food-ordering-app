@@ -1,5 +1,5 @@
-import CustomButton from "@/components/ui/CustomButton";
-import Input from "@/components/ui/Input";
+import CustomButton from "@/presentation/components/CustomButton";
+import Input from "@/presentation/components/Input";
 
 export default function ContactForm() {
   return (
@@ -7,24 +7,9 @@ export default function ContactForm() {
       <h2 className="text-base mb-3 font-medium text-[#fff]">پیام به ترخینه</h2>
       <form>
         <div className="grid grid-cols-2 grid-rows-3 mb-5 gap-x-5 gap-y-2">
-          <Input
-            label="نام و نام خانوادگی"
-            labelColor="#EDEDED"
-            textColor="#EDEDED"
-            borderColor="#717171"
-          />
-          <Input
-            label="شماره تماس"
-            labelColor="#EDEDED"
-            textColor="#EDEDED"
-            borderColor="#717171"
-          />
-          <Input
-            label="آدرس ایمیل (اختیاری)"
-            labelColor="#EDEDED"
-            textColor="#EDEDED"
-            borderColor="#717171"
-          />
+          <Input label="نام و نام خانوادگی" labelColor="#EDEDED" textColor="#EDEDED" borderColor="#717171" />
+          <Input label="شماره تماس" labelColor="#EDEDED" textColor="#EDEDED" borderColor="#717171" />
+          <Input label="آدرس ایمیل (اختیاری)" labelColor="#EDEDED" textColor="#EDEDED" borderColor="#717171" />
           <Input
             label="پیام شما"
             labelColor="#EDEDED"

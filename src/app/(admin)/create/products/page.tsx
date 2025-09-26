@@ -1,9 +1,9 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
-import ProductUploadPanel from "./components/ProductUploadPanel";
 import { getUserById } from "@/infrastructure/apis/user.api";
-import type { User } from "@/types/user.types";
+import type { UserType } from "@/application/schemas/user.schema";
+import ProductUploader from "@/presentation/features/admin/create/products/ProductUploader";
 
 export default async function ProductsPage() {
   // Get session server-side
@@ -19,11 +19,11 @@ export default async function ProductsPage() {
     redirect("/403");
   }
 
-  let currentUser: User | null = null;
+  let currentUser: UserType | null = null;
 
   try {
     const response = await getUserById(session.user.id, session.accessToken);
-    currentUser = response.result;
+    currentUser = response.result; // consider validating with UserSchema.parse(response.result)
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error("❌ Error fetching current user:", error.message);
@@ -38,5 +38,5 @@ export default async function ProductsPage() {
     redirect("/403");
   }
 
-  return <ProductUploadPanel />;
+  return <ProductUploader />;
 }

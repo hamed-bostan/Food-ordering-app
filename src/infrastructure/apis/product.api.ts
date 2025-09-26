@@ -1,7 +1,7 @@
-import { ProductType } from "@/domain/product.schema";
 import { ApiErrorResponse } from "@/types/api-error";
 import axios from "axios";
 import { api } from "../axios/api.client";
+import { ProductType } from "@/application/schemas/product.schema";
 
 export type GetProductsResponse = { message: string; result: ProductType[] };
 export type CreateProductResponse = { message: string; result: ProductType };

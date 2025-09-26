@@ -1,12 +1,12 @@
-import { TestimonialModel } from "@/domain/testimonial.schema";
+import { TestimonialType } from "@/application/schemas/testimonial.schema";
 import axios from "axios";
 import { ApiErrorResponse } from "@/types/api-error";
 import { api } from "@/infrastructure/axios/api.client";
 
-export type GetTestimonialResponse = { message: string; result: TestimonialModel };
-export type GetTestimonialsResponse = { message: string; result: TestimonialModel[] };
-export type CreateTestimonialResponse = { message: string; result: TestimonialModel };
-export type UpdateTestimonialResponse = { message: string; result: TestimonialModel };
+export type GetTestimonialResponse = { message: string; result: TestimonialType };
+export type GetTestimonialsResponse = { message: string; result: TestimonialType[] };
+export type CreateTestimonialResponse = { message: string; result: TestimonialType };
+export type UpdateTestimonialResponse = { message: string; result: TestimonialType };
 
 // Fetch all testimonials (admin)
 export const getTestimonialsAdmin = async (token: string): Promise<GetTestimonialsResponse> => {
@@ -38,9 +38,21 @@ export const getTestimonialsAdmin = async (token: string): Promise<GetTestimonia
 // Create testimonial (admin)
 export const createTestimonialAdmin = async (formData: FormData, token: string): Promise<CreateTestimonialResponse> => {
   try {
+    console.log("📦 Sending FormData:");
+    formData.forEach((value, key) => {
+      if (value instanceof File) {
+        console.log(`- ${key}: File { name: ${value.name}, size: ${value.size} }`);
+      } else {
+        console.log(`- ${key}: ${value}`);
+      }
+    });
+    console.log("🔑 Token:", token);
+
     const { data } = await api.post<CreateTestimonialResponse>("/admin/testimonials", formData, {
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
     });
+
+    console.log("✅ Response:", data);
 
     if (!data.result) throw new Error("Testimonial creation failed");
     return data;
@@ -48,6 +60,7 @@ export const createTestimonialAdmin = async (formData: FormData, token: string):
     console.error("❌ [API] Failed to create testimonial (admin):", error);
 
     if (axios.isAxiosError(error)) {
+      console.error("Response data:", error.response?.data);
       const response = error.response?.data as ApiErrorResponse | undefined;
       if (response?.error === "ValidationError" && response.details?.length) {
         throw new Error(response.details.map((d) => d.message).join(", ") || response.message);
@@ -64,7 +77,7 @@ export const createTestimonialAdmin = async (formData: FormData, token: string):
 // Update testimonial by admin
 export const updateTestimonialAdmin = async (
   id: string,
-  payload: Partial<TestimonialModel> | FormData,
+  payload: Partial<TestimonialType> | FormData,
   token: string
 ): Promise<UpdateTestimonialResponse> => {
   try {

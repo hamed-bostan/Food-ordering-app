@@ -1,9 +1,9 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { redirect } from "next/navigation";
-import type { User } from "@/types/user.types";
+import type { UserType } from "@/application/schemas/user.schema";
 import { getUsersAdmin } from "@/infrastructure/apis/admin/user.api";
-import UsersTable from "./components";
+import UsersTable from "@/presentation/features/admin/manage/users";
 
 export default async function UsersPage() {
   // Get session server-side
@@ -19,7 +19,7 @@ export default async function UsersPage() {
     redirect("/403");
   }
 
-  let initialUsers: User[] = [];
+  let initialUsers: UserType[] = [];
 
   try {
     const response = await getUsersAdmin(session.accessToken);

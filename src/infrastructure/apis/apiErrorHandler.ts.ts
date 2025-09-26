@@ -1,10 +1,7 @@
+import { ForbiddenError, UnauthorizedError, ValidationError } from "@/domain/errors";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
-/**
- * Standardized API error handler.
- * Logs error to server and returns normalized JSON response.
- */
 export function apiErrorHandler(error: unknown, context: string) {
   console.error(`❌ [${context}]`, error);
 
@@ -15,8 +12,19 @@ export function apiErrorHandler(error: unknown, context: string) {
     );
   }
 
+  if (error instanceof ValidationError) {
+    return NextResponse.json({ error: "ValidationError", message: error.message }, { status: 400 });
+  }
+
+  if (error instanceof UnauthorizedError) {
+    return NextResponse.json({ error: "Unauthorized", message: error.message }, { status: 401 });
+  }
+
+  if (error instanceof ForbiddenError) {
+    return NextResponse.json({ error: "Forbidden", message: error.message }, { status: 403 });
+  }
+
   if (error instanceof Error) {
-    // Custom message is safe to expose
     return NextResponse.json({ error: "ServerError", message: error.message }, { status: 500 });
   }
 

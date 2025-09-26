@@ -1,4 +1,4 @@
-import RestaurantBranch from "./components";
+import RestaurantBranch from "@/presentation/features/branch";
 
 export const dynamic = "force-dynamic";
 

@@ -1,4 +1,4 @@
-import { ProductType } from "@/domain/product.schema";
+import { ProductType } from "@/application/schemas/product.schema";
 import { api } from "@/infrastructure/axios/api.client";
 import { ApiErrorResponse } from "@/types/api-error";
 import axios from "axios";

@@ -5,6 +5,7 @@ export default {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/presentation/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -21,7 +22,6 @@ export default {
       screens: {
         "2xl": "1440px",
       },
-      // If you still need custom colors, define them manually like this:
       colors: {
         primary: "#1D4ED8", // Example: Blue-700
         secondary: "#9333EA", // Example: Purple-600
