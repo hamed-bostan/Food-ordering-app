@@ -12,18 +12,21 @@ export const ProductSchema = z.object({
   filter: z.string().optional(),
   mostsale: z.boolean(),
   image: z.string(),
+
+  // domain-only field, always present
+  createdAt: z.coerce.date(),
 });
 
-// API / Use-case DTOs
+// API / Use-case DTOs (clients should NOT set createdAt)
 export const CreateProductDto = z.object({
   category: z.string(),
   title: z.string(),
   description: z.string(),
-  price: z.coerce.number(), // accept string or number
+  price: z.coerce.number(),
   discount: z.coerce.number(),
   score: z.coerce.number().min(0).max(5),
   filter: z.string().optional(),
-  mostsale: z.coerce.boolean(), // accept "true"/"false" or boolean
+  mostsale: z.coerce.boolean(),
   image: z.string().optional(),
 });
 
@@ -39,9 +42,7 @@ export const UpdateProductDto = z.object({
   image: z.string().optional(),
 });
 
-// Domain / Entity type
+// Types
 export type ProductType = z.infer<typeof ProductSchema>;
-
-// DTO types
 export type CreateProductDtoType = z.infer<typeof CreateProductDto>;
 export type UpdateProductDtoType = z.infer<typeof UpdateProductDto>;

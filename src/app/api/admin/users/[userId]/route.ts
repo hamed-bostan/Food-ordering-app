@@ -10,15 +10,26 @@ import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
  * PUT /api/admin/users/:userId
  * Admin-only: Update a user
  */
+
 export async function PUT(req: NextRequest, context: { params: Promise<{ userId: string }> }) {
   try {
     await requireAdmin(req);
     const { userId } = await context.params;
 
+    // Parse incoming JSON body
     const body = await req.json();
+
+    // Update the user via use case (domain logic)
     const updatedUser = await updateUserById(userId, body);
 
-    return NextResponse.json({ message: "User updated successfully", result: updatedUser }, { status: 200 });
+    // Convert Dates to ISO strings at API boundary
+    const responseUser = {
+      ...updatedUser,
+      createdAt: updatedUser.createdAt?.toISOString(),
+      date: updatedUser.date?.toISOString(),
+    };
+
+    return NextResponse.json({ message: "User updated successfully", result: responseUser }, { status: 200 });
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(

@@ -13,36 +13,33 @@ const PRODUCTS_FOLDER = "products";
  */
 export async function updateProductUseCase(
   productId: string,
-  fields: Partial<Omit<ProductType, "id" | "image">>, // exclude image from fields
+  fields: Partial<Omit<ProductType, "id" | "image" | "createdAt">>, // exclude id, image, createdAt
   newImage?: File
 ): Promise<ProductType> {
-  // Validate partial fields using UpdateProductDto schema
+  // Find existing product first
+  const existing = await findProductByIdInDb(productId);
+  if (!existing) throw new ValidationError("Product not found");
+
+  // Validate partial fields
   const validatedFields: UpdateProductDtoType = UpdateProductDto.parse(fields);
 
-  // Prepare variable for the updated image URL
-  let imageUrl: string | undefined;
-
+  // Handle image replacement
+  let imageUrl = existing.image; // default to existing image
   if (newImage) {
-    // Find existing product to delete old image
-    const existing = await findProductByIdInDb(productId);
-    if (!existing) throw new ValidationError("Product not found");
-
     if (existing.image) {
       await deleteImageFromStorage(existing.image, PRODUCTS_BUCKET);
     }
-
-    // Upload new image
     imageUrl = await uploadImageToStorage(newImage, PRODUCTS_BUCKET, PRODUCTS_FOLDER);
   }
 
-  // Update product in DB with validated fields + optional new image
+  // Update in DB
   const updatedDoc = await updateProductInDb(productId, {
     ...validatedFields,
-    ...(imageUrl ? { image: imageUrl } : {}),
+    image: imageUrl,
   });
 
-  // Return ProductType (ensure image is always string)
-  return {
+  // Return fully typed ProductType, including createdAt
+  const product: ProductType = {
     id: updatedDoc.id,
     category: updatedDoc.category,
     title: updatedDoc.title,
@@ -51,7 +48,10 @@ export async function updateProductUseCase(
     discount: updatedDoc.discount,
     score: updatedDoc.score,
     mostsale: updatedDoc.mostsale,
-    filter: updatedDoc.filter,
-    image: updatedDoc.image, // guaranteed string from DB
+    filter: updatedDoc.filter ?? undefined,
+    image: updatedDoc.image,
+    createdAt: existing.createdAt, // preserve original creation timestamp
   };
+
+  return product;
 }

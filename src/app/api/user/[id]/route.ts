@@ -38,7 +38,14 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
     delete body._id;
 
     const validatedData = adminProfileSchema.parse(body);
-    const updatedUser = await updateUserById(id, validatedData);
+
+    // Convert date string to Date if it exists
+    const dataWithCorrectDate = {
+      ...validatedData,
+      date: validatedData.date ? new Date(validatedData.date) : undefined,
+    };
+
+    const updatedUser = await updateUserById(id, dataWithCorrectDate);
 
     return NextResponse.json({ message: "User updated successfully", result: updatedUser }, { status: 200 });
   } catch (error: unknown) {

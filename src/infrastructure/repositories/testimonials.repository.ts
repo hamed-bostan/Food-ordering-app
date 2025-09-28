@@ -19,6 +19,7 @@ export function mapToTestimonialType(doc: any): TestimonialType {
     name: doc.name,
     date: doc.date,
     comment: doc.comment,
+    createdAt: new Date(doc.createdAt), // convert string -> Date
   };
   return TestimonialSchema.parse(mapped); // validate before returning
 }
@@ -65,7 +66,6 @@ export async function updateTestimonialInDb(
   if (!ObjectId.isValid(testimonialId)) throw new Error("Invalid testimonial ID");
 
   const db = await connectToDatabase();
-
   const updateResult = await db
     .collection(collectionName)
     .updateOne({ _id: new ObjectId(testimonialId) }, { $set: update });

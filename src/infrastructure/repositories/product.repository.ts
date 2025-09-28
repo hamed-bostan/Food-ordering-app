@@ -9,6 +9,9 @@ type NewProductForDb = CreateProductDtoType & { createdAt: string };
 /**
  * Map MongoDB document to ProductModel
  */
+/**
+ * Map MongoDB document to ProductType
+ */
 export function mapToProductType(doc: any): ProductType {
   return {
     id: doc._id.toString(),
@@ -19,8 +22,9 @@ export function mapToProductType(doc: any): ProductType {
     price: doc.price,
     discount: doc.discount,
     score: doc.score,
-    filter: doc.filter,
+    filter: doc.filter ?? undefined,
     mostsale: doc.mostsale,
+    createdAt: new Date(doc.createdAt), // convert to Date and include
   };
 }
 

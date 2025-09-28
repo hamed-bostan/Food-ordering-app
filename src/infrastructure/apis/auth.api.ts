@@ -3,7 +3,7 @@ import { ApiErrorResponse } from "@/types/api-error";
 import { api } from "../axios/api.client";
 
 export type SendOtpInput = { phoneNumber: string };
-export type SendOtpResponse = { message: string; result: { otp: string } };
+export type SendOtpResponse = { message: string; result: { code: string } };
 
 export const sendOtp = async (formData: SendOtpInput): Promise<SendOtpResponse> => {
   try {

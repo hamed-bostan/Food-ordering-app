@@ -10,6 +10,7 @@ export const otpSchema = z.object({
     .string()
     .length(5, "کد باید پنج رقم باشد")
     .regex(/^\d{5}$/, "کد باید فقط عدد باشد"),
+  createdAt: z.coerce.date(), // domain timestamp
 });
 
 export const phoneSchema = otpSchema.pick({ phoneNumber: true });

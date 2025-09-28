@@ -4,9 +4,10 @@ import { z } from "zod";
 export const TestimonialSchema = z.object({
   id: z.string(),
   name: z.string(),
-  date: z.string(),
+  date: z.string(), // keep optional if needed later
   comment: z.string(),
   image: z.string(),
+  createdAt: z.coerce.date(), // domain-only, always present
 });
 
 // API / Use-case DTOs

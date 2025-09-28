@@ -51,7 +51,7 @@ export function useAuthOtp(): UseAuthOtpReturn {
       setOtpSent(true);
       setPhoneNumber(phoneNumber);
       setMessage(res.message);
-      setOtpCode(res.result.otp);
+      setOtpCode(res.result.code);
     } catch (error) {
       if (error instanceof Error) setMessage(error.message);
       else setMessage("ارسال کد تایید با خطا مواجه شد.");
@@ -66,7 +66,7 @@ export function useAuthOtp(): UseAuthOtpReturn {
     try {
       const res: SendOtpResponse = await sendOtp({ phoneNumber });
       setMessage("کد تایید مجددا ارسال شد.");
-      setOtpCode(res.result.otp);
+      setOtpCode(res.result.code);
     } catch (error) {
       if (error instanceof Error) setMessage(error.message);
       else setMessage("ارسال مجدد کد تایید با خطا مواجه شد.");

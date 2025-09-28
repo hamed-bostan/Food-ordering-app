@@ -10,7 +10,7 @@ export const CreateProductFormSchema = z.object({
   score: z.number().min(0).max(5),
   filter: z.string().optional(),
   mostsale: z.boolean(),
-  image: z.any().optional(), // accept anything, validate manually if needed
+  image: z.any().optional(),
 });
 
 export const UpdateProductFormSchema = z.object({

@@ -2,21 +2,18 @@ import { z } from "zod";
 
 export const UserRoleEnum = z.enum(["user", "admin"]);
 
-// Domain / Entity schema (DB-stored user)
+// Utility for nullable optional strings
+const optionalString = (schema: z.ZodTypeAny) =>
+  z.preprocess((val) => (val === "" ? null : val), schema.nullable().optional());
+
 export const UserSchema = z.object({
   id: z.string(),
   phoneNumber: z.string().min(10, "Phone number is required"),
   role: UserRoleEnum,
-  name: z.string().nullable().optional(),
-  email: z.string().email().nullable().optional(),
-  image: z
-    .string()
-    .url()
-    .catch("") // if invalid, set as empty string
-    .optional(),
-
-  createdAt: z.string().optional(),
-  date: z.string().optional(),
+  name: optionalString(z.string()),
+  email: optionalString(z.string().email("Invalid email")),
+  image: optionalString(z.string().url("Invalid URL")),
+  date: z.preprocess((val) => (val === "" ? undefined : val), z.coerce.date().optional()),
   address: z
     .object({
       value: z.string(),
@@ -24,10 +21,12 @@ export const UserSchema = z.object({
     })
     .nullable()
     .optional(),
+
+  createdAt: z.coerce.date(), // domain only, always present
 });
 
 // DTOs
-export const CreateUserDto = UserSchema.omit({ id: true });
+export const CreateUserDto = UserSchema.omit({ id: true, createdAt: true });
 export const UpdateUserDto = CreateUserDto.partial();
 
 // Types

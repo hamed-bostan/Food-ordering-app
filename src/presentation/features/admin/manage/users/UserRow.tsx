@@ -2,15 +2,21 @@
 
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { UserType } from "@/application/schemas/user.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { UserType } from "@/application/schemas/user.schema";
+import { AdminProfileType, adminProfileSchema } from "@/application/schemas/profile-schema";
+import { updateUserAdmin } from "@/infrastructure/apis/admin/user.api";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
-import { AdminProfileType, adminProfileSchema } from "@/application/schemas/profile-schema";
-import { updateUserAdmin } from "@/infrastructure/apis/admin/user.api";
+import { AdminUpdateUserPayload } from "@/infrastructure/apis/user.api";
+
+const PROTECTED_ADMIN_PHONE = "09356776075";
+
+// 1️⃣ Form DTO type (string date)
+type UserFormType = Omit<AdminProfileType, "date"> & { date?: string };
 
 type UserRowProps = {
   user: UserType;
@@ -27,26 +33,35 @@ export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: U
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<AdminProfileType>({
+  } = useForm<UserFormType>({
     resolver: zodResolver(adminProfileSchema),
     defaultValues: {
       name: user.name ?? "",
       phoneNumber: user.phoneNumber ?? "",
       email: user.email ?? "",
+      date: user.date ? user.date.toISOString().split("T")[0] : "",
       image: user.image ?? "",
-      date: user.date ?? "",
       role: user.role,
+      address: user.address ?? { value: "", coords: [0, 0] },
     },
   });
 
-  const onSubmit = async (data: AdminProfileType) => {
+  const isProtectedAdmin = user.phoneNumber === PROTECTED_ADMIN_PHONE;
+
+  const onSubmit = async (data: UserFormType) => {
     try {
-      const updatedUser = await updateUserAdmin(user.id, data, token);
+      // Keep payload date as string (API expects string)
+      const payload: AdminUpdateUserPayload = {
+        ...data,
+        address: data.address ? { value: data.address.value, coords: user.address?.coords ?? [0, 0] } : null,
+      };
+
+      const updatedUser = await updateUserAdmin(user.id, payload, token);
       onUserUpdated(updatedUser.result);
       setIsEditing(false);
       toast.success("User updated successfully");
-    } catch (error: unknown) {
-      if (error instanceof Error) toast.error(error.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) toast.error(err.message);
       else toast.error("Failed to update user");
     }
   };
@@ -62,32 +77,36 @@ export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: U
         {isEditing ? (
           <>
             <input {...register("name")} className="w-full p-1 border rounded" />
-            {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+            {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
           </>
         ) : (
-          user.name
+          user.name ?? "-"
+        )}
+      </td>
+
+      <td className="p-2 border">
+        {isEditing ? (
+          isProtectedAdmin ? (
+            <span className="font-semibold text-gray-600">{user.phoneNumber} (protected)</span>
+          ) : (
+            <>
+              <input {...register("phoneNumber")} className="w-full p-1 border rounded" />
+              {errors.phoneNumber && <p className="text-xs text-red-500">{errors.phoneNumber.message}</p>}
+            </>
+          )
+        ) : (
+          user.phoneNumber
         )}
       </td>
 
       <td className="p-2 border">
         {isEditing ? (
           <>
-            <input {...register("phoneNumber")} className="w-full p-1 border rounded" />
-            {errors.phoneNumber && <p className="text-sm text-red-500">{errors.phoneNumber.message}</p>}
+            <input {...register("address.value")} className="w-full p-1 border rounded" />
+            {errors.address?.value && <p className="text-xs text-red-500">{errors.address.value.message}</p>}
           </>
         ) : (
-          user.phoneNumber
-        )}
-      </td>
-
-      <td className="p-2 text-sm border">
-        {isEditing ? (
-          <>
-            <input {...register("address")} className="w-full p-1 border rounded" />
-            {errors.address?.value && <p className="text-sm text-red-500">{errors.address?.value?.message}</p>}
-          </>
-        ) : (
-          user.address?.value
+          user.address?.value ?? "-"
         )}
       </td>
 
@@ -95,12 +114,10 @@ export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: U
         {isEditing ? (
           <>
             <input type="date" {...register("date")} className="w-full p-1 border rounded" />
-            {errors.date && <p className="text-sm text-red-500">{errors.date.message}</p>}
+            {errors.date && <p className="text-xs text-red-500">{errors.date.message}</p>}
           </>
-        ) : user.date ? (
-          new Date(user.date).toLocaleDateString("fa-IR")
         ) : (
-          "-"
+          user.date?.toLocaleDateString("fa-IR") ?? "-"
         )}
       </td>
 
@@ -108,19 +125,26 @@ export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: U
         {isEditing ? (
           <>
             <input {...register("email")} className="w-full p-1 border rounded" />
-            {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+            {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
           </>
         ) : (
-          user.email
+          user.email ?? "-"
         )}
       </td>
 
       <td className="p-2 border">
         {isEditing ? (
-          <select {...register("role")} className="w-full p-1 border rounded">
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
+          isProtectedAdmin ? (
+            <span className="font-semibold text-gray-600">{user.role} (protected)</span>
+          ) : (
+            <>
+              <select {...register("role")} className="w-full p-1 border rounded">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+              {errors.role && <p className="text-xs text-red-500">{errors.role.message}</p>}
+            </>
+          )
         ) : (
           user.role
         )}
@@ -129,21 +153,23 @@ export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: U
       <td className="p-2 border">
         {isEditing ? (
           <form onSubmit={handleSubmit(onSubmit)} className="flex gap-2">
-            <button type="submit" disabled={isSubmitting} className="text-green-600">
+            <button type="submit" disabled={isSubmitting} className="text-green-600" aria-label="Save changes">
               <SaveIcon fontSize="small" />
             </button>
-            <button type="button" onClick={handleCancel} className="text-gray-600">
+            <button type="button" onClick={handleCancel} className="text-gray-600" aria-label="Cancel edit">
               <CloseIcon fontSize="small" />
             </button>
           </form>
         ) : (
           <div className="flex gap-2">
-            <button onClick={() => setIsEditing(true)} className="text-blue-600">
+            <button onClick={() => setIsEditing(true)} className="text-blue-600" aria-label="Edit user">
               <EditIcon fontSize="small" />
             </button>
-            <button onClick={() => onUserRemoved?.(user.id)} className="text-red-600">
-              <DeleteIcon fontSize="small" />
-            </button>
+            {!isProtectedAdmin && (
+              <button onClick={() => onUserRemoved?.(user.id)} className="text-red-600" aria-label="Delete user">
+                <DeleteIcon fontSize="small" />
+              </button>
+            )}
           </div>
         )}
       </td>
