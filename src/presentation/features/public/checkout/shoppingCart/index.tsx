@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useCheckoutTab } from "@/context/checkout-tab.context";
 import CartSummary from "../CartSummary";
 import { RootState } from "@/store";
-import EmptyStateMessage from "@/components/shared/EmptyStateMessage";
+import EmptyStateMessage from "@/presentation/components/EmptyStateMessage";
 import CartItems from "./cartItems";
 
 export default function ShoppingCart() {

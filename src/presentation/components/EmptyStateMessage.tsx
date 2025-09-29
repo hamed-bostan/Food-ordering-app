@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
-import CustomButton from "../../presentation/components/CustomButton";
+import CustomButton from "./CustomButton";
 import svgIcon from "@/assets/images/icons/empty-icon.svg";
 
 type EmptyStateMessageProps = {

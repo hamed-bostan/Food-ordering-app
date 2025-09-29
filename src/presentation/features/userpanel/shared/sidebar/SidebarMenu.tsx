@@ -1,6 +1,6 @@
 "use client";
 
-import { ActionMenuItem, LinkMenuItem, MenuItem, userMenuItems } from "@/components/shared/UserMenuItems";
+import { ActionMenuItem, LinkMenuItem, MenuItem, userMenuItems } from "@/presentation/features/public/shared/UserMenuItems";
 import { useLogoutDialog } from "@/context/logout-dialog.context";
 import { SidebarProps } from "@/types/userpanel.types";
 import Link from "next/link";

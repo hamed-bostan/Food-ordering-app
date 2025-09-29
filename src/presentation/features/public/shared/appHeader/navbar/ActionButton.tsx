@@ -4,12 +4,12 @@ import Link from "next/link";
 import { ShoppingCartOutlined, Person2Outlined, ArrowDownwardOutlined } from "@mui/icons-material";
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
-import { ActionMenuItem, LinkMenuItem, MenuItem, userMenuItems } from "../../UserMenuItems";
 import { MouseEvent, useState } from "react";
 import { Divider } from "@mui/material";
 import Popover from "@mui/material/Popover";
 import { RootState } from "@/store";
 import { signOut, useSession } from "next-auth/react";
+import { ActionMenuItem, LinkMenuItem, MenuItem, userMenuItems } from "../../UserMenuItems";
 
 function isLink(item: MenuItem): item is LinkMenuItem {
   return "href" in item;

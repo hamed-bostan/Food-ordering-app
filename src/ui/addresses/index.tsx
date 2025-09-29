@@ -5,7 +5,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useContext, useState, useEffect } from "react";
 import AddressForm from "./AddressForm";
 import AddressSelector from "./AddressSelector";
-import EmptyStateMessage from "@/components/shared/EmptyStateMessage";
+import EmptyStateMessage from "@/presentation/components/EmptyStateMessage";
 import UserAddresses from "./userAddresses";
 import { updateUserProfile } from "@/infrastructure/apis/user.api";
 import { useSession } from "next-auth/react";
@@ -129,19 +129,28 @@ export default function Addresses() {
           },
         }}
       >
-        <div className="bg-[#EDEDED] flex justify-between">
-          <DialogTitle sx={{ padding: { xs: 2 } }}>
-            <p className="text-sm md:text-base text-[#353535] select-none font-medium">
-              {step === "location" ? "افزودن آدرس" : editIndex !== null ? "ویرایش آدرس" : "اضافه کردن جزییات"}
-            </p>
-          </DialogTitle>
-          <DialogActions>
-            <Button onClick={handleCloseDialog} sx={{ color: "#717171" }}>
-              <CloseIcon />
-            </Button>
-          </DialogActions>
-        </div>
-        <DialogContent sx={{ padding: step === "addressForm" ? "1.25rem" : 0, width: "100%" }}>
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            bgcolor: "#EDEDED",
+            p: 2,
+          }}
+        >
+          <p className="text-sm md:text-base text-[#353535] select-none font-medium">
+            {step === "location" ? "افزودن آدرس" : editIndex !== null ? "ویرایش آدرس" : "اضافه کردن جزییات"}
+          </p>
+          <Button onClick={handleCloseDialog} sx={{ color: "#717171" }}>
+            <CloseIcon />
+          </Button>
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            padding: step === "addressForm" ? "1.25rem" : 0,
+            width: "100%",
+          }}
+        >
           {step === "location" ? (
             <AddressSelector onSubmitLocation={() => setStep("addressForm")} />
           ) : (

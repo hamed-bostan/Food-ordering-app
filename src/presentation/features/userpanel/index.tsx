@@ -19,8 +19,8 @@ export default function UserPanel({ user }: { user: UserType }) {
       <LogoutDialogProvider>
         <HeaderMobile setActiveTab={setActiveTab} activeTab={activeTab} />
         <div className="md:grid md:grid-cols-[auto_1fr] md:gap-x-5">
-          <Sidebar setActiveTab={setActiveTab} activeTab={activeTab} user={user} />
-          {tabs[activeTab]}
+          <Sidebar user={user} activeTab={activeTab} setActiveTab={setActiveTab} />
+          <div>{tabs[activeTab]}</div>
         </div>
       </LogoutDialogProvider>
     </section>

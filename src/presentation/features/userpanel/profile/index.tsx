@@ -11,6 +11,10 @@ import UserProfileForm from "./UserProfileForm";
 export default function Profile() {
   const { data: session, status } = useSession();
 
+  const methods = useForm<UserProfileType>({
+    resolver: zodResolver(userProfileSchema),
+  });
+
   // Show spinner while session is loading
   if (status === "loading") {
     return (
@@ -25,10 +29,6 @@ export default function Profile() {
   }
 
   const userId = session.user.id;
-
-  const methods = useForm<UserProfileType>({
-    resolver: zodResolver(userProfileSchema),
-  });
 
   return (
     <div className="md:border md:border-[#CBCBCB] md:rounded-lg md:p-5 md:min-h-[30rem]">

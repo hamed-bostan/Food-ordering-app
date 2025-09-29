@@ -1,8 +1,8 @@
 import MenuIcon from "@mui/icons-material/Menu";
-import Logo from "../../logo";
 import ActionButton from "./ActionButton";
 import DesktopNavigation from "./DesktopNavigation";
 import { NavigationItem, VoidHandler } from "@/types/app-header.types";
+import Logo from "../../logo";
 
 type NavbarProps = {
   navigationItems: NavigationItem[];

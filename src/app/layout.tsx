@@ -1,11 +1,9 @@
-import "./globals.css";
+import "@/app/globals.css";
 import AuthProvider from "@/app/_providers/AuthProvider";
 import ThemeRegistry from "@/lib/theme/ThemeRegistry";
 import { ReactNode } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import AppHeader from "@/components/shared/appHeader";
-import Footer from "@/components/shared/footer";
 import { AppProviders } from "./_providers/AppProviders";
 
 export const metadata = {
@@ -26,11 +24,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body className="antialiased">
         <ThemeRegistry>
           <AuthProvider>
-            <AppProviders>
-              <AppHeader />
-              <main>{children}</main>
-              <Footer />
-            </AppProviders>
+            <AppProviders>{children}</AppProviders>
           </AuthProvider>
         </ThemeRegistry>
         <ToastContainer rtl position="top-center" />
