@@ -66,19 +66,19 @@ export default function AddressSelector({ onSubmitLocation }: AddressSelectorPro
 
   return (
     <div className="relative w-full">
-      <MapContainer center={coords} zoom={12} style={{ zIndex: 0, height: "400px" }}>
+      <MapContainer center={coords} zoom={12} className="h-96" style={{ zIndex: 0 }}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <LocationMarker />
         <MapCenter />
       </MapContainer>
 
-      {/* <button
+      <button
         className="absolute flex items-center justify-center gap-x-1 top-10 right-5 h-8 z-[1000] px-2 text-[#417F56] bg-[#FFFFFF] rounded-md"
         onClick={handleGetLocation}
       >
         <Image src={gpsIcon} alt="location icon" />
         <span className="text-sm">موقعیت من</span>
-      </button> */}
+      </button>
 
       {value && (
         <div className="absolute flex items-center p-2 text-sm bg-[#FFFFFF] rounded-md shadow-md select-none gap-x-1 bottom-16 right-4 left-4 text-[#353535] min-h-9">
@@ -89,7 +89,7 @@ export default function AddressSelector({ onSubmitLocation }: AddressSelectorPro
 
       <button
         onClick={onSubmitLocation}
-        className="absolute translate-x-1/2 bg-[#417F56] bottom-4 right-1/2 rounded-md text-[#FFFFFF] h-8 text-sm shadow-md"
+        className="absolute translate-x-1/2 bg-[#417F56] bottom-4 right-1/2 min-w-40 lg:min-w-64 rounded-md text-[#FFFFFF] min-h-8 text-sm shadow-md"
       >
         ثبت موقعیت
       </button>

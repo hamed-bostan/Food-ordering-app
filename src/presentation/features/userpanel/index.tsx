@@ -7,12 +7,12 @@ import Profile from "./profile";
 import HeaderMobile from "./shared/header/HeaderMobile";
 import { UserType } from "@/application/schemas/user.schema";
 import { LogoutDialogProvider } from "@/context/logout-dialog.context";
-import Addresses from "@/ui/addresses";
+import Address from "../address";
 
 export default function UserPanel({ user }: { user: UserType }) {
   const [activeTab, setActiveTab] = useState<number>(0);
 
-  const tabs = [<Profile key="profile" />, <Addresses key="addresses" />, <Logout key="logout" />];
+  const tabs = [<Profile key="profile" />, <Address key="addresses" />, <Logout key="logout" />];
 
   return (
     <section className="px-5 py-6 lg:px-10 2xl:px-28">

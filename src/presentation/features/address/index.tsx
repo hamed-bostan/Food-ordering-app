@@ -12,7 +12,7 @@ import { useSession } from "next-auth/react";
 import { AddressContext } from "@/context/address.context";
 import { ContactInfo } from "@/types/userpanel.types";
 
-export default function Addresses() {
+export default function Address() {
   const { data: session, status } = useSession();
 
   if (status === "loading") return <div>Loading...</div>;

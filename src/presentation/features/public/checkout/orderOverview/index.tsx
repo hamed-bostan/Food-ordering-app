@@ -6,7 +6,7 @@ import { useState } from "react";
 import InPersonPickup from "./InPersonPickup";
 import { OrderMethodType } from "@/types/order-method.types";
 import AdditionalOrderInfo from "./AdditionalOrderInfo";
-import Addresses from "@/ui/addresses";
+import Address from "@/presentation/features/address";
 
 export default function OrderOverview() {
   const [selectedTab, setSelectedTab] = useState<OrderMethodType>("courier");
@@ -15,7 +15,7 @@ export default function OrderOverview() {
     <section className="md:grid md:grid-cols-[70fr_40fr] md:gap-x-4 lg:gap-x-6">
       <div>
         <OrderDeliveryMethod selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-        {selectedTab === "courier" && <Addresses />}
+        {selectedTab === "courier" && <Address />}
         {selectedTab === "pickup" && <InPersonPickup />}
         <AdditionalOrderInfo />
       </div>
