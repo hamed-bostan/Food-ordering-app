@@ -1,10 +1,10 @@
 import Checkbox from "@mui/material/Checkbox";
 import { Divider } from "@mui/material";
 import { ShoppingBagOutlined, LocalShippingOutlined } from "@mui/icons-material";
-import { OrderDeliveryMethodProps } from "@/types/order-method.types";
+import { DeliveryMethodProps } from "@/types/delivery-method.types";
 import { useOrderContext } from "@/context/OrderContext";
 
-export default function OrderDeliveryMethod({ selectedTab, setSelectedTab }: OrderDeliveryMethodProps) {
+export default function OrderDeliveryMethod({ selectedTab, setSelectedTab }: DeliveryMethodProps) {
   const { deliveryMethod, setDeliveryMethod } = useOrderContext();
 
   return (

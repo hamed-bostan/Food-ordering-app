@@ -6,7 +6,7 @@ import DiscountCode from "./DiscountCode";
 import PaymentMethod from "./PaymentMethod";
 import OnlinePayment from "./OnlinePayment";
 import PayOnDelivery from "./PayOnDelivery";
-import { PaymentMethodType } from "@/types/payment-method.types";
+import { PaymentMethodType } from "@/application/schemas/order.schema";
 
 export default function Payments() {
   const [selectedTab, setSelectedTab] = useState<PaymentMethodType>("online");

@@ -22,7 +22,7 @@ export default function UserAddressList({ addresses, onDelete, onEdit }: UserAdd
           <div
             key={index}
             onClick={() => setAddress(address)}
-            className={`bg-[#F9F9F9] rounded-md p-4 text-xs text-[#717171] cursor-pointer transition border 
+            className={`bg-[#F9F9F9] rounded-md p-4 text-xs text-[#717171] cursor-pointer transition border-2 
               ${isSelected ? "border-[#417F56]" : "border-[#CBCBCB]"} 
               hover:border-[#417F56]`}
           >

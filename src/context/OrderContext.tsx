@@ -1,52 +1,63 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
-import { PaymentMethodType } from "@/types/payment-method.types";
 import { AddressType } from "@/application/schemas/address.schema";
-
-// These enums come from your schema
-export type BranchType = "aghdasieh" | "vanak" | "ekbatan";
-export type DeliveryMethodType = "pickup" | "courier";
+import { BranchType, DeliveryMethodType, PaymentMethodType } from "@/application/schemas/order.schema";
 
 type OrderContextType = {
-  // branch selection
   branch: BranchType | null;
-  setBranch: (b: BranchType) => void;
+  setBranch: (b: BranchType | null) => void;
 
-  // delivery method
   deliveryMethod: DeliveryMethodType | null;
-  setDeliveryMethod: (d: DeliveryMethodType) => void;
+  setDeliveryMethod: (d: DeliveryMethodType | null) => void;
 
-  // selected payment method
   paymentMethod: PaymentMethodType;
   setPaymentMethod: (m: PaymentMethodType) => void;
 
-  // selected address
   address: AddressType | null;
   setAddress: (a: AddressType | null) => void;
 
-  // optional notes
   notes: string | null;
   setNotes: (n: string | null) => void;
 
-  // reset order state
   resetOrder: () => void;
 };
 
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
 export function OrderProvider({ children }: { children: ReactNode }) {
-  const [branch, setBranch] = useState<BranchType | null>(null);
-  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethodType | null>(null);
+  const [branch, _setBranch] = useState<BranchType | null>(null);
+  const [deliveryMethod, _setDeliveryMethod] = useState<DeliveryMethodType | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("cash");
-  const [address, setAddress] = useState<AddressType | null>(null);
+  const [address, _setAddress] = useState<AddressType | null>(null);
   const [notes, setNotes] = useState<string | null>(null);
 
+  const setDeliveryMethod = (method: DeliveryMethodType | null) => {
+    _setDeliveryMethod(method);
+
+    if (method === "pickup") _setAddress(null);
+    if (method === "courier") _setBranch(null);
+    if (method === null) {
+      _setBranch(null);
+      _setAddress(null);
+    }
+  };
+
+  const setBranch = (b: BranchType | null) => {
+    if (deliveryMethod === "pickup") _setBranch(b);
+    else _setBranch(null);
+  };
+
+  const setAddress = (a: AddressType | null) => {
+    if (deliveryMethod === "courier") _setAddress(a);
+    else _setAddress(null);
+  };
+
   const resetOrder = () => {
-    setBranch(null);
-    setDeliveryMethod(null);
+    _setBranch(null);
+    _setDeliveryMethod(null);
     setPaymentMethod("cash");
-    setAddress(null);
+    _setAddress(null);
     setNotes(null);
   };
 

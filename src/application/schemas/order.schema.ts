@@ -1,16 +1,27 @@
 import { z } from "zod";
 import { AddressSchema } from "./address.schema";
 
-const branchDeliveryMethodRule = {
-  message: "Invalid branch/deliveryMethod combination",
-  path: ["branch"] as (string | number)[],
+export const BranchEnum = z.enum(["aghdasieh", "vanak", "ekbatan"]);
+export type BranchType = z.infer<typeof BranchEnum>;
+
+export const DeliveryMethodEnum = z.enum(["pickup", "courier"]);
+export type DeliveryMethodType = z.infer<typeof DeliveryMethodEnum>;
+
+export const PaymentMethodEnum = z.enum(["cash", "online"]);
+export type PaymentMethodType = z.infer<typeof PaymentMethodEnum>;
+
+// --- Validation rule messages ---
+const branchDeliveryAddressRule = {
+  message: "Invalid branch/deliveryMethod/address combination",
+  path: ["deliveryMethod"] as (string | number)[],
 };
 
+// --- Base schema (common fields) ---
 const BaseOrderSchema = z.object({
   id: z.string(),
-  branch: z.enum(["aghdasieh", "vanak", "ekbatan"]).nullable(),
-  deliveryMethod: z.enum(["pickup", "courier"]),
-  paymentMethod: z.enum(["cash", "online"]),
+  branch: BranchEnum.nullable(),
+  deliveryMethod: DeliveryMethodEnum,
+  paymentMethod: PaymentMethodEnum,
   items: z.array(
     z.object({
       productId: z.string(),
@@ -26,23 +37,32 @@ const BaseOrderSchema = z.object({
   createdAt: z.coerce.date(),
 });
 
-export const OrderSchema = BaseOrderSchema.refine(
-  (data) =>
-    (data.deliveryMethod === "pickup" && data.branch !== null) ||
-    (data.deliveryMethod === "courier" && data.branch === null),
-  branchDeliveryMethodRule
-);
+// --- Full validation: branch + deliveryMethod + address consistency ---
+export const OrderSchema = BaseOrderSchema.refine((data) => {
+  if (data.deliveryMethod === "pickup") {
+    return data.branch !== null && data.address == null;
+  }
+  if (data.deliveryMethod === "courier") {
+    return data.branch === null && data.address != null;
+  }
+  return false;
+}, branchDeliveryAddressRule);
 
+// --- Create DTO (omit id + createdAt) ---
 export const CreateOrderDto = BaseOrderSchema.omit({
   id: true,
   createdAt: true,
-}).refine(
-  (data) =>
-    (data.deliveryMethod === "pickup" && data.branch !== null) ||
-    (data.deliveryMethod === "courier" && data.branch === null),
-  branchDeliveryMethodRule
-);
+}).refine((data) => {
+  if (data.deliveryMethod === "pickup") {
+    return data.branch !== null && data.address == null;
+  }
+  if (data.deliveryMethod === "courier") {
+    return data.branch === null && data.address != null;
+  }
+  return false;
+}, branchDeliveryAddressRule);
 
+// --- Update DTO (partial + conditional validation) ---
 export const UpdateOrderDto = BaseOrderSchema.omit({
   id: true,
   createdAt: true,
@@ -50,17 +70,18 @@ export const UpdateOrderDto = BaseOrderSchema.omit({
   .partial()
   .refine((data) => {
     if (data.deliveryMethod === undefined) {
-      return true;
+      return true; // no delivery method change
     }
     if (data.deliveryMethod === "pickup") {
-      return data.branch != null;
+      return data.branch != null && data.address == null;
     }
     if (data.deliveryMethod === "courier") {
-      return data.branch === null;
+      return data.branch == null && data.address != null;
     }
     return false;
-  }, branchDeliveryMethodRule);
+  }, branchDeliveryAddressRule);
 
+// --- Types ---
 export type OrderType = z.infer<typeof OrderSchema>;
 export type CreateOrderDtoType = z.infer<typeof CreateOrderDto>;
 export type UpdateOrderDtoType = z.infer<typeof UpdateOrderDto>;
