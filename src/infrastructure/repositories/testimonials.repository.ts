@@ -1,28 +1,13 @@
 import { ObjectId } from "mongodb";
 import {
   CreateTestimonialDtoType,
-  TestimonialSchema,
   TestimonialType,
   UpdateTestimonialDtoType,
 } from "@/application/schemas/testimonial.schema";
 import { connectToDatabase } from "@/infrastructure/db/mongodb";
+import { mapDbTestimonialToDomain } from "../mappers/testimonial.mapper";
 
 export const collectionName = "testimonials";
-
-/**
- * Map MongoDB document to domain entity (TestimonialType)
- */
-export function mapToTestimonialType(doc: any): TestimonialType {
-  const mapped = {
-    id: doc._id.toString(),
-    image: doc.image,
-    name: doc.name,
-    date: doc.date,
-    comment: doc.comment,
-    createdAt: new Date(doc.createdAt), // convert string -> Date
-  };
-  return TestimonialSchema.parse(mapped); // validate before returning
-}
 
 /**
  * Fetch a single testimonial by MongoDB _id
@@ -33,7 +18,7 @@ export async function findTestimonialByIdInDb(testimonialId: string): Promise<Te
   const db = await connectToDatabase();
   const doc = await db.collection(collectionName).findOne({ _id: new ObjectId(testimonialId) });
 
-  return doc ? mapToTestimonialType(doc) : null;
+  return doc ? mapDbTestimonialToDomain(doc) : null;
 }
 
 /**
@@ -53,7 +38,7 @@ export async function insertTestimonialToDb(
 export async function fetchTestimonialsFromDb(): Promise<TestimonialType[]> {
   const db = await connectToDatabase();
   const docs = await db.collection(collectionName).find({}).toArray();
-  return docs.map(mapToTestimonialType);
+  return docs.map(mapDbTestimonialToDomain);
 }
 
 /**
@@ -75,7 +60,7 @@ export async function updateTestimonialInDb(
   const updatedDoc = await db.collection(collectionName).findOne({ _id: new ObjectId(testimonialId) });
   if (!updatedDoc) throw new Error("Testimonial not found after update");
 
-  return mapToTestimonialType(updatedDoc);
+  return mapDbTestimonialToDomain(updatedDoc);
 }
 
 /**

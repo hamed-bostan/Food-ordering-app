@@ -1,25 +1,11 @@
 import { ObjectId } from "mongodb";
 import { connectToDatabase } from "@/infrastructure/db/mongodb";
 import { CreateOrderDtoType, OrderType } from "@/application/schemas/order.schema";
+import { mapDbOrderToDomain } from "../mappers/order.mapper";
 
 export const collectionName = "orders";
 
 type NewOrderForDb = CreateOrderDtoType & { createdAt: string };
-
-/**
- * Map MongoDB document to OrderType
- */
-export function mapToOrderType(doc: any): OrderType {
-  return {
-    id: doc._id.toString(),
-    branch: doc.branch,
-    deliveryMethod: doc.deliveryMethod,
-    paymentMethod: doc.paymentMethod,
-    items: doc.items,
-    totalPrice: doc.totalPrice,
-    createdAt: new Date(doc.createdAt),
-  };
-}
 
 /**
  * Insert a new order
@@ -36,7 +22,7 @@ export async function insertOrderToDb(order: NewOrderForDb): Promise<ObjectId> {
 export async function fetchOrdersFromDb(): Promise<OrderType[]> {
   const db = await connectToDatabase();
   const docs = await db.collection(collectionName).find({}).toArray();
-  return docs.map(mapToOrderType);
+  return docs.map(mapDbOrderToDomain);
 }
 
 /**
@@ -48,5 +34,5 @@ export async function findOrderByIdInDb(orderId: string): Promise<OrderType | nu
   const db = await connectToDatabase();
   const doc = await db.collection(collectionName).findOne({ _id: new ObjectId(orderId) });
 
-  return doc ? mapToOrderType(doc) : null;
+  return doc ? mapDbOrderToDomain(doc) : null;
 }

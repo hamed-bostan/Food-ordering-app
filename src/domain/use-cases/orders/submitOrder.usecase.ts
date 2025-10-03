@@ -1,5 +1,5 @@
 import { CreateOrderDtoType, OrderType } from "@/application/schemas/order.schema";
-import { insertOrderToDb, mapToOrderType } from "@/infrastructure/repositories/order.repository";
+import { insertOrderToDb } from "@/infrastructure/repositories/order.repository";
 
 export async function submitOrderUseCase(order: CreateOrderDtoType): Promise<OrderType> {
   const newOrder = {

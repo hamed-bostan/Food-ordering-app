@@ -6,8 +6,8 @@ import { toast } from "react-toastify";
 import Image from "next/image";
 import locationIcon from "@/assets/images/icons/location.svg";
 import gpsIcon from "@/assets/images/icons/gps.svg";
-import { getAddress } from "@/services/server/location.service";
 import { AddressContext } from "@/context/address.context";
+import { getAddress } from "@/infrastructure/location.gateway";
 
 const customIcon = new L.Icon({
   iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
