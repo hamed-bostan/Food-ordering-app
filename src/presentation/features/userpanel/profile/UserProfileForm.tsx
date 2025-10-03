@@ -9,13 +9,18 @@ import useNumericField from "@/hooks/numeric-field.hook";
 import { updateUserProfile } from "@/infrastructure/apis/user.api";
 import { getSession } from "next-auth/react";
 import { UserProfileType } from "@/application/schemas/profile-schema";
+import { AddressType } from "@/application/schemas/address.schema";
 
 type UserIdProps = {
   userId: string; // pass logged-in user's id here
 };
 
-function isAddress(val: unknown): val is { value: string; coords: [number, number] } {
-  return typeof val === "object" && val !== null && "value" in val && "coords" in val;
+// Type guard for AddressType[]
+function isAddressArray(val: unknown): val is AddressType[] {
+  return (
+    Array.isArray(val) &&
+    val.every((item) => typeof item === "object" && item !== null && "value" in item && "coords" in item)
+  );
 }
 
 export default function UserProfileForm({ userId }: UserIdProps) {
@@ -41,6 +46,7 @@ export default function UserProfileForm({ userId }: UserIdProps) {
         phoneNumber: result.phoneNumber ?? undefined,
         email: result.email ?? undefined,
         image: result.image ?? undefined,
+        address: result.address ?? null,
       };
 
       toast.success(message);
@@ -59,11 +65,14 @@ export default function UserProfileForm({ userId }: UserIdProps) {
 
     Object.entries(data).forEach(([key, value]) => {
       if (key === "address") {
-        if (isAddress(value) && value.value.trim()) {
-          filtered.address = value;
+        if (isAddressArray(value)) {
+          // filter out empty addresses
+          const filteredAddresses = value.filter((addr) => addr.value.trim() !== "");
+          if (filteredAddresses.length > 0) {
+            filtered.address = filteredAddresses;
+          }
         }
       } else if (typeof value === "string" && value.trim()) {
-        // TS infers key is string, so we need narrowing
         filtered[key as Exclude<keyof UserProfileType, "address">] = value;
       }
     });

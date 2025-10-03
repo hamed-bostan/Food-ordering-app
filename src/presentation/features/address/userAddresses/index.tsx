@@ -1,22 +1,19 @@
+"use client";
+
 import UserAddressList from "./UserAddressList";
 import { usePathname } from "next/navigation";
 import CustomButton from "@/presentation/components/CustomButton";
 import HeaderDesktop from "@/presentation/features/userpanel/shared/header/HeaderDesktop";
+import { AddressType } from "@/application/schemas/address.schema";
 
-export type ContactInfoProps = {
-  address: string;
-  name: string;
-  phone_number: string;
-};
-
-type UserAddressProps = {
-  contactInfo: ContactInfoProps[];
+type UserAddressesProps = {
+  addresses: AddressType[];
   onOpenDialog: () => void;
   onDelete: (index: number) => void;
   onEdit: (index: number) => void;
 };
 
-export default function UserAddresses({ contactInfo, onOpenDialog, onDelete, onEdit }: UserAddressProps) {
+export default function UserAddresses({ addresses, onOpenDialog, onDelete, onEdit }: UserAddressesProps) {
   const pathname = usePathname();
 
   return (
@@ -27,7 +24,7 @@ export default function UserAddresses({ contactInfo, onOpenDialog, onDelete, onE
     >
       <HeaderDesktop label="آدرس ها" style="mb-4" button={true} handleClick={onOpenDialog} />
 
-      <UserAddressList contactInfo={contactInfo} onDelete={onDelete} onEdit={onEdit} />
+      <UserAddressList addresses={addresses} onDelete={onDelete} onEdit={onEdit} />
 
       <CustomButton
         onClick={onOpenDialog}

@@ -7,13 +7,14 @@ import AddressForm from "./AddressForm";
 import AddressSelector from "./AddressSelector";
 import EmptyStateMessage from "@/presentation/components/EmptyStateMessage";
 import UserAddresses from "./userAddresses";
-import { updateUserProfile } from "@/infrastructure/apis/user.api";
+import { getUserById, updateUserProfile } from "@/infrastructure/apis/user.api";
 import { useSession } from "next-auth/react";
 import { AddressContext } from "@/context/address.context";
-import { ContactInfo } from "@/types/userpanel.types";
+import { AddressType } from "@/application/schemas/address.schema";
 
 export default function Address() {
   const { data: session, status } = useSession();
+  const { address, setAddress, resetAddress } = useContext(AddressContext)!;
 
   if (status === "loading") return <div>Loading...</div>;
   if (!session?.accessToken || !session?.user?.id) {
@@ -23,20 +24,24 @@ export default function Address() {
 
   const token = session.accessToken;
   const userId = session.user.id as string;
-  const { value: addressValue, setValue, coords, resetAddress } = useContext(AddressContext)!;
 
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<"location" | "addressForm">("location");
-  const [contactInfo, setContactInfo] = useState<ContactInfo[]>([]);
+  const [addresses, setAddresses] = useState<AddressType[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
-  // Load addresses from localStorage on mount
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("addressForm");
-      if (saved) setContactInfo(JSON.parse(saved));
-    }
-  }, []);
+    const fetchAddresses = async () => {
+      try {
+        const user = await getUserById(userId, token);
+        setAddresses(user.result.address || []);
+      } catch (error) {
+        console.error("❌ Failed to fetch addresses:", error);
+      }
+    };
+
+    fetchAddresses();
+  }, [userId, token]);
 
   const handleOpenDialog = (goToForm: boolean = false, index: number | null = null) => {
     setOpen(true);
@@ -47,10 +52,8 @@ export default function Address() {
     resetAddress();
 
     // If editing, preload context with existing address
-    if (index !== null && contactInfo[index].address) {
-      const existing = contactInfo[index];
-      setValue(existing.address); // <-- if ContactInfo has `address`
-      // coords? store coords if you saved them in ContactInfo
+    if (index !== null && addresses[index]) {
+      setAddress(addresses[index]);
     }
   };
 
@@ -59,41 +62,36 @@ export default function Address() {
     setStep("location");
     setEditIndex(null);
   };
-  const saveContactInfo = async (newContact: ContactInfo) => {
-    // Update local state and localStorage
+
+  const saveAddress = async (newAddress: AddressType) => {
+    // Update local state
     const updated =
-      editIndex !== null ? contactInfo.map((c, i) => (i === editIndex ? newContact : c)) : [...contactInfo, newContact];
+      editIndex !== null ? addresses.map((c, i) => (i === editIndex ? newAddress : c)) : [...addresses, newAddress];
 
-    setContactInfo(updated);
-    localStorage.setItem("addressForm", JSON.stringify(updated));
+    setAddresses(updated);
 
-    // Save only address + location to MongoDB
-    if (!token) {
-      console.error("❌ Missing auth token");
-    } else {
-      try {
-        await updateUserProfile(
-          userId,
-          {
-            address: {
-              value: addressValue || newContact.address,
-              coords: coords,
-            },
-          },
-          token
-        );
-      } catch (error) {
-        console.error("❌ Failed to save address in DB:", error);
-      }
+    try {
+      await updateUserProfile(
+        userId,
+        { address: updated }, // always store the full list
+        token
+      );
+    } catch (error) {
+      console.error("❌ Failed to save address in DB:", error);
     }
 
     handleCloseDialog();
   };
 
-  const handleDelete = (index: number) => {
-    const updated = contactInfo.filter((_, i) => i !== index);
-    setContactInfo(updated);
-    localStorage.setItem("addressForm", JSON.stringify(updated));
+  const handleDelete = async (index: number) => {
+    const updated = addresses.filter((_, i) => i !== index);
+    setAddresses(updated);
+
+    try {
+      await updateUserProfile(userId, { address: updated }, token);
+    } catch (error) {
+      console.error("❌ Failed to delete address in DB:", error);
+    }
   };
 
   const handleEdit = (index: number) => {
@@ -102,7 +100,7 @@ export default function Address() {
 
   return (
     <div>
-      {contactInfo.length === 0 ? (
+      {addresses.length === 0 ? (
         <EmptyStateMessage
           text="شما در حال حاضر هیچ آدرسی ثبت نکرده‌اید!"
           button
@@ -111,7 +109,7 @@ export default function Address() {
         />
       ) : (
         <UserAddresses
-          contactInfo={contactInfo}
+          addresses={addresses}
           onOpenDialog={() => handleOpenDialog()}
           onDelete={handleDelete}
           onEdit={handleEdit}
@@ -155,9 +153,9 @@ export default function Address() {
             <AddressSelector onSubmitLocation={() => setStep("addressForm")} />
           ) : (
             <AddressForm
-              onSaveContactInfo={saveContactInfo}
+              onSaveContactInfo={saveAddress}
               onClose={handleCloseDialog}
-              defaultValues={editIndex !== null ? contactInfo[editIndex] : undefined}
+              defaultValues={editIndex !== null ? addresses[editIndex] : undefined}
             />
           )}
         </DialogContent>

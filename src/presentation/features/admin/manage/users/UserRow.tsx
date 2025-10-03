@@ -15,7 +15,7 @@ import { AdminUpdateUserPayload } from "@/infrastructure/apis/user.api";
 
 const PROTECTED_ADMIN_PHONE = "09356776075";
 
-// 1️⃣ Form DTO type (string date)
+// Form DTO type (string date)
 type UserFormType = Omit<AdminProfileType, "date"> & { date?: string };
 
 type UserRowProps = {
@@ -42,7 +42,8 @@ export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: U
       date: user.date ? user.date.toISOString().split("T")[0] : "",
       image: user.image ?? "",
       role: user.role,
-      address: user.address ?? { value: "", coords: [0, 0] },
+      // If user has addresses, prefill the first one; otherwise empty array
+      address: user.address && user.address.length > 0 ? [user.address[0]] : [],
     },
   });
 
@@ -53,7 +54,17 @@ export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: U
       // Keep payload date as string (API expects string)
       const payload: AdminUpdateUserPayload = {
         ...data,
-        address: data.address ? { value: data.address.value, coords: user.address?.coords ?? [0, 0] } : null,
+        // always send array or null
+        address:
+          data.address && data.address.length > 0
+            ? [
+                {
+                  ...data.address[0],
+                  // keep coords from existing user if undefined in form
+                  coords: data.address[0].coords ?? user.address?.[0].coords ?? [0, 0],
+                },
+              ]
+            : null,
       };
 
       const updatedUser = await updateUserAdmin(user.id, payload, token);
@@ -102,11 +113,11 @@ export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: U
       <td className="p-2 border">
         {isEditing ? (
           <>
-            <input {...register("address.value")} className="w-full p-1 border rounded" />
-            {errors.address?.value && <p className="text-xs text-red-500">{errors.address.value.message}</p>}
+            <input {...register("address.0.value")} className="w-full p-1 border rounded" />
+            {errors.address?.[0]?.value && <p className="text-xs text-red-500">{errors.address[0].value.message}</p>}
           </>
         ) : (
-          user.address?.value ?? "-"
+          user.address?.[0]?.value ?? "-"
         )}
       </td>
 

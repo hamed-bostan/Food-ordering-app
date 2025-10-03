@@ -1,12 +1,11 @@
 import Checkbox from "@mui/material/Checkbox";
 import { Divider } from "@mui/material";
 import { WalletOutlined, AddCardOutlined } from "@mui/icons-material";
-import { PaymentMethodProps, PaymentMethodType } from "@/types/payment-method.types";
+import { PaymentMethodProps } from "@/types/payment-method.types";
+import { useOrderContext } from "@/context/OrderContext";
 
 export default function PaymentMethod({ selectedTab, setSelectedTab }: PaymentMethodProps) {
-  function handleTabChange(tab: PaymentMethodType) {
-    setSelectedTab(tab); // Set the active tab on checkbox change
-  }
+  const { paymentMethod, setPaymentMethod } = useOrderContext();
 
   return (
     <div className="border border-[#CBCBCB] rounded-lg text-xs text-[#717171] p-4 md:text-sm md:flex justify-between mb-3 md:mb-5">
@@ -15,21 +14,21 @@ export default function PaymentMethod({ selectedTab, setSelectedTab }: PaymentMe
         <span className="text-[#353535] text-sm md:text-base">روش پرداخت</span>
       </div>
       <Divider className="md:hidden" />
+
       <div className="flex items-center mt-2 mb-4 gap-x-1 lg:gap-x-2 md:my-0">
         <Checkbox
           id="term1"
-          checked={selectedTab === "OnlinePayment"}
-          onChange={() => handleTabChange("OnlinePayment")}
+          checked={paymentMethod === "online"}
+          onChange={() => {
+            setPaymentMethod("online");
+            setSelectedTab("online");
+          }}
           disableRipple
           size="small"
           sx={{
-            "&.MuiCheckbox-root": {
-              p: 0,
-            },
+            "&.MuiCheckbox-root": { p: 0 },
             color: "#00BA88",
-            "&.Mui-checked": {
-              color: "#00BA88",
-            },
+            "&.Mui-checked": { color: "#00BA88" },
           }}
         />
         <div className="flex flex-col gap-y-1">
@@ -40,21 +39,21 @@ export default function PaymentMethod({ selectedTab, setSelectedTab }: PaymentMe
         </div>
         <AddCardOutlined sx={{ color: "#717171", fontSize: { xs: 18, md: 20 } }} />
       </div>
+
       <div className="flex items-center gap-x-1 lg:gap-x-2">
         <Checkbox
           id="term2"
-          checked={selectedTab === "PayOnDelivery"}
-          onChange={() => handleTabChange("PayOnDelivery")}
+          checked={paymentMethod === "cash"}
+          onChange={() => {
+            setPaymentMethod("cash");
+            setSelectedTab("cash");
+          }}
           disableRipple
           size="small"
           sx={{
-            "&.MuiCheckbox-root": {
-              p: 0,
-            },
+            "&.MuiCheckbox-root": { p: 0 },
             color: "#00BA88",
-            "&.Mui-checked": {
-              color: "#00BA88",
-            },
+            "&.Mui-checked": { color: "#00BA88" },
           }}
         />
         <div className="flex flex-col gap-y-1">

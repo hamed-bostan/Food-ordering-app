@@ -7,8 +7,14 @@ import { RootState } from "@/store";
 import { clear } from "@/store/cart.slice";
 import CustomButton from "@/presentation/components/CustomButton";
 import { useCheckoutTab } from "@/context/checkout-tab.context";
+import { createOrder } from "@/infrastructure/apis/order.api";
+import { useOrderContext } from "@/context/OrderContext";
+import { CreateOrderDtoType } from "@/application/schemas/order.schema";
 
 export default function CartSummary() {
+  const { deliveryMethod, branch, address, paymentMethod, notes } = useOrderContext();
+  const selectedItems = useSelector((state: RootState) => state.cart.selectedItems);
+
   const dispatch = useDispatch();
   const { activeTab } = useCheckoutTab();
   const hasBorder = activeTab === 1 || activeTab === 2;
@@ -16,7 +22,6 @@ export default function CartSummary() {
 
   // Fetch the itemsCounter from the Redux store
   const itemsCounter = useSelector((state: RootState) => state.cart.itemsCounter);
-  const selectedItems = useSelector((state: RootState) => state.cart.selectedItems);
 
   // Calculate total discount
   const totalDiscount = parseFloat(
@@ -41,6 +46,59 @@ export default function CartSummary() {
   // Handler to clear the cart
   const handleClearCart = () => {
     dispatch(clear());
+  };
+
+  const handleSubmitOrder = async () => {
+    console.log("branch:", branch);
+    console.log("deliveryMethod:", deliveryMethod);
+    console.log("paymentMethod:", paymentMethod);
+    console.log("selectedItems:", selectedItems);
+    console.log("address:", address);
+
+    // Validate according to your schema rules
+    if (
+      !deliveryMethod ||
+      !paymentMethod ||
+      (deliveryMethod === "pickup" && branch === null) ||
+      (deliveryMethod === "courier" && branch !== null)
+    ) {
+      console.warn("Please select valid branch, delivery method, and payment method.");
+      return;
+    }
+
+    if (!selectedItems.length) {
+      console.warn("No items selected in cart.");
+      return;
+    }
+
+    // Prepare order payload
+    const orderPayload: CreateOrderDtoType = {
+      branch,
+      deliveryMethod,
+      paymentMethod,
+      address: address ?? null,
+      notes: notes || null,
+      items: selectedItems.map((item) => ({
+        productId: item.id,
+        name: item.title,
+        quantity: item.quantity,
+        price: item.price,
+        discount: item.discount != null ? Number(item.discount) : 0,
+      })),
+      totalPrice: selectedItems.reduce((total, item) => {
+        const discountedPrice = item.price - (item.price * (item.discount != null ? Number(item.discount) : 0)) / 100;
+        return total + discountedPrice * item.quantity;
+      }, 0),
+    };
+
+    console.log("Payload:", orderPayload);
+
+    try {
+      const response = await createOrder(orderPayload);
+      console.log("✅ Order created:", response);
+    } catch (err) {
+      console.error("❌ Failed to submit order:", err);
+    }
   };
 
   return (
@@ -87,8 +145,8 @@ export default function CartSummary() {
         <span>مبلغ قابل پرداخت</span>
         <span className="text-[#417F56]">{formatToPersianStyle(totalPayable)} تومان</span>
       </div>
-      <CustomButton size="medium" sx={{ width: "100%" }}>
-        ورود / ثبت‌ نام
+      <CustomButton type="submit" onClick={handleSubmitOrder} size="medium" sx={{ width: "100%" }}>
+        ثبت سفارش
       </CustomButton>
     </div>
   );

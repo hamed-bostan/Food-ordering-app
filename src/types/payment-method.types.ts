@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-export type PaymentMethodType = "OnlinePayment" | "PayOnDelivery";
+export type PaymentMethodType = "online" | "cash";
 
 export type PaymentMethodProps = {
   selectedTab: PaymentMethodType;
