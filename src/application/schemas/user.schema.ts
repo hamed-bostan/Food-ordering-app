@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AddressSchema } from "./address.schema";
 
 export const UserRoleEnum = z.enum(["user", "admin"]);
 
@@ -14,15 +15,9 @@ export const UserSchema = z.object({
   email: optionalString(z.string().email("Invalid email")),
   image: optionalString(z.string().url("Invalid URL")),
   date: z.preprocess((val) => (val === "" ? undefined : val), z.coerce.date().optional()),
-  address: z
-    .object({
-      value: z.string(),
-      coords: z.tuple([z.number(), z.number()]),
-    })
-    .nullable()
-    .optional(),
+  address: z.array(AddressSchema).nullable().optional(),
 
-  createdAt: z.coerce.date(), // domain only, always present
+  createdAt: z.coerce.date(),
 });
 
 // DTOs

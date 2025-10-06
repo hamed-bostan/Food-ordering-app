@@ -5,6 +5,6 @@ import { prefixer } from "stylis-prefixer";
 export default function createEmotionCache() {
   return createCache({
     key: "mui-rtl",
-    stylisPlugins: [prefixer, rtlPlugin], // ✅ Enables RTL styles
+    stylisPlugins: [prefixer, rtlPlugin], // Enables RTL styles
   });
 }

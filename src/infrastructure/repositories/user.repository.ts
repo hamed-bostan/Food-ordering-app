@@ -1,11 +1,11 @@
 import { ObjectId } from "mongodb";
 import { connectToDatabase } from "@/infrastructure/db/mongodb";
-import { UserType, CreateUserDtoType, UpdateUserDtoType } from "@/application/schemas/user.schema";
+import { CreateUserDtoType, UpdateUserDtoType } from "@/application/schemas/user.schema";
+import { DbUser } from "./db.types";
 
 const COLLECTION_NAME = "users";
 
 // Database representation of a user
-export type DbUser = Omit<UserType, "id"> & { _id: ObjectId };
 
 // Helper to convert string to ObjectId
 function toObjectId(id: string): ObjectId {

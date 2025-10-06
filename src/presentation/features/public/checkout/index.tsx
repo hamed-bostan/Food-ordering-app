@@ -5,11 +5,14 @@ import OrderOverview from "./orderOverview";
 import Payments from "./payments";
 import ShoppingCart from "./shoppingCart";
 import { CheckoutTabProvider, useCheckoutTab } from "@/context/checkout-tab.context";
+import { OrderProvider } from "@/context/OrderContext";
 
 export default function Checkout() {
   return (
     <CheckoutTabProvider>
-      <CheckoutContent />
+      <OrderProvider>
+        <CheckoutContent />
+      </OrderProvider>
     </CheckoutTabProvider>
   );
 }

@@ -1,5 +1,5 @@
 import FAQ from "@/presentation/features/public/faq";
 
-export default function FAQPage() {
+export default function FaqPage() {
   return <FAQ />;
 }

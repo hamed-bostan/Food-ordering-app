@@ -1,6 +1,5 @@
+import { PaymentMethodType } from "@/application/schemas/order.schema";
 import { Dispatch, SetStateAction } from "react";
-
-export type PaymentMethodType = "OnlinePayment" | "PayOnDelivery";
 
 export type PaymentMethodProps = {
   selectedTab: PaymentMethodType;

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AddressSchema } from "./address.schema";
 
 export const userProfileSchema = z.object({
   name: z.string().optional().or(z.literal("")),
@@ -10,22 +11,14 @@ export const userProfileSchema = z.object({
   email: z.string().email("ایمیل معتبر وارد کنید").optional().or(z.literal("")),
   image: z.string().optional(),
 
-  // ✅ keep as string for <input type="date">, optional
+  // Keep as string for <input type="date">, optional
   date: z
     .string()
     .refine((val) => !val || !isNaN(Date.parse(val)), "تاریخ معتبر وارد کنید")
     .optional()
     .or(z.literal("")),
 
-  address: z
-    .object({
-      value: z.string(),
-      coords: z.tuple([z.number(), z.number()]),
-    })
-    .optional()
-    .nullable(),
-
-  // ❌ createdAt removed (read-only, not in form)
+  address: z.array(AddressSchema).optional().nullable(),
 });
 
 export type UserProfileType = z.infer<typeof userProfileSchema>;

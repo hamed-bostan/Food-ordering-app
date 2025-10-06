@@ -38,33 +38,26 @@ export const getTestimonialsAdmin = async (token: string): Promise<GetTestimonia
 // Create testimonial (admin)
 export const createTestimonialAdmin = async (formData: FormData, token: string): Promise<CreateTestimonialResponse> => {
   try {
-    console.log("📦 Sending FormData:");
-    formData.forEach((value, key) => {
-      if (value instanceof File) {
-        console.log(`- ${key}: File { name: ${value.name}, size: ${value.size} }`);
-      } else {
-        console.log(`- ${key}: ${value}`);
-      }
-    });
-    console.log("🔑 Token:", token);
-
     const { data } = await api.post<CreateTestimonialResponse>("/admin/testimonials", formData, {
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
     });
 
-    console.log("✅ Response:", data);
+    if (!data.result) {
+      throw new Error("Testimonial creation failed");
+    }
 
-    if (!data.result) throw new Error("Testimonial creation failed");
     return data;
   } catch (error: unknown) {
-    console.error("❌ [API] Failed to create testimonial (admin):", error);
-
     if (axios.isAxiosError(error)) {
-      console.error("Response data:", error.response?.data);
       const response = error.response?.data as ApiErrorResponse | undefined;
+
       if (response?.error === "ValidationError" && response.details?.length) {
         throw new Error(response.details.map((d) => d.message).join(", ") || response.message);
       }
+
       if (response?.error === "ServerError" || response?.error === "NotFound") {
         throw new Error(response.message);
       }

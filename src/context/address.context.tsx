@@ -1,10 +1,9 @@
+import { AddressType } from "@/application/schemas/address.schema";
 import { createContext, ReactNode, useState } from "react";
 
 type AddressContextType = {
-  value: string;
-  setValue: (text: string) => void;
-  coords: [number, number];
-  setCoords: (coords: [number, number]) => void;
+  address: AddressType | null;
+  setAddress: (addr: AddressType | null) => void;
   resetAddress: () => void;
 };
 
@@ -15,24 +14,21 @@ type AddressProviderProps = {
 };
 
 export function AddressProvider({ children }: AddressProviderProps) {
-  const defaultValue = "مشهد میدان آزادی";
-  const defaultLocation: [number, number] = [36.314986827431504, 59.54047393694055];
-
-  const [value, setValue] = useState<string>(defaultValue);
-  const [coords, setCoords] = useState<[number, number]>(defaultLocation);
-
-  const resetAddress = () => {
-    setValue(defaultValue);
-    setCoords(defaultLocation);
+  const defaultAddress: AddressType = {
+    id: "default",
+    value: "مشهد میدان آزادی",
+    coords: [36.314986827431504, 59.54047393694055],
   };
+
+  const [address, setAddress] = useState<AddressType | null>(defaultAddress);
+
+  const resetAddress = () => setAddress(defaultAddress);
 
   return (
     <AddressContext.Provider
       value={{
-        value,
-        setValue,
-        coords,
-        setCoords,
+        address,
+        setAddress,
         resetAddress,
       }}
     >

@@ -1,12 +1,11 @@
 import Checkbox from "@mui/material/Checkbox";
 import { Divider } from "@mui/material";
 import { ShoppingBagOutlined, LocalShippingOutlined } from "@mui/icons-material";
-import { OrderDeliveryMethodProps, OrderMethodType } from "@/types/order-method.types";
+import { DeliveryMethodProps } from "@/types/delivery-method.types";
+import { useOrderContext } from "@/context/OrderContext";
 
-export default function OrderDeliveryMethod({ selectedTab, setSelectedTab }: OrderDeliveryMethodProps) {
-  function handleTabChange(tab: OrderMethodType) {
-    setSelectedTab(tab); // Set the active tab on checkbox change
-  }
+export default function OrderDeliveryMethod({ selectedTab, setSelectedTab }: DeliveryMethodProps) {
+  const { deliveryMethod, setDeliveryMethod } = useOrderContext();
 
   return (
     <div className="border border-[#CBCBCB] rounded-lg text-xs text-[#717171] p-4 md:text-sm md:flex justify-between mb-3 md:mb-5">
@@ -23,9 +22,12 @@ export default function OrderDeliveryMethod({ selectedTab, setSelectedTab }: Ord
       <div className="flex items-center mt-2 mb-4 gap-x-1 lg:gap-x-2 md:my-0">
         <Checkbox
           size="small"
-          checked={selectedTab === "courier"}
+          checked={deliveryMethod === "courier"}
+          onChange={() => {
+            setDeliveryMethod("courier");
+            setSelectedTab("courier");
+          }}
           id="term1"
-          onChange={() => handleTabChange("courier")}
           sx={{
             "&.MuiCheckbox-root": {
               p: 0,
@@ -52,8 +54,11 @@ export default function OrderDeliveryMethod({ selectedTab, setSelectedTab }: Ord
       <div className="flex items-center mb-4 gap-x-1 lg:gap-x-2 md:mb-0">
         <Checkbox
           id="term2"
-          checked={selectedTab === "pickup"}
-          onChange={() => handleTabChange("pickup")}
+          checked={deliveryMethod === "pickup"}
+          onChange={() => {
+            setDeliveryMethod("pickup");
+            setSelectedTab("pickup");
+          }}
           size="small"
           sx={{
             "&.MuiCheckbox-root": {

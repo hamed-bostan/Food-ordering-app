@@ -7,7 +7,7 @@ import { ActiveTab } from "@/types/faq.types";
 import FaqTabs from "./FaqTabs";
 import FaqTabContent from "./FaqTabContent";
 
-export default function FAQ() {
+export default function Faq() {
   const [activeTab, setActiveTab] = useState<ActiveTab>("faq");
 
   function handleTabClick(tab: ActiveTab) {

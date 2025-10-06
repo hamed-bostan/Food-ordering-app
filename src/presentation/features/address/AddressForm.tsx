@@ -1,29 +1,29 @@
 "use client";
 
-import Checkbox from "@mui/material/Checkbox";
 import Input from "@/presentation/components/Input";
 import CustomButton from "@/presentation/components/CustomButton";
 import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import { AddressContext } from "@/context/address.context";
-import { AddressFormProps } from "@/types/userpanel.types";
+import { AddressType } from "@/application/schemas/address.schema";
+
+export type AddressFormProps = {
+  onSaveContactInfo: (newAddress: AddressType) => void;
+  onClose: () => void;
+  defaultValues?: AddressType;
+};
 
 export default function AddressForm({ onSaveContactInfo, onClose, defaultValues }: AddressFormProps) {
-  const { value } = useContext(AddressContext)!;
+  const { address } = useContext(AddressContext)!;
 
-  const [formData, setFormData] = useState({
-    name: defaultValues?.name || "",
-    phone_number: defaultValues?.phone_number || "",
-    address: defaultValues?.address || value || "",
+  const [formData, setFormData] = useState<AddressType>({
+    id: defaultValues?.id || crypto.randomUUID(),
+    value: defaultValues?.value || address?.value || "",
+    coords: defaultValues?.coords || address?.coords || [0, 0],
   });
 
-  // in case defaultValues change while dialog is open
   useEffect(() => {
     if (defaultValues) {
-      setFormData({
-        name: defaultValues.name,
-        phone_number: defaultValues.phone_number,
-        address: defaultValues.address,
-      });
+      setFormData(defaultValues);
     }
   }, [defaultValues]);
 
@@ -39,40 +39,7 @@ export default function AddressForm({ onSaveContactInfo, onClose, defaultValues 
 
   return (
     <form onSubmit={handleSubmit}>
-      <Input label="عنوان آدرس" sx={{ mb: 3 }} />
-
-      <div className="flex items-center mb-4 gap-x-1">
-        <Checkbox
-          size="small"
-          id="term1"
-          sx={{
-            color: "#00BA88",
-            "&.Mui-checked": { color: "#00BA88" },
-            "&.MuiCheckbox-root": { padding: 0 },
-          }}
-        />
-        <label htmlFor="term1" className="text-xs text-[#353535]">
-          تحویل گیرنده خودم هستم.
-        </label>
-      </div>
-
-      <Input
-        label="نام و نام‌خانوادگی تحویل گیرنده"
-        value={formData.name}
-        name="name"
-        onChange={handleChange}
-        sx={{ mb: 3 }}
-      />
-
-      <Input
-        label="شماره همراه تحویل گیرنده"
-        value={formData.phone_number}
-        name="phone_number"
-        onChange={handleChange}
-        sx={{ mb: 3 }}
-      />
-
-      <Input label="آدرس دقیق شما" multiline rows={2} value={formData.address} name="address" onChange={handleChange} />
+      <Input label="بازبینی آدرس" multiline rows={2} value={formData.value} name="value" onChange={handleChange} />
 
       <div className="flex justify-between mt-6 gap-x-4">
         <CustomButton

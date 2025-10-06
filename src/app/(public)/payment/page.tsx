@@ -1,6 +1,6 @@
 import successfulPaymentImage from "@/assets/images/icons/successful-payment.png";
 import unsuccessfulPaymentImage from "@/assets/images/icons/unsuccessful-payment.png";
-import { verifyPaymentUseCase } from "@/domain/use-cases/payment/verifyPaymentUseCase";
+import { verifyPaymentUseCase } from "@/domain/use-cases/payment/verifyPayment.usecase";
 import PaymentMessage from "@/presentation/features/paymentGateway/PaymentMessage";
 
 type PaymentPageProps = {

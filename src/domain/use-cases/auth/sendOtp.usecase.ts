@@ -1,5 +1,6 @@
 import { phoneSchema } from "@/application/schemas/otpSchema";
-import { insertOtpToDb, sendOtpSms, generateOtpCode } from "@/infrastructure/repositories/otp.repository";
+import { insertOtpToDb, generateOtpCode } from "@/infrastructure/repositories/otp.repository";
+import { sendOtpSms } from "@/infrastructure/sms.gateway";
 
 export async function sendOtpUseCase(body: unknown) {
   const validated = phoneSchema.parse(body);
