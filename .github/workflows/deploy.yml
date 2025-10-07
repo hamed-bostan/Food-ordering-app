@@ -3,40 +3,35 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - main
+      - main # trigger only on main branch
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout code
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: 20
 
-      - name: Install dependencies & build
-        run: |
-          npm ci
-          npm run build
-
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@v1.0.0
+      # 3️⃣ Copy code to VPS via SSH
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          key: ${{ secrets.VPS_KEY }}
+          port: 22
           script: |
-            cd /var/www/foodapp || mkdir -p /var/www/foodapp && cd /var/www/foodapp
-            if [ -d ".git" ]; then
-              git reset --hard
-              git pull
-            else
-              git clone git@github.com:hamed-bostan/Food-ordering-app.git .
-            fi
+            cd /var/www/foodapp
+            git reset --hard
+            git pull
             npm ci
             npm run build
             pm2 restart foodapp || pm2 start npm --name "foodapp" -- start
