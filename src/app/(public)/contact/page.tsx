@@ -5,7 +5,7 @@ import ContactBranchList from "@/presentation/features/public/contact/ContactBra
 export default function ContactPage() {
   return (
     <section>
-      <Banner imageSrc={image1} text="با ترخینه در تماس باشید." />
+      <Banner imageSrc={image1} text="This is amazing" />
       <ContactBranchList />
     </section>
   );
