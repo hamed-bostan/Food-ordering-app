@@ -6,7 +6,7 @@ import AboutHighlights from "@/presentation/features/public/about/AboutHighlight
 export default function AboutPage() {
   return (
     <section>
-      <Banner imageSrc={image1} text="درباره ترخینه بیشتر بدانید!" />
+      <Banner imageSrc={image1} text="درباره حامد بیشتر بدانید!" />
       <AboutDetails />
       <AboutHighlights />
     </section>
