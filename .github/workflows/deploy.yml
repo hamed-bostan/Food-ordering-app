@@ -3,7 +3,7 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - main # run only when main branch is pushed
+      - main # Runs automatically when you push to main
 
 jobs:
   deploy:
@@ -14,26 +14,25 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # (Optional) Sync .env file
-      - name: Sync environment file
-        if: secrets.ENV_FILE != ''
+      - name: Copy project files to VPS
         run: |
-          echo "${{ secrets.ENV_FILE }}" | ssh -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cat > ${{ secrets.APP_PATH }}/.env.local"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p ${{ secrets.VPS_PATH }}"
+          rsync -avz --exclude '.git' --exclude 'node_modules' ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}
 
-      - name: Deploy to VPS
+      - name: Upload environment file
         run: |
-          ssh -i ~/.ssh/id_ed25519 ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
-          cd ${{ secrets.APP_PATH }}
-          git fetch origin main
-          git reset --hard origin/main
-          npm install --legacy-peer-deps
-          npm run build
-          pm2 restart foodapp || pm2 start npm --name "foodapp" -- start
-          pm2 save
+          echo "${{ secrets.ENV_FILE }}" | ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cat > ${{ secrets.VPS_PATH }}/.env"
+
+      - name: Install dependencies & build on VPS
+        run: |
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+            cd ${{ secrets.VPS_PATH }}
+            npm install --force
+            npm run build
+            pm2 restart foodapp || pm2 start npm --name "foodapp" -- start
+            pm2 save
           EOF
