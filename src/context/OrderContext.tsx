@@ -3,13 +3,14 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { AddressType } from "@/application/schemas/address.schema";
 import { BranchType, DeliveryMethodType, PaymentMethodType } from "@/application/schemas/order.schema";
+import { isOrderDeliveryValid } from "@/domain/order/order.rules";
 
 type OrderContextType = {
   branch: BranchType | null;
   setBranch: (b: BranchType | null) => void;
 
-  deliveryMethod: DeliveryMethodType | null;
-  setDeliveryMethod: (d: DeliveryMethodType | null) => void;
+  deliveryMethod: DeliveryMethodType;
+  setDeliveryMethod: (d: DeliveryMethodType) => void;
 
   paymentMethod: PaymentMethodType;
   setPaymentMethod: (m: PaymentMethodType) => void;
@@ -27,35 +28,35 @@ const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
 export function OrderProvider({ children }: { children: ReactNode }) {
   const [branch, _setBranch] = useState<BranchType | null>(null);
-  const [deliveryMethod, _setDeliveryMethod] = useState<DeliveryMethodType | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("cash");
+  const [deliveryMethod, _setDeliveryMethod] = useState<DeliveryMethodType>("courier");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("online");
   const [address, _setAddress] = useState<AddressType | null>(null);
   const [notes, setNotes] = useState<string | null>(null);
 
-  const setDeliveryMethod = (method: DeliveryMethodType | null) => {
+  const setDeliveryMethod = (method: DeliveryMethodType) => {
     _setDeliveryMethod(method);
 
+    // Reset state according to rules
     if (method === "pickup") _setAddress(null);
     if (method === "courier") _setBranch(null);
-    if (method === null) {
-      _setBranch(null);
-      _setAddress(null);
-    }
   };
 
   const setBranch = (b: BranchType | null) => {
-    if (deliveryMethod === "pickup") _setBranch(b);
+    if (isOrderDeliveryValid("pickup", b, null)) _setBranch(b);
     else _setBranch(null);
   };
 
   const setAddress = (a: AddressType | null) => {
-    if (deliveryMethod === "courier") _setAddress(a);
-    else _setAddress(null);
+    if (isOrderDeliveryValid("courier", null, a)) {
+      _setAddress((prev) => (prev?.id !== a?.id ? a : prev));
+    } else {
+      _setAddress(null);
+    }
   };
 
   const resetOrder = () => {
     _setBranch(null);
-    _setDeliveryMethod(null);
+    _setDeliveryMethod("courier");
     setPaymentMethod("cash");
     _setAddress(null);
     setNotes(null);

@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { AddressSchema } from "./address.schema";
+import { isOrderDeliveryValid } from "@/domain/order/order.rules";
 
+// --- Enums ---
 export const BranchEnum = z.enum(["aghdasieh", "vanak", "ekbatan"]);
 export type BranchType = z.infer<typeof BranchEnum>;
 
@@ -37,30 +39,17 @@ const BaseOrderSchema = z.object({
   createdAt: z.coerce.date(),
 });
 
-// --- Full validation: branch + deliveryMethod + address consistency ---
-export const OrderSchema = BaseOrderSchema.refine((data) => {
-  if (data.deliveryMethod === "pickup") {
-    return data.branch !== null && data.address == null;
-  }
-  if (data.deliveryMethod === "courier") {
-    return data.branch === null && data.address != null;
-  }
-  return false;
-}, branchDeliveryAddressRule);
+// --- Full validation schema ---
+export const OrderSchema = BaseOrderSchema.refine(
+  (data) => isOrderDeliveryValid(data.deliveryMethod, data.branch, data.address),
+  branchDeliveryAddressRule
+);
 
 // --- Create DTO (omit id + createdAt) ---
 export const CreateOrderDto = BaseOrderSchema.omit({
   id: true,
   createdAt: true,
-}).refine((data) => {
-  if (data.deliveryMethod === "pickup") {
-    return data.branch !== null && data.address == null;
-  }
-  if (data.deliveryMethod === "courier") {
-    return data.branch === null && data.address != null;
-  }
-  return false;
-}, branchDeliveryAddressRule);
+}).refine((data) => isOrderDeliveryValid(data.deliveryMethod, data.branch, data.address), branchDeliveryAddressRule);
 
 // --- Update DTO (partial + conditional validation) ---
 export const UpdateOrderDto = BaseOrderSchema.omit({
@@ -68,18 +57,10 @@ export const UpdateOrderDto = BaseOrderSchema.omit({
   createdAt: true,
 })
   .partial()
-  .refine((data) => {
-    if (data.deliveryMethod === undefined) {
-      return true; // no delivery method change
-    }
-    if (data.deliveryMethod === "pickup") {
-      return data.branch != null && data.address == null;
-    }
-    if (data.deliveryMethod === "courier") {
-      return data.branch == null && data.address != null;
-    }
-    return false;
-  }, branchDeliveryAddressRule);
+  .refine(
+    (data) => data.deliveryMethod === undefined || isOrderDeliveryValid(data.deliveryMethod, data.branch, data.address),
+    branchDeliveryAddressRule
+  );
 
 // --- Types ---
 export type OrderType = z.infer<typeof OrderSchema>;

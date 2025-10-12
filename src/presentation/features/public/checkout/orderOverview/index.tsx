@@ -1,22 +1,21 @@
 "use client";
 
-import OrderDeliveryMethod from "./OrderDeliveryMethod";
 import CartSummary from "../CartSummary";
-import { useState } from "react";
-import InPersonPickup from "./InPersonPickup";
 import AdditionalOrderInfo from "./AdditionalOrderInfo";
 import Address from "@/presentation/features/address";
-import { DeliveryMethodType } from "@/application/schemas/order.schema";
+import DeliveryMethod from "./DeliveryMethod";
+import PickupDelivery from "./PickupDelivery";
+import { useOrderContext } from "@/context/OrderContext";
 
 export default function OrderOverview() {
-  const [selectedTab, setSelectedTab] = useState<DeliveryMethodType>("courier");
+  const { deliveryMethod } = useOrderContext();
 
   return (
     <section className="md:grid md:grid-cols-[70fr_40fr] md:gap-x-4 lg:gap-x-6">
       <div>
-        <OrderDeliveryMethod selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-        {selectedTab === "courier" && <Address />}
-        {selectedTab === "pickup" && <InPersonPickup />}
+        <DeliveryMethod />
+        {deliveryMethod === "courier" && <Address />}
+        {deliveryMethod === "pickup" && <PickupDelivery />}
         <AdditionalOrderInfo />
       </div>
       <CartSummary />

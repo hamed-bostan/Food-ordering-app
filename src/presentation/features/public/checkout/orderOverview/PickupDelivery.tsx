@@ -5,7 +5,7 @@ import { LocationOnOutlined } from "@mui/icons-material";
 import { useOrderContext } from "@/context/OrderContext";
 import { branches } from "@/presentation/constants/branch.constants";
 
-export default function InPersonPickup() {
+export default function PickupDelivery() {
   const { branch, setBranch } = useOrderContext();
 
   return (

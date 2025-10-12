@@ -1,10 +1,9 @@
 import Checkbox from "@mui/material/Checkbox";
 import { Divider } from "@mui/material";
 import { WalletOutlined, AddCardOutlined } from "@mui/icons-material";
-import { PaymentMethodProps } from "@/types/payment-method.types";
 import { useOrderContext } from "@/context/OrderContext";
 
-export default function PaymentMethod({ selectedTab, setSelectedTab }: PaymentMethodProps) {
+export default function PaymentMethod() {
   const { paymentMethod, setPaymentMethod } = useOrderContext();
 
   return (
@@ -19,10 +18,7 @@ export default function PaymentMethod({ selectedTab, setSelectedTab }: PaymentMe
         <Checkbox
           id="term1"
           checked={paymentMethod === "online"}
-          onChange={() => {
-            setPaymentMethod("online");
-            setSelectedTab("online");
-          }}
+          onChange={() => setPaymentMethod("online")}
           disableRipple
           size="small"
           sx={{
@@ -44,10 +40,7 @@ export default function PaymentMethod({ selectedTab, setSelectedTab }: PaymentMe
         <Checkbox
           id="term2"
           checked={paymentMethod === "cash"}
-          onChange={() => {
-            setPaymentMethod("cash");
-            setSelectedTab("cash");
-          }}
+          onChange={() => setPaymentMethod("cash")}
           disableRipple
           size="small"
           sx={{

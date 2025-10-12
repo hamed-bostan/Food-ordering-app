@@ -5,34 +5,54 @@ import { mapDbOrderToDomain } from "../mappers/order.mapper";
 
 export const collectionName = "orders";
 
-type NewOrderForDb = CreateOrderDtoType & { createdAt: string };
+type NewOrderForDb = CreateOrderDtoType & {
+  createdAt: string;
+};
 
 /**
- * Insert a new order
+ * Insert a new order into MongoDB
  */
 export async function insertOrderToDb(order: NewOrderForDb): Promise<ObjectId> {
-  const db = await connectToDatabase();
-  const result = await db.collection(collectionName).insertOne(order);
-  return result.insertedId;
+  try {
+    const db = await connectToDatabase();
+    const result = await db.collection(collectionName).insertOne(order);
+    return result.insertedId;
+  } catch (error) {
+    console.error("❌ [Repository] Failed to insert order:", error);
+    throw new Error("Database error while inserting order");
+  }
 }
 
 /**
  * Fetch all orders
  */
 export async function fetchOrdersFromDb(): Promise<OrderType[]> {
-  const db = await connectToDatabase();
-  const docs = await db.collection(collectionName).find({}).toArray();
-  return docs.map(mapDbOrderToDomain);
+  try {
+    const db = await connectToDatabase();
+    const docs = await db.collection(collectionName).find({}).toArray();
+
+    return docs.map(mapDbOrderToDomain);
+  } catch (error) {
+    console.error("❌ [Repository] Failed to fetch orders:", error);
+    throw new Error("Database error while fetching orders");
+  }
 }
 
 /**
- * Fetch one order by ID
+ * Fetch a single order by ID
  */
 export async function findOrderByIdInDb(orderId: string): Promise<OrderType | null> {
-  if (!ObjectId.isValid(orderId)) throw new Error("Invalid order ID");
+  try {
+    if (!ObjectId.isValid(orderId)) {
+      throw new Error("Invalid order ID");
+    }
 
-  const db = await connectToDatabase();
-  const doc = await db.collection(collectionName).findOne({ _id: new ObjectId(orderId) });
+    const db = await connectToDatabase();
+    const doc = await db.collection(collectionName).findOne({ _id: new ObjectId(orderId) });
 
-  return doc ? mapDbOrderToDomain(doc) : null;
+    return doc ? mapDbOrderToDomain(doc) : null;
+  } catch (error) {
+    console.error(`❌ [Repository] Failed to fetch order with ID ${orderId}:`, error);
+    throw new Error("Database error while fetching order by ID");
+  }
 }

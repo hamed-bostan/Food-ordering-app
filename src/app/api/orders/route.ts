@@ -14,20 +14,17 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    // Validate against DTO schema
+    // Validate DTO
     const validated = CreateOrderDto.parse(body);
 
+    // Call use case (domain layer)
     const newOrder = await submitOrderUseCase(validated);
 
     return NextResponse.json({ message: "Order created successfully", result: newOrder }, { status: 201 });
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        {
-          error: "ValidationError",
-          message: "Invalid order input",
-          details: error.errors,
-        },
+        { error: "ValidationError", message: "Invalid order input", details: error.errors },
         { status: 400 }
       );
     }

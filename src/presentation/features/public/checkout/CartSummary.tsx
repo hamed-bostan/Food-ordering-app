@@ -7,98 +7,49 @@ import { RootState } from "@/store";
 import { clear } from "@/store/cart.slice";
 import CustomButton from "@/presentation/components/CustomButton";
 import { useCheckoutTab } from "@/context/checkout-tab.context";
-import { createOrder } from "@/infrastructure/apis/order.api";
 import { useOrderContext } from "@/context/OrderContext";
-import { CreateOrderDtoType } from "@/application/schemas/order.schema";
+import { useUserAddresses } from "@/hooks/useUserAddresses";
+import { useOrderSubmit } from "@/hooks/useOrderSubmit";
+import { useAddressLogic } from "@/hooks/useAddressLogic";
+import { calculateOrderTotal, calculateTotalDiscount } from "@/domain/order/order.rules";
 
 export default function CartSummary() {
-  const { deliveryMethod, branch, address, paymentMethod, notes } = useOrderContext();
-  const selectedItems = useSelector((state: RootState) => state.cart.selectedItems);
-
   const dispatch = useDispatch();
   const { activeTab } = useCheckoutTab();
+  const selectedItems = useSelector((state: RootState) => state.cart.selectedItems);
+  const itemsCounter = useSelector((state: RootState) => state.cart.itemsCounter);
+  const { deliveryMethod, branch, paymentMethod, address, notes } = useOrderContext();
+  const { addresses, isLoading } = useUserAddresses();
+
+  const { submitOrder } = useOrderSubmit();
+
+  // Automatically handle address selection and validation
+  useAddressLogic(addresses, isLoading);
+
   const hasBorder = activeTab === 1 || activeTab === 2;
   const hasQuantitySelector = activeTab === 1 || activeTab === 2;
 
-  // Fetch the itemsCounter from the Redux store
-  const itemsCounter = useSelector((state: RootState) => state.cart.itemsCounter);
-
-  // Calculate total discount
-  const totalDiscount = parseFloat(
-    selectedItems
-      .reduce((total, item) => {
-        const itemDiscount = ((item.price * (item.discount ?? 0)) / 100) * item.quantity;
-        return total + itemDiscount;
-      }, 0)
-      .toFixed(2) // Round to 2 decimal places
-  );
-
-  // Calculate total payable amount
-  const totalPayable = parseFloat(
-    selectedItems
-      .reduce((total, item) => {
-        const discountedPrice = item.price - (item.price * (item.discount ?? 0)) / 100;
-        return total + discountedPrice * item.quantity;
-      }, 0)
-      .toFixed(2)
-  );
-
-  // Handler to clear the cart
-  const handleClearCart = () => {
-    dispatch(clear());
-  };
+  const totalDiscount = calculateTotalDiscount(selectedItems);
+  const totalPayable = calculateOrderTotal(selectedItems);
 
   const handleSubmitOrder = async () => {
-    console.log("branch:", branch);
-    console.log("deliveryMethod:", deliveryMethod);
-    console.log("paymentMethod:", paymentMethod);
-    console.log("selectedItems:", selectedItems);
-    console.log("address:", address);
-
-    // Validate according to your schema rules
-    if (
-      !deliveryMethod ||
-      !paymentMethod ||
-      (deliveryMethod === "pickup" && branch === null) ||
-      (deliveryMethod === "courier" && branch !== null)
-    ) {
-      console.warn("Please select valid branch, delivery method, and payment method.");
-      return;
-    }
-
-    if (!selectedItems.length) {
-      console.warn("No items selected in cart.");
-      return;
-    }
-
-    // Prepare order payload
-    const orderPayload: CreateOrderDtoType = {
-      branch,
+    const result = await submitOrder({
       deliveryMethod,
       paymentMethod,
-      address: address ?? null,
-      notes: notes || null,
-      items: selectedItems.map((item) => ({
-        productId: item.id,
-        name: item.title,
-        quantity: item.quantity,
-        price: item.price,
-        discount: item.discount != null ? Number(item.discount) : 0,
-      })),
-      totalPrice: selectedItems.reduce((total, item) => {
-        const discountedPrice = item.price - (item.price * (item.discount != null ? Number(item.discount) : 0)) / 100;
-        return total + discountedPrice * item.quantity;
-      }, 0),
-    };
+      address,
+      branch,
+      notes,
+      selectedItems,
+      addresses,
+    });
 
-    console.log("Payload:", orderPayload);
-
-    try {
-      const response = await createOrder(orderPayload);
-      console.log("✅ Order created:", response);
-    } catch (err) {
-      console.error("❌ Failed to submit order:", err);
+    if (result) {
+      dispatch(clear());
     }
+  };
+
+  const handleClearCart = () => {
+    dispatch(clear());
   };
 
   return (

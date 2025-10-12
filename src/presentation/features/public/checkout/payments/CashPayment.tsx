@@ -1,7 +1,7 @@
 import { Divider } from "@mui/material";
 import ReportGmailerrorredOutlinedIcon from "@mui/icons-material/ReportGmailerrorredOutlined";
 
-export default function PayOnDelivery() {
+export default function CashPayment() {
   return (
     <div className="p-4 border border-[#CBCBCB] rounded-lg md:grid md:grid-cols-[30fr_70fr] bg-[#F9F9F9] mb-3 md:mb-5">
       <div className="text-[#353535] mb-2 flex items-center gap-x-1 md:mb-0 md:self-start">

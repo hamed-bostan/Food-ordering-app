@@ -1,59 +1,47 @@
 "use client";
 
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import AddressForm from "./AddressForm";
 import AddressSelector from "./AddressSelector";
 import EmptyStateMessage from "@/presentation/components/EmptyStateMessage";
 import UserAddresses from "./userAddresses";
-import { getUserById, updateUserProfile } from "@/infrastructure/apis/user.api";
 import { useSession } from "next-auth/react";
 import { AddressContext } from "@/context/address.context";
 import { AddressType } from "@/application/schemas/address.schema";
+import { useUserAddresses } from "@/hooks/useUserAddresses";
+import { AddressService } from "@/application/services/address.service";
+import { toast } from "react-toastify";
+import { useOrderContext } from "@/context/OrderContext";
+import { useAddressLogic } from "@/hooks/useAddressLogic";
 
 export default function Address() {
-  const { data: session, status } = useSession();
-  const { address, setAddress, resetAddress } = useContext(AddressContext)!;
-
-  if (status === "loading") return <div>Loading...</div>;
-  if (!session?.accessToken || !session?.user?.id) {
-    console.error("❌ Missing auth token or user ID");
-    return <div>Unauthorized</div>;
-  }
-
-  const token = session.accessToken;
-  const userId = session.user.id as string;
+  const { data: session } = useSession();
+  const { address: selectedAddress, setAddress } = useOrderContext();
+  const { addresses, setAddresses, isLoading, fetchAddresses } = useUserAddresses();
+  const { setAddress: setSelectedAddress, resetAddress } = useContext(AddressContext)!;
 
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<"location" | "addressForm">("location");
-  const [addresses, setAddresses] = useState<AddressType[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      try {
-        const user = await getUserById(userId, token);
-        setAddresses(user.result.address || []);
-      } catch (error) {
-        console.error("❌ Failed to fetch addresses:", error);
-      }
-    };
+  useAddressLogic(addresses, isLoading);
 
-    fetchAddresses();
-  }, [userId, token]);
+  if (isLoading) return <div>در حال بارگذاری آدرس‌ها...</div>;
+  if (!session?.accessToken || !session.user?.id) return <div>Unauthorized</div>;
 
-  const handleOpenDialog = (goToForm: boolean = false, index: number | null = null) => {
+  const token = session.accessToken!;
+  const userId = session.user.id;
+
+  const handleOpenDialog = (goToForm = false, index: number | null = null) => {
     setOpen(true);
     setStep(goToForm ? "addressForm" : "location");
     setEditIndex(index);
-
-    // Reset address context to defaults whenever dialog opens
     resetAddress();
 
-    // If editing, preload context with existing address
     if (index !== null && addresses[index]) {
-      setAddress(addresses[index]);
+      setSelectedAddress(addresses[index]);
     }
   };
 
@@ -64,20 +52,23 @@ export default function Address() {
   };
 
   const saveAddress = async (newAddress: AddressType) => {
-    // Update local state
     const updated =
-      editIndex !== null ? addresses.map((c, i) => (i === editIndex ? newAddress : c)) : [...addresses, newAddress];
+      editIndex !== null ? addresses.map((a, i) => (i === editIndex ? newAddress : a)) : [...addresses, newAddress];
 
     setAddresses(updated);
 
     try {
-      await updateUserProfile(
-        userId,
-        { address: updated }, // always store the full list
-        token
-      );
-    } catch (error) {
-      console.error("❌ Failed to save address in DB:", error);
+      await AddressService.save(userId, updated, token);
+      toast.success("آدرس با موفقیت ذخیره شد.");
+
+      // Fetch latest list to ensure sync with backend
+      await fetchAddresses();
+
+      // Automatically select the latest address
+      setAddress(updated[updated.length - 1]);
+    } catch (err) {
+      console.error("❌ Failed to save address:", err);
+      toast.error("خطا در ذخیره آدرس.");
     }
 
     handleCloseDialog();
@@ -88,15 +79,21 @@ export default function Address() {
     setAddresses(updated);
 
     try {
-      await updateUserProfile(userId, { address: updated }, token);
-    } catch (error) {
-      console.error("❌ Failed to delete address in DB:", error);
+      await AddressService.save(userId, updated, token);
+
+      // Reset selected address if deleted one was active
+      if (selectedAddress?.id === addresses[index]?.id) setAddress(null);
+
+      toast.success("آدرس حذف شد.");
+
+      await fetchAddresses();
+    } catch (err) {
+      console.error("❌ Failed to delete address:", err);
+      toast.error("خطا در حذف آدرس.");
     }
   };
 
-  const handleEdit = (index: number) => {
-    handleOpenDialog(true, index);
-  };
+  const handleEdit = (index: number) => handleOpenDialog(true, index);
 
   return (
     <div>

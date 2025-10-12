@@ -1,10 +1,9 @@
 import Checkbox from "@mui/material/Checkbox";
 import { Divider } from "@mui/material";
 import { ShoppingBagOutlined, LocalShippingOutlined } from "@mui/icons-material";
-import { DeliveryMethodProps } from "@/types/delivery-method.types";
 import { useOrderContext } from "@/context/OrderContext";
 
-export default function OrderDeliveryMethod({ selectedTab, setSelectedTab }: DeliveryMethodProps) {
+export default function DeliveryMethod() {
   const { deliveryMethod, setDeliveryMethod } = useOrderContext();
 
   return (
@@ -23,10 +22,7 @@ export default function OrderDeliveryMethod({ selectedTab, setSelectedTab }: Del
         <Checkbox
           size="small"
           checked={deliveryMethod === "courier"}
-          onChange={() => {
-            setDeliveryMethod("courier");
-            setSelectedTab("courier");
-          }}
+          onChange={() => setDeliveryMethod("courier")}
           id="term1"
           sx={{
             "&.MuiCheckbox-root": {
@@ -55,10 +51,7 @@ export default function OrderDeliveryMethod({ selectedTab, setSelectedTab }: Del
         <Checkbox
           id="term2"
           checked={deliveryMethod === "pickup"}
-          onChange={() => {
-            setDeliveryMethod("pickup");
-            setSelectedTab("pickup");
-          }}
+          onChange={() => setDeliveryMethod("pickup")}
           size="small"
           sx={{
             "&.MuiCheckbox-root": {
