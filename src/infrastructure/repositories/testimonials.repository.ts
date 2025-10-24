@@ -1,11 +1,8 @@
 import { ObjectId } from "mongodb";
-import {
-  CreateTestimonialDtoType,
-  TestimonialType,
-  UpdateTestimonialDtoType,
-} from "@/application/schemas/testimonial.schema";
+import { TestimonialType } from "@/application/schemas/testimonial.schema";
 import { connectToDatabase } from "@/infrastructure/db/mongodb";
 import { mapDbTestimonialToDomain } from "../mappers/testimonial.mapper";
+import { TestimonialRecordInsert, TestimonialRecordUpdate } from "../db/testimonial/testimonial.db.types";
 
 export const collectionName = "testimonials";
 
@@ -24,9 +21,8 @@ export async function findTestimonialByIdInDb(testimonialId: string): Promise<Te
 /**
  * Insert a new testimonial
  */
-export async function insertTestimonialToDb(
-  testimonial: CreateTestimonialDtoType & { createdAt: string }
-): Promise<string> {
+
+export async function insertTestimonialToDb(testimonial: TestimonialRecordInsert): Promise<string> {
   const db = await connectToDatabase();
   const result = await db.collection(collectionName).insertOne(testimonial);
   return result.insertedId.toString();
@@ -46,7 +42,7 @@ export async function fetchTestimonialsFromDb(): Promise<TestimonialType[]> {
  */
 export async function updateTestimonialInDb(
   testimonialId: string,
-  update: UpdateTestimonialDtoType
+  update: TestimonialRecordUpdate
 ): Promise<TestimonialType> {
   if (!ObjectId.isValid(testimonialId)) throw new Error("Invalid testimonial ID");
 

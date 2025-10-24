@@ -3,22 +3,13 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
-import { TestimonialType, UpdateTestimonialDto } from "@/application/schemas/testimonial.schema";
+import { TestimonialType } from "@/application/schemas/testimonial.schema";
 import { updateTestimonialAdmin } from "@/infrastructure/apis/admin/testimonial.api";
-import { z } from "zod";
-
-export const testimonialEditSchema = UpdateTestimonialDto.pick({
-  name: true,
-  comment: true,
-  image: true,
-});
-
-export type TestimonialEditModel = z.infer<typeof testimonialEditSchema>;
+import { TestimonialUpdateDto } from "@/application/dto/testimonial/testimonial.dto";
 
 type TestimonialsRowProps = {
   testimonial: TestimonialType;
@@ -41,31 +32,30 @@ export default function TestimonialRow({
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<TestimonialEditModel>({
-    resolver: zodResolver(testimonialEditSchema),
+  } = useForm<TestimonialUpdateDto>({
     defaultValues: {
       name: testimonial.name,
       comment: testimonial.comment,
-      image: testimonial.image,
     },
   });
 
-  const onSubmit = async (data: TestimonialEditModel) => {
+  const onSubmit = async (data: TestimonialUpdateDto) => {
     try {
-      let payload: Partial<TestimonialType> | FormData = data;
+      let payload: TestimonialUpdateDto | FormData = { ...data };
 
       if (selectedImage) {
         payload = new FormData();
-
         if (data.name) payload.append("name", data.name);
         if (data.comment) payload.append("comment", data.comment);
-        payload.append("image", selectedImage); // image is guaranteed to be a File
+        payload.append("image", selectedImage);
       }
 
       const updateTestimonial = await updateTestimonialAdmin(testimonial.id, payload, token);
+
       onTestimonialUpdated(updateTestimonial.result);
       setIsEditing(false);
       setSelectedImage(null);
+      reset();
       toast.success("Testimonial updated successfully");
     } catch (error: unknown) {
       if (error instanceof Error) toast.error(error.message);

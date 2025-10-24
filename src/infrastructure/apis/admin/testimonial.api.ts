@@ -2,6 +2,7 @@ import { TestimonialType } from "@/application/schemas/testimonial.schema";
 import axios from "axios";
 import { ApiErrorResponse } from "@/types/api-error";
 import { api } from "@/infrastructure/axios/api.client";
+import { TestimonialUpdateDto } from "@/application/dto/testimonial/testimonial.dto";
 
 export type GetTestimonialResponse = { message: string; result: TestimonialType };
 export type GetTestimonialsResponse = { message: string; result: TestimonialType[] };
@@ -51,6 +52,7 @@ export const createTestimonialAdmin = async (formData: FormData, token: string):
 
     return data;
   } catch (error: unknown) {
+    console.error("❌ createTestimonialAdmin error:", error);
     if (axios.isAxiosError(error)) {
       const response = error.response?.data as ApiErrorResponse | undefined;
 
@@ -70,13 +72,17 @@ export const createTestimonialAdmin = async (formData: FormData, token: string):
 // Update testimonial by admin
 export const updateTestimonialAdmin = async (
   id: string,
-  payload: Partial<TestimonialType> | FormData,
+  payload: TestimonialUpdateDto | FormData,
   token: string
 ): Promise<UpdateTestimonialResponse> => {
   try {
     const isFormData = payload instanceof FormData;
+
     const { data } = await api.put<UpdateTestimonialResponse>(`/admin/testimonials/${id}`, payload, {
-      headers: { Authorization: `Bearer ${token}`, ...(isFormData ? { "Content-Type": "multipart/form-data" } : {}) },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ...(isFormData ? { "Content-Type": "multipart/form-data" } : {}),
+      },
     });
 
     if (!data.result) throw new Error("Failed to update testimonial");

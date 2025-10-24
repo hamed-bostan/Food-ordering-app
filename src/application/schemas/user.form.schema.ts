@@ -1,21 +1,19 @@
 import { z } from "zod";
-import { AddressSchema } from "./address.schema";
 
 export const UserRoleEnum = z.enum(["user", "admin"]);
 
 const optionalString = (schema: z.ZodTypeAny) =>
   z.preprocess((val) => (val === "" ? null : val), schema.nullable().optional());
 
-export const UserSchema = z.object({
-  id: z.string(),
+export const UserCreateFormSchema = z.object({
   phoneNumber: z.string().min(10, "Phone number is required"),
-  role: UserRoleEnum,
+  role: UserRoleEnum.default("user"),
   name: optionalString(z.string()),
   email: optionalString(z.string().email("Invalid email")),
-  image: optionalString(z.string().url("Invalid URL")),
-  address: z.array(AddressSchema).nullable().optional(),
-  createdAt: z.coerce.date(),
+  image: z.instanceof(File).optional(),
 });
 
-export type UserRoleType = z.infer<typeof UserRoleEnum>;
-export type UserType = z.infer<typeof UserSchema>;
+export const UserUpdateFormSchema = UserCreateFormSchema.partial();
+
+export type UserCreateFormType = z.infer<typeof UserCreateFormSchema>;
+export type UserUpdateFormType = z.infer<typeof UserUpdateFormSchema>;

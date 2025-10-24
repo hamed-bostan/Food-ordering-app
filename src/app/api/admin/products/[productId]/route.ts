@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/middleware/requireAdmin";
-import { UpdateProductDto, UpdateProductDtoType } from "@/application/schemas/product.schema";
 import { z } from "zod";
 import { updateProductUseCase } from "@/domain/use-cases/products/updateProduct.usecase";
 import { deleteProductUseCase } from "@/domain/use-cases/products/deleteProduct.usecase";
 import { fetchProductByIdUseCase } from "@/domain/use-cases/products/productById.usecase";
 import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
+import { ProductUpdateDtoSchema } from "@/application/dto/products/product.dto";
 
 /**
  * GET /api/admin/products/:productId
@@ -28,38 +28,31 @@ export async function GET(req: NextRequest, context: { params: Promise<{ product
 
 /**
  * PUT /api/admin/products/:productId
- * Update a product (with optional new image)
  */
-
 export async function PUT(req: NextRequest, context: { params: Promise<{ productId: string }> }) {
   try {
     await requireAdmin(req);
+    const { productId } = await context.params;
 
-    const params = await context.params;
-    const { productId } = params;
-
-    let validatedFields: UpdateProductDtoType;
+    let validatedFields: z.infer<typeof ProductUpdateDtoSchema>;
     let newImage: File | undefined;
 
-    const contentType = req.headers.get("content-type") || "";
+    const contentType = req.headers.get("content-type") ?? "";
 
     if (contentType.includes("multipart/form-data")) {
       const formData = await req.formData();
-
       const rawFields: Record<string, unknown> = {};
       for (const [key, value] of formData.entries()) {
-        if (key !== "image" && typeof value === "string") {
-          rawFields[key] = value; // leave as string, schema will coerce
-        }
+        if (key !== "image" && typeof value === "string") rawFields[key] = value;
       }
 
-      validatedFields = UpdateProductDto.parse(rawFields);
+      validatedFields = ProductUpdateDtoSchema.parse(rawFields);
 
       const imageFile = formData.get("image");
-      newImage = imageFile instanceof File ? imageFile : undefined;
+      if (imageFile instanceof File) newImage = imageFile;
     } else {
       const body = await req.json();
-      validatedFields = UpdateProductDto.parse(body);
+      validatedFields = ProductUpdateDtoSchema.parse(body); // FIXED: use schema, not type
       newImage = undefined;
     }
 
@@ -69,11 +62,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ product
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        {
-          error: "ValidationError",
-          message: "Invalid input",
-          details: error.errors,
-        },
+        { error: "ValidationError", message: "Invalid input", details: error.errors },
         { status: 400 }
       );
     }

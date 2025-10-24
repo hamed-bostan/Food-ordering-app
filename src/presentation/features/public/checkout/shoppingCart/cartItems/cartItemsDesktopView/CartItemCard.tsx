@@ -12,5 +12,5 @@ export default function CartItemCard({ foodItem }: FoodItemProps) {
 }
 
 function FoodImage({ image, title }: FoodImageProps) {
-  return <Image src={image} width={300} height={300} alt={title} className="w-24 h-full row-span-3 md:w-28 lg:w-40" />;
+  return <Image src={image ?? ""} width={300} height={300} alt={title} className="w-24 h-full row-span-3 md:w-28 lg:w-40" />;
 }

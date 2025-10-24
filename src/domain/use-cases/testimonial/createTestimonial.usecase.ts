@@ -1,9 +1,10 @@
-import { CreateTestimonialDtoType, TestimonialType } from "@/application/schemas/testimonial.schema";
+import { TestimonialType } from "@/application/schemas/testimonial.schema";
 import { insertTestimonialToDb } from "@/infrastructure/repositories/testimonials.repository";
 import { uploadImageToStorage } from "../storage/uploadImage";
+import { TestimonialCreateDto } from "@/application/dto/testimonial/testimonial.dto";
 
 export async function createTestimonialWithImageUseCase(
-  data: CreateTestimonialDtoType,
+  data: TestimonialCreateDto,
   imageFile?: File
 ): Promise<TestimonialType> {
   try {
@@ -29,7 +30,7 @@ export async function createTestimonialWithImageUseCase(
       ...data,
       id: insertedId.toString(),
       image: imageUrl,
-      createdAt, // ✅ keep as Date for domain
+      createdAt, // keep as Date for domain
     };
 
     return testimonial;

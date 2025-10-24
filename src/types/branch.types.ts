@@ -14,8 +14,7 @@ export type ProductItemProps = {
 };
 
 export type TestimonialProps = {
-  image: string | StaticImageData;
+  image?: string | StaticImageData;
   name: string;
-  date: string;
   comment: string;
 };

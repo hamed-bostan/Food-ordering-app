@@ -2,24 +2,19 @@ import { findTestimonialByIdInDb, updateTestimonialInDb } from "@/infrastructure
 import { ValidationError } from "@/domain/errors";
 import { uploadImageToStorage } from "../storage/uploadImage";
 import { deleteImageFromStorage } from "../storage/deleteImage";
-import {
-  UpdateTestimonialDto,
-  UpdateTestimonialDtoType,
-  TestimonialSchema,
-  TestimonialType,
-} from "@/application/schemas/testimonial.schema";
+import { TestimonialSchema, TestimonialType } from "@/application/schemas/testimonial.schema";
+import { TestimonialUpdateDto } from "@/application/dto/testimonial/testimonial.dto";
+import { TestimonialRecordUpdate } from "@/infrastructure/db/testimonial/testimonial.db.types";
 
 const TESTIMONIALS_BUCKET = "testimonials";
 const TESTIMONIALS_FOLDER = "testimonials";
 
 export async function updateTestimonialUseCase(
   testimonialId: string,
-  fields: Partial<Omit<TestimonialType, "id" | "image">>,
+  fields: TestimonialUpdateDto,
   newImage?: File
 ): Promise<TestimonialType> {
-  // Validate partial fields
-  const validatedFields: UpdateTestimonialDtoType = UpdateTestimonialDto.parse(fields);
-
+  // Fetch existing testimonial if we need to replace the image
   let imageUrl: string | undefined;
 
   if (newImage) {
@@ -33,10 +28,14 @@ export async function updateTestimonialUseCase(
     imageUrl = await uploadImageToStorage(newImage, TESTIMONIALS_BUCKET, TESTIMONIALS_FOLDER);
   }
 
-  const updated = await updateTestimonialInDb(testimonialId, {
-    ...validatedFields,
-    ...(imageUrl ? { image: imageUrl } : {}),
-  });
+  // Map client DTO → DB-safe type
+  const dbUpdate: TestimonialRecordUpdate = {
+    name: fields.name,
+    comment: fields.comment,
+    ...(imageUrl ? { image: imageUrl } : {}), // only string here
+  };
+
+  const updated = await updateTestimonialInDb(testimonialId, dbUpdate);
 
   return TestimonialSchema.parse(updated);
 }

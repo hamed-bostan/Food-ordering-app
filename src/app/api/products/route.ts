@@ -3,6 +3,7 @@ import { requireAdmin } from "@/middleware/requireAdmin";
 import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 import { fetchProducts } from "@/domain/use-cases/products/fetchProducts.usecase";
 import { createProductWithImageUseCase } from "@/domain/use-cases/products/createProduct.usecase";
+import { ProductCreateDtoSchema } from "@/application/dto/products/product.dto";
 
 /**
  * GET /api/products
@@ -24,13 +25,33 @@ export async function POST(req: NextRequest) {
     // 1. Authorization
     await requireAdmin(req);
 
-    // 2. Get form data
+    // 2. Extract FormData
     const formData = await req.formData();
 
-    // 3. Call use-case (handles validation, image upload, DB insertion)
-    const createdProduct = await createProductWithImageUseCase(formData);
+    const fields: Record<string, unknown> = {};
+    let imageFile: File | undefined;
 
-    // 4. Return response
+    for (const [key, value] of formData.entries()) {
+      if (key === "image" && value instanceof File) {
+        imageFile = value;
+      } else if (typeof value === "string") {
+        fields[key] = value;
+      }
+    }
+
+    // 3. Validate fields using server-side DTO schema
+    const validatedFields = ProductCreateDtoSchema.parse({
+      ...fields,
+      price: Number(fields.price),
+      discount: Number(fields.discount),
+      score: Number(fields.score),
+      mostsale: fields.mostsale === "true" || fields.mostsale === true,
+    });
+
+    // 4. Call use-case with DTO + image
+    const createdProduct = await createProductWithImageUseCase(validatedFields, imageFile);
+
+    // 5. Return response
     return NextResponse.json({ message: "Product created successfully", result: createdProduct }, { status: 201 });
   } catch (error: unknown) {
     return apiErrorHandler(error, "Products API - POST");

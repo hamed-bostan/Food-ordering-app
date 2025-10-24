@@ -5,11 +5,12 @@ import { Box, Typography, Checkbox, FormControlLabel } from "@mui/material";
 import { toast } from "react-toastify";
 import Input from "@/presentation/components/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateProductFormSchema, CreateProductFormType } from "@/application/schemas/product.form.schema";
 import { useSession } from "next-auth/react";
 import { createProductAdmin } from "@/infrastructure/apis/admin/product.api";
+import { ProductCreateFormSchema, ProductCreateFormType } from "@/application/schemas/product.form.schema";
+import { useState } from "react";
 
-export const defaultProduct: Partial<CreateProductFormType> = {
+export const defaultProduct: Partial<ProductCreateFormType> = {
   category: "پیتزاها",
   title: "عنوان",
   description: "توضیح",
@@ -22,6 +23,7 @@ export const defaultProduct: Partial<CreateProductFormType> = {
 
 export default function ProductUploader() {
   const { data: session } = useSession();
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const token = session?.accessToken;
   const userRole = session?.user?.role;
 
@@ -30,28 +32,33 @@ export default function ProductUploader() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<CreateProductFormType>({
-    resolver: zodResolver(CreateProductFormSchema),
+  } = useForm<ProductCreateFormType>({
+    resolver: zodResolver(ProductCreateFormSchema),
     defaultValues: defaultProduct,
   });
 
-  const onSubmit = async (data: CreateProductFormType) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedImage(e.target.files[0]); // selectedImage: File | null
+    }
+  };
+
+  const onSubmit = async (data: ProductCreateFormType) => {
     if (!token || userRole !== "admin") return toast.error("Unauthorized");
 
-    const file = data.image[0];
-    if (!file) return toast.error("Image is required");
+    const file = selectedImage; // use the state instead of data.image
 
-    if (!["image/jpeg", "image/png"].includes(file.type)) {
-      return toast.error("Only JPEG or PNG images are allowed");
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      return toast.error("Image size must be less than 5MB");
+    if (!file) {
+      toast.error("لطفا تصویر را انتخاب کنید");
+      return;
     }
 
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("image", file); // append single File
     Object.entries(data).forEach(([key, value]) => {
-      if (key !== "image") formData.append(key, value.toString());
+      if (key !== "image" && value != null) {
+        formData.append(key, value.toString());
+      }
     });
 
     try {
@@ -71,13 +78,7 @@ export default function ProductUploader() {
       </Typography>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-        <Input
-          label="تصویر"
-          type="file"
-          {...register("image")}
-          error={!!errors.image}
-          helperText={errors.image?.message as string}
-        />
+        <input type="file" accept="image/*" onChange={handleFileChange} />
 
         <Input
           label="امتیاز"

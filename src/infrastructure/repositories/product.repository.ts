@@ -1,14 +1,13 @@
 import { ObjectId } from "mongodb";
 import { connectToDatabase } from "@/infrastructure/db/mongodb";
-import { CreateProductDtoType, ProductType } from "@/application/schemas/product.schema";
 import { mapDbProductToDomain } from "../mappers/product.mapper";
+import { ProductType } from "@/application/schemas/product.schema";
+import { ProductRecordInsert, ProductRecordUpdate } from "../db/products/product.db.types";
 
 export const collectionName = "products";
 
-type NewProductForDb = CreateProductDtoType & { createdAt: string };
-
 /**
- * Fetch a single product by MongoDB _id
+ * Fetch a single product by ID
  */
 export async function findProductByIdInDb(productId: string): Promise<ProductType | null> {
   if (!ObjectId.isValid(productId)) throw new Error("Invalid product ID");
@@ -22,10 +21,10 @@ export async function findProductByIdInDb(productId: string): Promise<ProductTyp
 /**
  * Insert a new product
  */
-export async function insertProductToDb(product: NewProductForDb): Promise<ObjectId> {
+export async function insertProductToDb(product: ProductRecordInsert): Promise<string> {
   const db = await connectToDatabase();
   const result = await db.collection(collectionName).insertOne(product);
-  return result.insertedId;
+  return result.insertedId.toString();
 }
 
 /**
@@ -38,23 +37,15 @@ export async function fetchProductsFromDb(): Promise<ProductType[]> {
 }
 
 /**
- * Update a product by MongoDB _id
+ * Update a product
  */
-export async function updateProductInDb(
-  productId: string,
-  update: Partial<Omit<ProductType, "id">>
-): Promise<ProductType> {
+export async function updateProductInDb(productId: string, update: ProductRecordUpdate): Promise<ProductType> {
   if (!ObjectId.isValid(productId)) throw new Error("Invalid product ID");
 
-  // Prevent overwriting id
-  if ("id" in update) delete (update as any).id;
-
   const db = await connectToDatabase();
-  const updateResult = await db
-    .collection(collectionName)
-    .updateOne({ _id: new ObjectId(productId) }, { $set: update });
+  const result = await db.collection(collectionName).updateOne({ _id: new ObjectId(productId) }, { $set: update });
 
-  if (updateResult.matchedCount === 0) throw new Error("Product not found");
+  if (result.matchedCount === 0) throw new Error("Product not found");
 
   const updatedDoc = await db.collection(collectionName).findOne({ _id: new ObjectId(productId) });
   if (!updatedDoc) throw new Error("Product not found after update");
@@ -63,7 +54,7 @@ export async function updateProductInDb(
 }
 
 /**
- * Delete a product by MongoDB _id
+ * Delete a product
  */
 export async function deleteProductFromDb(productId: string): Promise<boolean> {
   if (!ObjectId.isValid(productId)) throw new Error("Invalid product ID");

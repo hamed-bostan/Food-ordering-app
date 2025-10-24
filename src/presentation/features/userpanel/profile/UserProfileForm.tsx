@@ -99,14 +99,6 @@ export default function UserProfileForm({ userId }: UserIdProps) {
         />
 
         <Input label="ایمیل" {...register("email")} error={!!errors.email} helperText={errors.email?.message} />
-
-        <Input
-          label="تاریخ"
-          type="date"
-          {...register("date")}
-          error={!!errors.date}
-          helperText={errors.date?.message}
-        />
       </div>
 
       <CustomButton

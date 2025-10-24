@@ -15,5 +15,5 @@ export default function FoodCard({ item }: ProductItemProps) {
 
 function DisplayingImage({ item }: ProductItemProps) {
   const { image, title } = item;
-  return <Image src={image} alt={title} width={110} height={110} className="object-cover w-full h-28 md:h-36" />;
+  return <Image src={image ?? ""} alt={title} width={110} height={110} className="object-cover w-full h-28 md:h-36" />;
 }

@@ -9,8 +9,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
 import { ProductType } from "@/application/schemas/product.schema";
-import { CreateProductFormSchema, CreateProductFormType } from "@/application/schemas/product.form.schema";
-import { updateProductAdmin, UpdateProductResponse } from "@/infrastructure/apis/admin/product.api";
+import { updateProductAdmin } from "@/infrastructure/apis/admin/product.api";
+import { ProductUpdateFormSchema, ProductUpdateFormType } from "@/application/schemas/product.form.schema";
 
 type ProductsRowProps = {
   product: ProductType;
@@ -28,8 +28,8 @@ export default function ProductRow({ product, token, onProductUpdated, onProduct
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<CreateProductFormType>({
-    resolver: zodResolver(CreateProductFormSchema),
+  } = useForm<ProductUpdateFormType>({
+    resolver: zodResolver(ProductUpdateFormSchema),
     defaultValues: {
       category: product.category,
       title: product.title,
@@ -42,45 +42,33 @@ export default function ProductRow({ product, token, onProductUpdated, onProduct
     },
   });
 
-  const onSubmit = async (data: CreateProductFormType) => {
+  const onSubmit = async (data: ProductUpdateFormType) => {
     try {
-      let updated: UpdateProductResponse;
+      // Separate image from other fields
+      const { image, ...fields } = data;
+
+      // Default payload is JSON (no image)
+      let payload: Omit<ProductUpdateFormType, "image"> | FormData = fields;
 
       if (selectedImage) {
-        // Prepare FormData for image upload
         const formData = new FormData();
 
-        formData.append("category", data.category);
-        formData.append("title", data.title);
-        formData.append("description", data.description);
-        formData.append("price", data.price.toString()); // number → string
-        formData.append("discount", data.discount.toString()); // number → string
-        formData.append("score", data.score.toString()); // number → string
-        formData.append("mostsale", data.mostsale ? "true" : "false"); // boolean → string
-        if (data.filter) formData.append("filter", data.filter);
+        // Dynamically append all fields as strings
+        Object.entries(fields).forEach(([key, value]) => {
+          if (value !== undefined) formData.append(key, String(value));
+        });
 
-        formData.append("image", selectedImage); // File stays as File
-
-        updated = await updateProductAdmin(product.id, formData, token);
-      } else {
-        // Normal update without image
-        const payload: Partial<ProductType> = {
-          category: data.category,
-          title: data.title,
-          description: data.description,
-          price: data.price,
-          discount: data.discount,
-          score: data.score,
-          mostsale: data.mostsale,
-          filter: data.filter,
-        };
-
-        updated = await updateProductAdmin(product.id, payload, token);
+        // Append the selected image
+        formData.append("image", selectedImage);
+        payload = formData;
       }
+
+      const updated = await updateProductAdmin(product.id, payload, token);
 
       onProductUpdated(updated.result);
       setIsEditing(false);
       setSelectedImage(null);
+      reset();
       toast.success("Product updated successfully");
     } catch (error: unknown) {
       if (error instanceof Error) toast.error(error.message);

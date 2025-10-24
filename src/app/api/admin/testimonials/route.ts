@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { CreateTestimonialFormSchema } from "@/application/schemas/testimonial.form.schema";
 import { requireAdmin } from "@/middleware/requireAdmin";
 import { fetchTestimonialsUseCase } from "@/domain/use-cases/testimonial/fetchTestimonials.usecase";
 import { createTestimonialWithImageUseCase } from "@/domain/use-cases/testimonial/createTestimonial.usecase";
 import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
+import { TestimonialCreateFormSchema } from "@/application/schemas/testimonial.form.schema";
 
 /**
  * GET /api/admin/testimonials
@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
 /**
  * POST /api/admin/testimonials
  */
+
 export async function POST(req: NextRequest) {
   try {
     requireAdmin(req);
@@ -30,26 +31,19 @@ export async function POST(req: NextRequest) {
     const fieldsObj: Record<string, any> = {};
     formData.forEach((value, key) => (fieldsObj[key] = value));
 
-    const validatedForm = CreateTestimonialFormSchema.parse(fieldsObj);
-    const imageFile = validatedForm.image as File;
+    // Validate & normalize FormData using unified form schema
+    const validatedForm = TestimonialCreateFormSchema.parse(fieldsObj);
 
-    if (!imageFile || imageFile.size === 0) {
-      return NextResponse.json({ error: "Image is required" }, { status: 400 });
-    }
-
-    const createdTestimonial = await createTestimonialWithImageUseCase(
+    // Pass clean data to use case
+    const testimonial = await createTestimonialWithImageUseCase(
       {
         name: validatedForm.name,
-        date: validatedForm.date,
         comment: validatedForm.comment,
       },
-      imageFile
+      validatedForm.image
     );
 
-    return NextResponse.json(
-      { message: "Testimonial created successfully", result: createdTestimonial },
-      { status: 201 }
-    );
+    return NextResponse.json({ message: "Testimonial created successfully", result: testimonial }, { status: 201 });
   } catch (error: unknown) {
     console.error("❌ Admin Testimonials API - POST error:", error);
     return apiErrorHandler(error, "Admin Testimonials API - POST");

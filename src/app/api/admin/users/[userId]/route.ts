@@ -5,35 +5,39 @@ import { requireAdmin } from "@/middleware/requireAdmin";
 import { updateUserById } from "@/domain/use-cases/user/updateUserById.usecase";
 import { deleteUserById } from "@/domain/use-cases/user/deleteUserById.usecase";
 import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
+import { UserUpdateDtoSchema } from "@/application/dto/users/user.dto";
 
 /**
  * PUT /api/admin/users/:userId
  * Admin-only: Update a user
  */
-
 export async function PUT(req: NextRequest, context: { params: Promise<{ userId: string }> }) {
   try {
     await requireAdmin(req);
     const { userId } = await context.params;
 
-    // Parse incoming JSON body
+    // Parse and validate incoming JSON body
     const body = await req.json();
+    const validatedBody = UserUpdateDtoSchema.parse(body);
 
-    // Update the user via use case (domain logic)
-    const updatedUser = await updateUserById(userId, body);
+    // Update user via use case (domain logic)
+    const updatedUser = await updateUserById(userId, validatedBody);
 
     // Convert Dates to ISO strings at API boundary
     const responseUser = {
       ...updatedUser,
       createdAt: updatedUser.createdAt?.toISOString(),
-      date: updatedUser.date?.toISOString(),
     };
 
     return NextResponse.json({ message: "User updated successfully", result: responseUser }, { status: 200 });
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: "ValidationError", message: "Invalid input", details: error.errors },
+        {
+          error: "ValidationError",
+          message: "Invalid input",
+          details: error.errors,
+        },
         { status: 400 }
       );
     }

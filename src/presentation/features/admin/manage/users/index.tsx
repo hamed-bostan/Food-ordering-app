@@ -31,7 +31,6 @@ export default function UsersTable({ initialUsers, token }: { initialUsers: User
           <th className="p-2 border">Name</th>
           <th className="p-2 border">Phone</th>
           <th className="p-2 border">Address</th>
-          <th className="p-2 border">Date</th>
           <th className="p-2 border">Email</th>
           <th className="p-2 border">Role</th>
           <th className="p-2 border">Actions</th>

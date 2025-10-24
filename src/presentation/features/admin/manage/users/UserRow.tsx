@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserType } from "@/application/schemas/user.schema";
-import { AdminProfileType, adminProfileSchema } from "@/application/schemas/profile-schema";
+import { AdminFormProfileType, adminFormProfileSchema } from "@/application/schemas/profile-schema";
 import { updateUserAdmin } from "@/infrastructure/apis/admin/user.api";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -13,10 +13,10 @@ import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
 import { AdminUpdateUserPayload } from "@/infrastructure/apis/user.api";
 
-const PROTECTED_ADMIN_PHONE = "09356776075";
+const isProtectedAdmin = "09356776075";
 
 // Form DTO type (string date)
-type UserFormType = Omit<AdminProfileType, "date"> & { date?: string };
+type UserFormType = AdminFormProfileType;
 
 type UserRowProps = {
   user: UserType;
@@ -28,40 +28,40 @@ type UserRowProps = {
 export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: UserRowProps) {
   const [isEditing, setIsEditing] = useState(false);
 
+  const defaultAddress =
+    user.address && user.address.length > 0 ? [user.address[0]] : [{ value: "", coords: [0, 0] as [number, number] }]; // Added type assertion here to fix tuple inference
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<UserFormType>({
-    resolver: zodResolver(adminProfileSchema),
+    resolver: zodResolver(adminFormProfileSchema),
     defaultValues: {
       name: user.name ?? "",
       phoneNumber: user.phoneNumber ?? "",
       email: user.email ?? "",
-      date: user.date ? user.date.toISOString().split("T")[0] : "",
       image: user.image ?? "",
       role: user.role,
-      // If user has addresses, prefill the first one; otherwise empty array
-      address: user.address && user.address.length > 0 ? [user.address[0]] : [],
+      address: defaultAddress,
     },
   });
 
-  const isProtectedAdmin = user.phoneNumber === PROTECTED_ADMIN_PHONE;
-
   const onSubmit = async (data: UserFormType) => {
+    console.log("onSubmit");
     try {
-      // Keep payload date as string (API expects string)
+      const addressItem = data.address?.[0];
       const payload: AdminUpdateUserPayload = {
         ...data,
-        // always send array or null
         address:
-          data.address && data.address.length > 0
+          addressItem && addressItem.value?.trim()
             ? [
                 {
-                  ...data.address[0],
-                  // keep coords from existing user if undefined in form
-                  coords: data.address[0].coords ?? user.address?.[0].coords ?? [0, 0],
+                  // Omit id if undefined (server will generate)
+                  ...(addressItem.id ? { id: addressItem.id } : {}),
+                  value: addressItem.value,
+                  coords: addressItem.coords ?? user.address?.[0]?.coords ?? [0, 0],
                 },
               ]
             : null,
@@ -124,17 +124,6 @@ export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: U
       <td className="p-2 border">
         {isEditing ? (
           <>
-            <input type="date" {...register("date")} className="w-full p-1 border rounded" />
-            {errors.date && <p className="text-xs text-red-500">{errors.date.message}</p>}
-          </>
-        ) : (
-          user.date?.toLocaleDateString("fa-IR") ?? "-"
-        )}
-      </td>
-
-      <td className="p-2 border">
-        {isEditing ? (
-          <>
             <input {...register("email")} className="w-full p-1 border rounded" />
             {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
           </>
@@ -163,14 +152,20 @@ export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: U
 
       <td className="p-2 border">
         {isEditing ? (
-          <form onSubmit={handleSubmit(onSubmit)} className="flex gap-2">
-            <button type="submit" disabled={isSubmitting} className="text-green-600" aria-label="Save changes">
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={handleSubmit(onSubmit)}
+              disabled={isSubmitting}
+              className="text-green-600"
+              aria-label="Save changes"
+            >
               <SaveIcon fontSize="small" />
             </button>
             <button type="button" onClick={handleCancel} className="text-gray-600" aria-label="Cancel edit">
               <CloseIcon fontSize="small" />
             </button>
-          </form>
+          </div>
         ) : (
           <div className="flex gap-2">
             <button onClick={() => setIsEditing(true)} className="text-blue-600" aria-label="Edit user">

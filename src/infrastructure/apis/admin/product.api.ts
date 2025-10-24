@@ -2,6 +2,7 @@ import { ProductType } from "@/application/schemas/product.schema";
 import { api } from "@/infrastructure/axios/api.client";
 import { ApiErrorResponse } from "@/types/api-error";
 import axios from "axios";
+import { ProductUpdateDto } from "@/application/dto/products/product.dto";
 
 export type GetProductsResponse = { message: string; result: ProductType[] };
 export type CreateProductResponse = { message: string; result: ProductType };
@@ -15,24 +16,10 @@ export const getProductsAdmin = async (token: string): Promise<GetProductsRespon
     const { data } = await api.get<GetProductsResponse>("/admin/products", {
       headers: { Authorization: `Bearer ${token}` },
     });
-
     if (!Array.isArray(data.result)) throw new Error("Invalid server response");
-
     return data;
   } catch (error: unknown) {
-    console.error("❌ [API] Failed to fetch products (admin):", error);
-
-    if (axios.isAxiosError(error)) {
-      const response = error.response?.data as ApiErrorResponse | undefined;
-      if (response?.error === "ValidationError" && response.details?.length) {
-        throw new Error(response.details.map((d) => d.message).join(", ") || response.message);
-      }
-      if (response?.error === "ServerError" || response?.error === "NotFound") {
-        throw new Error(response.message);
-      }
-    }
-
-    throw new Error("Unexpected error while fetching products (admin)");
+    handleApiError(error, "fetch products");
   }
 };
 
@@ -42,23 +29,10 @@ export const createProductAdmin = async (formData: FormData, token: string): Pro
     const { data } = await api.post<CreateProductResponse>("/admin/products", formData, {
       headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
     });
-
     if (!data.result) throw new Error("Product creation failed");
     return data;
   } catch (error: unknown) {
-    console.error("❌ [API] Failed to create product (admin):", error);
-
-    if (axios.isAxiosError(error)) {
-      const response = error.response?.data as ApiErrorResponse | undefined;
-      if (response?.error === "ValidationError" && response.details?.length) {
-        throw new Error(response.details.map((d) => d.message).join(", ") || response.message);
-      }
-      if (response?.error === "ServerError" || response?.error === "NotFound") {
-        throw new Error(response.message);
-      }
-    }
-
-    throw new Error("Unexpected error while creating product (admin)");
+    handleApiError(error, "create product");
   }
 };
 
@@ -68,33 +42,17 @@ export const getProductByIdAdmin = async (id: string, token: string): Promise<Ge
     const { data } = await api.get<GetProductByIdResponse>(`/admin/products/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-
-    if (!data.result || typeof data.result !== "object") {
-      throw new Error("Invalid server response");
-    }
-
+    if (!data.result || typeof data.result !== "object") throw new Error("Invalid server response");
     return data;
   } catch (error: unknown) {
-    console.error("❌ [API] Failed to fetch product by ID (admin):", error);
-
-    if (axios.isAxiosError(error)) {
-      const response = error.response?.data as ApiErrorResponse | undefined;
-      if (response?.error === "ValidationError" && response.details?.length) {
-        throw new Error(response.details.map((d) => d.message).join(", ") || response.message);
-      }
-      if (response?.error === "ServerError" || response?.error === "NotFound") {
-        throw new Error(response.message);
-      }
-    }
-
-    throw new Error("Unexpected error while fetching product by ID (admin)");
+    handleApiError(error, "fetch product by ID");
   }
 };
 
 // Update product (admin)
 export const updateProductAdmin = async (
   id: string,
-  payload: Partial<ProductType> | FormData,
+  payload: ProductUpdateDto | FormData,
   token: string
 ): Promise<UpdateProductResponse> => {
   try {
@@ -105,23 +63,10 @@ export const updateProductAdmin = async (
         ...(isFormData ? { "Content-Type": "multipart/form-data" } : {}),
       },
     });
-
     if (!data.result) throw new Error("Failed to update product");
     return data;
   } catch (error: unknown) {
-    console.error("❌ [API] Failed to update product (admin):", error);
-
-    if (axios.isAxiosError(error)) {
-      const response = error.response?.data as ApiErrorResponse | undefined;
-      if (response?.error === "ValidationError" && response.details?.length) {
-        throw new Error(response.details.map((d) => d.message).join(", ") || response.message);
-      }
-      if (response?.error === "ServerError" || response?.error === "NotFound") {
-        throw new Error(response.message);
-      }
-    }
-
-    throw new Error("Unexpected error while updating product (admin)");
+    handleApiError(error, "update product");
   }
 };
 
@@ -131,22 +76,24 @@ export const deleteProductAdmin = async (id: string, token: string): Promise<Del
     const { data } = await api.delete<DeleteProductResponse>(`/admin/products/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-
     if (!data?.message) throw new Error("Failed to delete product");
     return data;
   } catch (error: unknown) {
-    console.error("❌ [API] Failed to delete product (admin):", error);
-
-    if (axios.isAxiosError(error)) {
-      const response = error.response?.data as ApiErrorResponse | undefined;
-      if (response?.error === "ValidationError" && response.details?.length) {
-        throw new Error(response.details.map((d) => d.message).join(", ") || response.message);
-      }
-      if (response?.error === "ServerError" || response?.error === "NotFound") {
-        throw new Error(response.message);
-      }
-    }
-
-    throw new Error("Unexpected error while deleting product (admin)");
+    handleApiError(error, "delete product");
   }
 };
+
+// Shared API error handler
+function handleApiError(error: unknown, action: string): never {
+  console.error(`❌ [API] Failed to ${action}:`, error);
+  if (axios.isAxiosError(error)) {
+    const response = error.response?.data as ApiErrorResponse | undefined;
+    if (response?.error === "ValidationError" && response.details?.length) {
+      throw new Error(response.details.map((d) => d.message).join(", ") || response.message);
+    }
+    if (response?.error === "ServerError" || response?.error === "NotFound") {
+      throw new Error(response.message);
+    }
+  }
+  throw new Error(`Unexpected error while trying to ${action}`);
+}

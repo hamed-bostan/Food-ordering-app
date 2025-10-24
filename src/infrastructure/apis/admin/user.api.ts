@@ -1,13 +1,14 @@
 import axios from "axios";
 import { ApiErrorResponse } from "@/types/api-error";
-import { UserProfileType } from "@/application/schemas/profile-schema";
+import { AdminFormProfileType, UserProfileType } from "@/application/schemas/profile-schema";
 import { UserSchema, UserType, UserRoleType } from "@/application/schemas/user.schema";
 import { api } from "@/infrastructure/axios/api.client";
 
 export type GetUserResponse = { message: string; result: UserType };
 export type GetUsersResponse = { message: string; result: UserType[] };
 export type UpdateUserResponse = { message: string; result: UserType };
-export type AdminUpdateUserPayload = Partial<UserProfileType> & { role?: UserRoleType };
+// export type AdminUpdateUserPayload = Partial<UserProfileType> & { role?: UserRoleType };
+export type AdminUpdateUserPayload = Partial<AdminFormProfileType> & { role?: UserRoleType }; // Use AdminFormProfileType for relaxed address
 
 // Fetch all users (requires admin JWT)
 export const getUsersAdmin = async (token: string): Promise<GetUsersResponse> => {
