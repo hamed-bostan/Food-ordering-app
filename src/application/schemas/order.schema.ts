@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AddressSchema } from "./address.schema";
+import { AddressSchema, AddressType } from "./address.schema";
 import { isOrderDeliveryValid } from "@/domain/order/order.rules";
 
 // --- Enums ---
@@ -13,13 +13,13 @@ export const PaymentMethodEnum = z.enum(["cash", "online"]);
 export type PaymentMethodType = z.infer<typeof PaymentMethodEnum>;
 
 // --- Validation rule messages ---
-const branchDeliveryAddressRule = {
+export const orderDeliveryValidationError = {
   message: "Invalid branch/deliveryMethod/address combination",
   path: ["deliveryMethod"] as (string | number)[],
 };
 
 // --- Base schema (common fields) ---
-const BaseOrderSchema = z.object({
+export const BaseOrderSchema = z.object({
   id: z.string(),
   branch: BranchEnum.nullable(),
   deliveryMethod: DeliveryMethodEnum,
@@ -39,30 +39,11 @@ const BaseOrderSchema = z.object({
   createdAt: z.coerce.date(),
 });
 
-// --- Full validation schema ---
+// --- Full validation schema (domain use) ---
 export const OrderSchema = BaseOrderSchema.refine(
   (data) => isOrderDeliveryValid(data.deliveryMethod, data.branch, data.address),
-  branchDeliveryAddressRule
+  orderDeliveryValidationError
 );
 
-// --- Create DTO (omit id + createdAt) ---
-export const CreateOrderDto = BaseOrderSchema.omit({
-  id: true,
-  createdAt: true,
-}).refine((data) => isOrderDeliveryValid(data.deliveryMethod, data.branch, data.address), branchDeliveryAddressRule);
-
-// --- Update DTO (partial + conditional validation) ---
-export const UpdateOrderDto = BaseOrderSchema.omit({
-  id: true,
-  createdAt: true,
-})
-  .partial()
-  .refine(
-    (data) => data.deliveryMethod === undefined || isOrderDeliveryValid(data.deliveryMethod, data.branch, data.address),
-    branchDeliveryAddressRule
-  );
-
-// --- Types ---
 export type OrderType = z.infer<typeof OrderSchema>;
-export type CreateOrderDtoType = z.infer<typeof CreateOrderDto>;
-export type UpdateOrderDtoType = z.infer<typeof UpdateOrderDto>;
+export type AddressTypeForOrder = AddressType;

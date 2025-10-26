@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import { fetchOrderByIdUseCase } from "@/domain/use-cases/orders/orderById.usecase";
-import { UpdateOrderDto } from "@/application/schemas/order.schema";
+import { UpdateOrderDtoSchema } from "@/application/dto/orders/order.dto";
 import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 
 /**
@@ -34,7 +34,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ orderId
     const { orderId } = await context.params;
     const body = await req.json();
 
-    const validated = UpdateOrderDto.parse(body);
+    const validated = UpdateOrderDtoSchema.parse(body);
 
     // TODO: implement updateOrderUseCase
     // const updatedOrder = await updateOrderUseCase(orderId, validated);

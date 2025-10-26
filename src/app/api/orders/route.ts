@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-
-import { CreateOrderDto } from "@/application/schemas/order.schema";
-import { submitOrderUseCase } from "@/domain/use-cases/orders/submitOrder.usecase";
+import { CreateOrderDtoSchema } from "@/application/dto/orders/order.dto";
 import { fetchOrdersUseCase } from "@/domain/use-cases/orders/fetchOrders.usecase";
+import { createOrderUseCase } from "@/domain/use-cases/orders/createOrder.usecase";
 import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 
 /**
@@ -15,10 +14,10 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     // Validate DTO
-    const validated = CreateOrderDto.parse(body);
+    const validated = CreateOrderDtoSchema.parse(body);
 
-    // Call use case (domain layer)
-    const newOrder = await submitOrderUseCase(validated);
+    // Call domain use case
+    const newOrder = await createOrderUseCase(validated);
 
     return NextResponse.json({ message: "Order created successfully", result: newOrder }, { status: 201 });
   } catch (error: unknown) {
