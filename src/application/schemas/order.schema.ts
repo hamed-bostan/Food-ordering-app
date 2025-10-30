@@ -12,6 +12,9 @@ export type DeliveryMethodType = z.infer<typeof DeliveryMethodEnum>;
 export const PaymentMethodEnum = z.enum(["cash", "online"]);
 export type PaymentMethodType = z.infer<typeof PaymentMethodEnum>;
 
+export const StatusEnum = z.enum(["تعیین وضعیت نشده", "در حال آماده سازی", "ارسال شده", "لغو شده"]);
+export type StatusType = z.infer<typeof StatusEnum>;
+
 // --- Validation rule messages ---
 export const orderDeliveryValidationError = {
   message: "Invalid branch/deliveryMethod/address combination",
@@ -24,6 +27,7 @@ export const BaseOrderSchema = z.object({
   branch: BranchEnum.nullable(),
   deliveryMethod: DeliveryMethodEnum,
   paymentMethod: PaymentMethodEnum,
+  status: StatusEnum.optional().default("تعیین وضعیت نشده"),
   items: z.array(
     z.object({
       productId: z.string(),

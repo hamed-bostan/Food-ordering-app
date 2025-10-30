@@ -6,7 +6,14 @@ import { BaseOrderSchema, orderDeliveryValidationError } from "@/application/sch
 export const CreateOrderDtoSchema = BaseOrderSchema.omit({
   id: true,
   createdAt: true,
-}).refine((data) => isOrderDeliveryValid(data.deliveryMethod, data.branch, data.address), orderDeliveryValidationError);
+})
+  .extend({
+    status: BaseOrderSchema.shape.status.optional(),
+  })
+  .refine(
+    (data) => isOrderDeliveryValid(data.deliveryMethod!, data.branch, data.address),
+    orderDeliveryValidationError
+  );
 
 // --- Update DTO (partial + conditional validation) ---
 export const UpdateOrderDtoSchema = BaseOrderSchema.omit({

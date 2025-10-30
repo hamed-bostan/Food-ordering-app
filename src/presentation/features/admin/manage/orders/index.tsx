@@ -14,10 +14,6 @@ type OrdersTableProps = {
 export default function OrdersTable({ initialOrders, token }: OrdersTableProps) {
   const [orders, setOrders] = useState<OrderType[]>(initialOrders);
 
-  const handleOrderUpdated = (updatedOrder: OrderType) => {
-    setOrders((prev) => prev.map((o) => (o.id === updatedOrder.id ? updatedOrder : o)));
-  };
-
   const handleOrderRemoved = async (orderId: string) => {
     try {
       const res = await deleteOrderAdmin(orderId, token);
@@ -38,19 +34,14 @@ export default function OrdersTable({ initialOrders, token }: OrdersTableProps) 
           <th className="p-2 border">Delivery</th>
           <th className="p-2 border">Branch</th>
           <th className="p-2 border">Total Price</th>
+          <th className="p-2 border">Status</th>
           <th className="p-2 border">Created At</th>
           <th className="p-2 border">Actions</th>
         </tr>
       </thead>
       <tbody>
         {orders.map((order) => (
-          <OrderRow
-            key={order.id}
-            order={order}
-            token={token}
-            onOrderUpdated={handleOrderUpdated}
-            onOrderRemoved={handleOrderRemoved}
-          />
+          <OrderRow key={order.id} order={order} onOrderRemoved={handleOrderRemoved} />
         ))}
       </tbody>
     </table>

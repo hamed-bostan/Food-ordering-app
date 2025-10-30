@@ -20,8 +20,6 @@ export default async function OrdersPage() {
 
   try {
     const response = await getOrdersAdmin(session.accessToken);
-    console.log("order's result:", response);
-
     initialOrders = response.result;
   } catch (error: unknown) {
     if (error instanceof Error) {

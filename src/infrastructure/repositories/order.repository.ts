@@ -61,17 +61,20 @@ export async function findOrderByIdInDb(orderId: string): Promise<OrderType | nu
  * Update an existing order by ID
  */
 export async function updateOrderInDb(orderId: string, updatedFields: Partial<OrderType>): Promise<OrderType> {
-  if (!ObjectId.isValid(orderId)) throw new Error("Invalid order ID");
+  if (!ObjectId.isValid(orderId)) throw new Error("Invalid ObjectId");
 
   const db = await connectToDatabase();
 
   const result = await db.collection(collectionName).updateOne({ _id: new ObjectId(orderId) }, { $set: updatedFields });
 
-  if (result.matchedCount === 0) throw new Error("Order not found");
+  if (result.matchedCount === 0) {
+    throw new Error("Record not found in database");
+  }
 
   const updatedDoc = await db.collection(collectionName).findOne({ _id: new ObjectId(orderId) });
-
-  if (!updatedDoc) throw new Error("Order not found after update");
+  if (!updatedDoc) {
+    throw new Error("Failed to retrieve updated record");
+  }
 
   return mapDbOrderToDomain(updatedDoc);
 }
