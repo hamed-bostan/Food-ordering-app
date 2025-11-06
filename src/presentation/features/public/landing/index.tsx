@@ -1,3 +1,5 @@
+"use client";
+
 import MenuSection from "./RestaurantMenuSection";
 import BranchOverview from "./branchOverview";
 import image1 from "@/assets/images/bannerImages/banner-01.webp";
