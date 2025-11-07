@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { StatusEnum } from "./order.schema";
 
 // JSON-based form schema for order creation
 export const CreateOrderFormSchema = z.object({
@@ -28,6 +29,7 @@ export const UpdateOrderFormSchema = z.object({
   branch: z.enum(["aghdasieh", "vanak", "ekbatan"]).optional(),
   deliveryMethod: z.enum(["pickup", "courier"]).optional(),
   paymentMethod: z.enum(["cash", "online"]).optional(),
+  status: StatusEnum.optional(),
   items: z
     .array(
       z.object({

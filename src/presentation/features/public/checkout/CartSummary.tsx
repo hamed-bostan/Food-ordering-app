@@ -12,6 +12,7 @@ import { useUserAddresses } from "@/hooks/useUserAddresses";
 import { useOrderSubmit } from "@/hooks/useOrderSubmit";
 import { useAddressLogic } from "@/hooks/useAddressLogic";
 import { calculateOrderTotal, calculateTotalDiscount } from "@/domain/order/order.rules";
+import axios from "axios";
 
 export default function CartSummary() {
   const dispatch = useDispatch();
@@ -44,6 +45,21 @@ export default function CartSummary() {
     });
 
     if (result) {
+      try {
+        // Send order details to n8n webhook
+        await axios.post("https://n8n.nearfood.ir/webhook/nearfood", {
+          customerName: "Hamed Bostan", // or dynamically from logged-in user
+          customerPhone: "09356776075", // or from user profile
+          orderId: result.orderId || Math.floor(Math.random() * 100000), // fallback if your backend doesn’t return ID
+          totalPrice: calculateOrderTotal(selectedItems),
+          orderSummary: selectedItems.map((item) => `${item.quantity}x ${item.title}`).join(", "),
+        });
+
+        console.log("✅ Order data sent to n8n");
+      } catch (error) {
+        console.error("❌ Error sending data to n8n:", error);
+      }
+
       dispatch(clear());
     }
   };

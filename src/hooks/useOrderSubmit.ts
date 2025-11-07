@@ -1,11 +1,7 @@
 import { useOrderValidation } from "@/hooks/useOrderValidation";
 import { toast } from "react-toastify";
-import {
-  BranchType,
-  CreateOrderDtoType,
-  DeliveryMethodType,
-  PaymentMethodType,
-} from "@/application/schemas/order.schema";
+import { BranchType, DeliveryMethodType, PaymentMethodType } from "@/application/schemas/order.schema";
+import { CreateOrderDtoType } from "@/application/dto/orders/order.dto";
 import { AddressType } from "@/application/schemas/address.schema";
 import axios from "axios";
 import { api } from "@/infrastructure/axios/api.client";

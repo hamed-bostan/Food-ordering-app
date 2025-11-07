@@ -10,6 +10,7 @@ export function mapDbOrderToDomain(doc: any): OrderType {
     branch: doc.branch,
     deliveryMethod: doc.deliveryMethod,
     paymentMethod: doc.paymentMethod,
+    status: doc.status ?? "تعیین وضعیت نشده",
     address: doc.address,
     notes: doc.notes,
     items: doc.items,
