@@ -5,6 +5,7 @@ import BranchOverview from "./branchOverview";
 import image1 from "@/assets/images/bannerImages/banner-01.webp";
 import Banner from "@/presentation/components/Banner";
 import LandingDescriptionSection from "./descriptionSection";
+import ChatBox from "@/ChatBox";
 
 export default function Landing() {
   return (
@@ -13,6 +14,7 @@ export default function Landing() {
       <MenuSection />
       <LandingDescriptionSection />
       <BranchOverview />
+      <ChatBox />
     </>
   );
 }
