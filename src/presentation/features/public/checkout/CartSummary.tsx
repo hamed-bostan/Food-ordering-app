@@ -47,7 +47,7 @@ export default function CartSummary() {
     if (result) {
       try {
         // Send order details to n8n webhook
-        await axios.post("https://n8n.nearfood.ir/webhook/nearfood", {
+        await axios.post("http://n8n.nearfood.ir:5678/webhook/nearfood", {
           customerName: "Hamed Bostan", // or dynamically from logged-in user
           customerPhone: "09356776075", // or from user profile
           orderId: result.orderId || Math.floor(Math.random() * 100000), // fallback if your backend doesn’t return ID
