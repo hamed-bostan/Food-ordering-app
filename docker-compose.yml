@@ -7,17 +7,17 @@ services:
     restart: always
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     environment:
       - NODE_ENV=production
-    volumes:
-      - .:/app
 
   n8n:
     image: n8nio/n8n
     container_name: n8n
     restart: always
     ports:
-      - "5678:5678"
+      - "127.0.0.1:5678:5678"
     environment:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=admin
