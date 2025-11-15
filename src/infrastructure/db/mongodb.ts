@@ -1,5 +1,11 @@
 import { MongoClient } from "mongodb";
 
+const uri = process.env.MONGODB_URI;
+
+if (!uri) {
+  throw new Error("Please add your Mongo URI to .env.local");
+}
+
 const options = {};
 
 declare global {
@@ -7,34 +13,30 @@ declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 if (process.env.NODE_ENV === "development") {
-  // ────────────────────── DEVELOPMENT ONLY ──────────────────────
-  if (!process.env.MONGODB_URI) {
-    throw new Error("Please add your Mongo URI to .env.local");
-  }
-
-  const uri = process.env.MONGODB_URI;
-
+  // In development, cache with global to survive HMR reloads
   if (!global._mongoClientPromise) {
-    client = new MongoClient(uri, options);
+    const client = new MongoClient(uri, options);
     global._mongoClientPromise = client.connect();
   }
   clientPromise = global._mongoClientPromise;
 } else {
-  // ────────────────────── PRODUCTION / BUILD ──────────────────────
-  // During GitHub Actions build → NODE_ENV=production and MONGODB_URI is not set
-  // → we MUST NOT throw and MUST NOT try to connect, or the build fails
-  if (!process.env.MONGODB_URI) {
-    // Create a promise that instantly rejects → build passes, runtime will 500 if used
-    clientPromise = Promise.reject(new Error("MONGODB_URI is not set in production environment"));
-  } else {
-    // Real production (Docker on VPS) → env var is injected via docker-compose → works normally
-    client = new MongoClient(process.env.MONGODB_URI, options);
-    clientPromise = client.connect();
-  }
+  // In production / build → lazy connection (connect ONLY when awaited at runtime)
+  const client = new MongoClient(uri, options);
+
+  clientPromise = {
+    then(onFulfilled?: (value: MongoClient) => any, onRejected?: (reason: any) => any) {
+      return client.connect().then(onFulfilled, onRejected);
+    },
+    catch(onRejected?: (reason: any) => any) {
+      return client.connect().catch(onRejected);
+    },
+    finally(onFinally?: () => any) {
+      return client.connect().finally(onFinally);
+    },
+  } as Promise<MongoClient>;
 }
 
 export const connectToDatabase = async (dbName = "test") => {
@@ -42,5 +44,5 @@ export const connectToDatabase = async (dbName = "test") => {
   return connectedClient.db(dbName);
 };
 
-// Needed for NextAuth adapter
+// Needed for NextAuth MongoDBAdapter
 export default clientPromise;
