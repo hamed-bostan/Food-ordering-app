@@ -2,20 +2,20 @@ version: "3.9"
 
 services:
   app:
-    build: .
+    image: ghcr.io/hamed-bostan/nearfood:latest
     container_name: nearfood_app
-    restart: always
+    restart: unless-stopped
     ports:
       - "3000:3000"
     env_file:
-      - .env
+      - .env.production
     environment:
       - NODE_ENV=production
 
   n8n:
     image: n8nio/n8n
     container_name: n8n
-    restart: always
+    restart: unless-stopped
     ports:
       - "127.0.0.1:5678:5678"
     environment:
@@ -24,6 +24,9 @@ services:
       - N8N_BASIC_AUTH_PASSWORD=supersecret
       - N8N_HOST=n8n.nearfood.ir
       - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - N8N_ENCRYPTION_KEY=5e3c5a32b1cab04ea3f595466a32326359d9d7921daf776e4a6ef10d825fbda1
+      - WEBHOOK_URL=https://n8n.nearfood.ir/ # important for production
     volumes:
       - n8n_data:/home/node/.n8n
 
