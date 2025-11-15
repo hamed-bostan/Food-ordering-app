@@ -15,7 +15,7 @@ export default function Landing() {
       <LandingDescriptionSection />
       <BranchOverview />
       <ChatBox />
-      <p>Hello world</p>
+      <p>Hello world Updated.</p>
     </>
   );
 }
