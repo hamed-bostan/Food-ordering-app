@@ -15,7 +15,7 @@ export default function Landing() {
       <LandingDescriptionSection />
       <BranchOverview />
       <ChatBox />
-      <h1>Welcome to NearFood — SUCCESSFUL DEPLOY</h1>
+      <h1>Welcome to NearFood — DEPLOYED </h1>
     </>
   );
 }
