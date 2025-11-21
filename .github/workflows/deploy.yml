@@ -1,4 +1,4 @@
-name: Build & Deploy Nearfood
+name: Build Docker Image & Deploy
 
 on:
   push:
@@ -17,6 +17,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Only sync docker-compose.yml (it's the only file needed on the server now)
+      - name: Sync docker-compose.yml to VPS
+        run: |
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" docker-compose.yml ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/
+
+      # Keep your existing env upload (works perfectly with Docker too)
+      - name: Upload environment file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" | ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cat > ${{ secrets.VPS_PATH }}/.env"
+
+      # Docker build & push (runs in GitHub Actions – much faster & cleaner than building on VPS)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -33,12 +49,23 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: |
-            ghcr.io/hamed-bostan/nearfood:latest
-            ghcr.io/hamed-bostan/nearfood:${{ github.sha }}
+          tags: ghcr.io/hamed-bostan/nearfood:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Trigger deployment on VPS
+      # Deploy the new image on VPS
+      - name: Deploy on VPS
         run: |
-          curl -X POST http://87.107.152.2:9000/hooks/deploy-nearfood
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+            cd ${{ secrets.VPS_PATH }}
+
+            # Stop old pm2 process if it exists (only needed the first time you switch to Docker)
+            pm2 delete foodapp || true
+
+            # Pull new image and restart containers
+            docker compose pull
+            docker compose up -d --remove-orphans
+
+            # Clean up old images (optional but keeps disk clean)
+            docker system prune -f
+          EOF
