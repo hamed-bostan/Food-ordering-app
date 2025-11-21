@@ -16,6 +16,7 @@ export default function Landing() {
       <BranchOverview />
       <ChatBox />
       <h2>Welcome to NearFood App-6 — DEPLOYED </h2>
+      <h2>AUTO CI CD</h2>
     </>
   );
 }
