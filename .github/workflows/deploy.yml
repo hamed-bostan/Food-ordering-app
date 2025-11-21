@@ -1,3 +1,4 @@
+# .github/workflows/deploy.yml
 name: Build & Deploy NearFood
 
 on:
@@ -26,34 +27,35 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # ← THIS IS THE FIXED LINE (lowercase + correct repo name)
       - name: Build & Push Image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: ghcr.io/hamed-bostan/nearfood:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Deploy to VPS (docker compose pull + up)
+      - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }} # probably "root"
+          username: ${{ secrets.VPS_USER }} # root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # Login to GHCR from inside the server
+            # Login to GHCR on the server
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            # Go to the project folder
+            # Go to app directory
             cd /var/www/nearfood
 
-            # Pull new image + recreate containers
+            # Pull new image and restart everything
             docker compose pull
             docker compose up -d --force-recreate --remove-orphans
 
-            # Clean old unused images
+            # Clean up old images
             docker image prune -f
 
-            echo "Deploy completed successfully!"
+            echo "Deploy completed successfully! 🚀"
