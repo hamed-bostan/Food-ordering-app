@@ -8,21 +8,7 @@ services:
     env_file:
       - .env.production
     environment:
-      - NODE_ENV=production
-      - MONGODB_URI=mongodb+srv://soprano:5NX6tr2ADFQM4Fb3@cluster0.y054r.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-      - NEXT_PUBLIC_SUPABASE_URL=https://ourbsjovbidvokapxslo.supabase.co
-      - NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91cmJzam92Ymlkdm9rYXB4c2xvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk2ODg1OTgsImV4cCI6MjA1NTI2NDU5OH0.YzBI8h8aPQNyUzH1LYjiU8zmZqIvTPacH46t6cgVuaQ
-      - SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im91cmJzam92Ymlkdm9rYXB4c2xvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczOTY4ODU5OCwiZXhwIjoyMDU1MjY0NTk4fQ.ChXzTe5TkXziJFG1M9yzdXEROhrHXrTralFkZtGqe8Y
-      - NEXTAUTH_URL=https://nearfood.ir
-      - NEXTAUTH_SECRET=fODUnaS2P8MXiYYxAm8ftv5Ds6i+9Z7j9Ttbcbxoe0I=
-      - GOOGLE_ID=215031534169-upttlogp123ajo452ughpu2v8cp5tk1o.apps.googleusercontent.com
-      - GOOGLE_SECRET=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
-      - GITHUB_ID=Ov23liLsB2QjbTynru2I
-      - GITHUB_SECRET=c25d7580bf2f4af44b5a46cbc19f043aca3a7793
-      - ZIBAL_MERCHANT=zibal
-      - SMS_IR_API_KEY=83d500krxwSAZtrvy8lvbZBI0oKd0RJhPJwn4hAFlY4moFF3
-      - NEXT_PUBLIC_API_URL=https://nearfood.ir/api
-      - NEXT_PUBLIC_SITE_URL=https://nearfood.ir
+      NODE_ENV: production
 
   n8n:
     image: n8nio/n8n
@@ -30,15 +16,8 @@ services:
     restart: unless-stopped
     ports:
       - "127.0.0.1:5678:5678"
-    environment:
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=admin
-      - N8N_BASIC_AUTH_PASSWORD=supersecret
-      - N8N_HOST=n8n.nearfood.ir
-      - N8N_PORT=5678
-      - N8N_PROTOCOL=https
-      - N8N_ENCRYPTION_KEY=5e3c5a32b1cab04ea3f595466a32326359d9d7921daf776e4a6ef10d825fbda1
-      - WEBHOOK_URL=https://n8n.nearfood.ir/
+    env_file:
+      - .env.production
     volumes:
       - n8n_data:/home/node/.n8n
 
