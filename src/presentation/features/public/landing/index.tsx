@@ -19,6 +19,7 @@ export default function Landing() {
       <h2>AUTO CI CD 6</h2>
       <h2>AUTO CI CD 8</h2>
       <h2 className="bg-blue-500">Hamed</h2>
+      <h2 className="bg-red-300">Hamed</h2>
     </>
   );
 }
