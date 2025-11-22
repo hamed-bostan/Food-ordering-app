@@ -29,6 +29,7 @@ export default function Landing() {
       <h2>AUTO CI CD 80</h2>
       <h2>AUTO CI CD 90</h2>
       <h2>AUTO CI CD 100</h2>
+      <h2>AUTO CI CD 110</h2>
     </>
   );
 }
