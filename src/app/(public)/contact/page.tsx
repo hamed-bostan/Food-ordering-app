@@ -8,6 +8,7 @@ export default function ContactPage() {
       <Banner imageSrc={image1} text="با ترخینه در تماس باشید." />
       <ContactBranchList />
       <p>Hamed</p>
+      <p>Bostan</p>
     </section>
   );
 }

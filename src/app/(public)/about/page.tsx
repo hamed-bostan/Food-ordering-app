@@ -9,6 +9,7 @@ export default function AboutPage() {
       <Banner imageSrc={image1} text="درباره ترخینه بیشتر بدانید!" />
       <AboutDetails />
       <AboutHighlights />
+      <p>Hello world</p>
     </section>
   );
 }
