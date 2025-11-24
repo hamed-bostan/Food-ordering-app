@@ -31,14 +31,12 @@ export function useOrderSubmit() {
     selectedItems: any[];
     addresses: AddressType[];
   }) {
-    // Step 1: Validation
     const error = getOrderValidationError({ deliveryMethod, paymentMethod, address, branch, selectedItems });
     if (error) {
       toast.info(error);
       return;
     }
 
-    // Step 2: Build DTO (pure business logic)
     const orderPayload: CreateOrderDtoType = {
       branch,
       deliveryMethod,
@@ -55,10 +53,8 @@ export function useOrderSubmit() {
       totalPrice: calculateOrderTotal(selectedItems),
     };
 
-    // Step 3: API call (infrastructure boundary)
     try {
       const { data } = await api.post("/orders", orderPayload);
-      console.log("Order created:", data);
       toast.success("سفارش شما با موفقیت ثبت شد.");
       return data.result;
     } catch (err: unknown) {
