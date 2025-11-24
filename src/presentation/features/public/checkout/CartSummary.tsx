@@ -13,6 +13,8 @@ import { useOrderSubmit } from "@/hooks/useOrderSubmit";
 import { useAddressLogic } from "@/hooks/useAddressLogic";
 import { calculateOrderTotal, calculateTotalDiscount } from "@/domain/order/order.rules";
 import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function CartSummary() {
   const dispatch = useDispatch();
@@ -23,6 +25,9 @@ export default function CartSummary() {
   const { addresses, isLoading } = useUserAddresses();
 
   const { submitOrder } = useOrderSubmit();
+
+  const { data: session } = useSession();
+  const router = useRouter();
 
   // Automatically handle address selection and validation
   useAddressLogic(addresses, isLoading);
@@ -63,6 +68,9 @@ export default function CartSummary() {
   const handleClearCart = () => {
     dispatch(clear());
   };
+
+  const buttonText = session ? "ثبت نام" : "ثبت سفارش";
+  const handleButtonClick = session ? handleSubmitOrder : () => router.push("/auth");
 
   return (
     <div
@@ -108,8 +116,8 @@ export default function CartSummary() {
         <span>مبلغ قابل پرداخت</span>
         <span className="text-[#417F56]">{formatToPersianStyle(totalPayable)} تومان</span>
       </div>
-      <CustomButton type="submit" onClick={handleSubmitOrder} size="medium" sx={{ width: "100%" }}>
-        ثبت سفارش
+      <CustomButton type="submit" onClick={handleButtonClick} size="medium" sx={{ width: "100%" }}>
+        {buttonText}
       </CustomButton>
     </div>
   );
