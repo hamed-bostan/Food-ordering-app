@@ -47,12 +47,11 @@ export default function CartSummary() {
     if (result) {
       try {
         await axios.post("/api/send-order-to-n8n", {
+          customerPhone: "09356776075",
           orderId: result.orderId || Date.now(),
           totalPrice: calculateOrderTotal(selectedItems),
           orderSummary: selectedItems.map((i) => `${i.quantity}x ${i.title}`).join(", "),
         });
-
-        console.log("✅ Order data sent to n8n");
       } catch (error) {
         console.error("❌ Error sending data to n8n:", error);
       }
