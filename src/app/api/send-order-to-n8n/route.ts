@@ -1,23 +1,21 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import axios from 'axios';
+import { NextRequest, NextResponse } from "next/server";
+import axios from "axios";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const payload = req.body; // Forward the order data from client
-
+export async function POST(request: NextRequest) {
   try {
-    await axios.post('https://n8n.nearfood.ir:5678/webhook/nearfood', payload, {
+    const body = await request.json();
+
+    await axios.post("https://n8n.nearfood.ir:5678/webhook/nearfood", body, {
       auth: {
-        username: process.env.N8N_BASIC_AUTH_USER || 'admin',
-        password: process.env.N8N_BASIC_AUTH_PASSWORD || 'supersecret',
+        username: process.env.N8N_BASIC_AUTH_USER!,
+        password: process.env.N8N_BASIC_AUTH_PASSWORD!,
       },
+      timeout: 10_000,
     });
-    return res.status(200).json({ success: true });
-  } catch (error) {
-    console.error('Error sending to n8n:', error);
-    return res.status(500).json({ error: 'Failed to send to n8n' });
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error("n8n webhook proxy error:", error.message);
+    return NextResponse.json({ error: "Failed to trigger n8n" }, { status: 500 });
   }
 }

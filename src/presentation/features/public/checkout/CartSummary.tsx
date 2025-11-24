@@ -47,12 +47,11 @@ export default function CartSummary() {
     if (result) {
       try {
         await axios.post("/api/send-order-to-n8n", {
-          // Note: Relative URL to your own site
-          customerName: "Hamed Bostan", // etc.
+          customerName: "Hamed Bostan",
           customerPhone: "09356776075",
-          orderId: result.orderId || Math.floor(Math.random() * 100000),
+          orderId: result.orderId || Date.now(),
           totalPrice: calculateOrderTotal(selectedItems),
-          orderSummary: selectedItems.map((item) => `${item.quantity}x ${item.title}`).join(", "),
+          orderSummary: selectedItems.map((i) => `${i.quantity}x ${i.title}`).join(", "),
         });
 
         console.log("✅ Order data sent to n8n");
