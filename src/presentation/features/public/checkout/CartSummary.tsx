@@ -46,11 +46,11 @@ export default function CartSummary() {
 
     if (result) {
       try {
-        // Send order details to n8n webhook
-        await axios.post("https://n8n.nearfood.ir:5678/webhook/nearfood", {
-          customerName: "Hamed Bostan", // or dynamically from logged-in user
-          customerPhone: "09356776075", // or from user profile
-          orderId: result.orderId || Math.floor(Math.random() * 100000), // fallback if your backend doesn’t return ID
+        await axios.post("/api/send-order-to-n8n", {
+          // Note: Relative URL to your own site
+          customerName: "Hamed Bostan", // etc.
+          customerPhone: "09356776075",
+          orderId: result.orderId || Math.floor(Math.random() * 100000),
           totalPrice: calculateOrderTotal(selectedItems),
           orderSummary: selectedItems.map((item) => `${item.quantity}x ${item.title}`).join(", "),
         });
