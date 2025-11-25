@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { AddressSchema } from "./address.schema";
 
-export const UserRoleEnum = z.enum(["user", "admin"]);
+export const UserRoleEnum = z.enum(["root", "admin", "user"]);
 
 const optionalString = (schema: z.ZodTypeAny) =>
   z.preprocess((val) => (val === "" ? null : val), schema.nullable().optional());

@@ -17,11 +17,14 @@ type ProductsRowProps = {
   token: string;
   onProductUpdated: (product: ProductType) => void;
   onProductRemoved: (productId: string) => void;
+  userRole: string;
 };
 
-export default function ProductRow({ product, token, onProductUpdated, onProductRemoved }: ProductsRowProps) {
+export default function ProductRow({ product, token, onProductUpdated, onProductRemoved, userRole }: ProductsRowProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+  const isRoot = userRole === "root";
 
   const {
     register,
@@ -44,21 +47,16 @@ export default function ProductRow({ product, token, onProductUpdated, onProduct
 
   const onSubmit = async (data: ProductUpdateFormType) => {
     try {
-      // Separate image from other fields
-      const { image, ...fields } = data;
+      if (!isRoot) return; // double protection
 
-      // Default payload is JSON (no image)
+      const { image, ...fields } = data;
       let payload: Omit<ProductUpdateFormType, "image"> | FormData = fields;
 
       if (selectedImage) {
         const formData = new FormData();
-
-        // Dynamically append all fields as strings
         Object.entries(fields).forEach(([key, value]) => {
           if (value !== undefined) formData.append(key, String(value));
         });
-
-        // Append the selected image
         formData.append("image", selectedImage);
         payload = formData;
       }
@@ -155,9 +153,8 @@ export default function ProductRow({ product, token, onProductUpdated, onProduct
         )}
       </td>
 
-      {/* Actions */}
-      <td className="p-2 border">
-        {isEditing ? (
+      <td className="p-2 text-center border">
+        {isRoot && isEditing && (
           <form onSubmit={handleSubmit(onSubmit)} className="flex gap-2">
             <button type="submit" disabled={isSubmitting} className="text-green-600">
               <SaveIcon fontSize="small" />
@@ -166,7 +163,9 @@ export default function ProductRow({ product, token, onProductUpdated, onProduct
               <CloseIcon fontSize="small" />
             </button>
           </form>
-        ) : (
+        )}
+
+        {isRoot && !isEditing && (
           <div className="flex gap-2">
             <button onClick={() => setIsEditing(true)} className="text-blue-600">
               <EditIcon fontSize="small" />
@@ -176,6 +175,8 @@ export default function ProductRow({ product, token, onProductUpdated, onProduct
             </button>
           </div>
         )}
+
+        {!isRoot && <span className="text-gray-400">No actions</span>}
       </td>
     </tr>
   );

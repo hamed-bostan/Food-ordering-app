@@ -12,18 +12,13 @@ export default async function TestimonialsPage() {
     redirect("/auth/otp");
   }
 
-  // Quick client-side role check (cheap and fast)
-  if (session.user.role !== "admin") {
+  const allowedRoles = ["admin", "root"];
+  if (!allowedRoles.includes(session.user.role)) {
     redirect("/403");
   }
 
   try {
-    const { result: currentUser } = await getUserById(session.user.id, session.accessToken);
-
-    // Extra guard: confirm user is still admin on server
-    if (currentUser.role !== "admin") {
-      redirect("/403");
-    }
+    await getUserById(session.user.id, session.accessToken);
 
     return <TestimonialUploader accessToken={session.accessToken} />;
   } catch (error) {

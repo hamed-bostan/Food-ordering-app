@@ -14,8 +14,8 @@ export default async function TestimonialsPage() {
     redirect("/auth/otp");
   }
 
-  // Only allow admin
-  if (session.user.role !== "admin") {
+  const allowedRoles = ["admin", "root"];
+  if (!allowedRoles.includes(session.user.role)) {
     redirect("/403");
   }
 

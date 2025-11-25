@@ -17,7 +17,8 @@ export default async function OrderDetailsPage({ params }: OrderDetailsPageProps
     redirect("/auth/otp");
   }
 
-  if (session.user.role !== "admin") {
+  const allowedRoles = ["admin", "root"];
+  if (!allowedRoles.includes(session.user.role)) {
     redirect("/403");
   }
 

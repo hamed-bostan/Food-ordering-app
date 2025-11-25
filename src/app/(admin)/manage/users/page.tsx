@@ -6,16 +6,15 @@ import { getUsersAdmin } from "@/infrastructure/apis/admin/user.api";
 import UsersTable from "@/presentation/features/admin/manage/users";
 
 export default async function UsersPage() {
-  // Get session server-side
+  // Server-side session
   const session = await getServerSession(authOptions);
 
-  // Redirect if not logged in or missing accessToken
   if (!session || !session.user?.id || !session.accessToken) {
     redirect("/auth/otp");
   }
 
-  // Only allow admin
-  if (session.user.role !== "admin") {
+  const allowedRoles = ["admin", "root"];
+  if (!allowedRoles.includes(session.user.role)) {
     redirect("/403");
   }
 
@@ -25,13 +24,9 @@ export default async function UsersPage() {
     const response = await getUsersAdmin(session.accessToken);
     initialUsers = response.result;
   } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error("❌ Error fetching users:", error.message);
-    } else {
-      console.error("❌ Unexpected error fetching users:", error);
-    }
+    console.error("❌ Error fetching users:", error);
     redirect("/403");
   }
 
-  return <UsersTable initialUsers={initialUsers} token={session.accessToken} />;
+  return <UsersTable initialUsers={initialUsers} token={session.accessToken} currentUserRole={session.user.role} />;
 }

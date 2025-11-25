@@ -13,23 +13,24 @@ import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
 import { AdminUpdateUserPayload } from "@/infrastructure/apis/user.api";
 
-const isProtectedAdmin = "09356776075";
+const ROOT_USER_PHONE = "09356776075";
 
-// Form DTO type (string date)
 type UserFormType = AdminFormProfileType;
 
 type UserRowProps = {
   user: UserType;
   token: string;
+  currentUserRole: "admin" | "root";
   onUserUpdated: (user: UserType) => void;
   onUserRemoved?: (userId: string) => void;
 };
 
-export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: UserRowProps) {
+export default function UserRow({ user, token, currentUserRole, onUserUpdated, onUserRemoved }: UserRowProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const isProtectedUser = user.role === "root" || user.phoneNumber === ROOT_USER_PHONE;
 
   const defaultAddress =
-    user.address && user.address.length > 0 ? [user.address[0]] : [{ value: "", coords: [0, 0] as [number, number] }]; // Added type assertion here to fix tuple inference
+    user.address && user.address.length > 0 ? [user.address[0]] : [{ value: "", coords: [0, 0] as [number, number] }];
 
   const {
     register,
@@ -49,22 +50,19 @@ export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: U
   });
 
   const onSubmit = async (data: UserFormType) => {
-    console.log("onSubmit");
     try {
       const addressItem = data.address?.[0];
       const payload: AdminUpdateUserPayload = {
         ...data,
-        address:
-          addressItem && addressItem.value?.trim()
-            ? [
-                {
-                  // Omit id if undefined (server will generate)
-                  ...(addressItem.id ? { id: addressItem.id } : {}),
-                  value: addressItem.value,
-                  coords: addressItem.coords ?? user.address?.[0]?.coords ?? [0, 0],
-                },
-              ]
-            : null,
+        address: addressItem?.value?.trim()
+          ? [
+              {
+                ...(addressItem.id ? { id: addressItem.id } : {}),
+                value: addressItem.value,
+                coords: addressItem.coords ?? user.address?.[0]?.coords ?? [0, 0],
+              },
+            ]
+          : null,
       };
 
       const updatedUser = await updateUserAdmin(user.id, payload, token);
@@ -82,97 +80,75 @@ export default function UserRow({ user, token, onUserUpdated, onUserRemoved }: U
     setIsEditing(false);
   };
 
+  const canEditProtectedFields = currentUserRole === "root" || !isProtectedUser;
+
   return (
     <tr>
       <td className="p-2 border">
-        {isEditing ? (
-          <>
-            <input {...register("name")} className="w-full p-1 border rounded" />
-            {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
-          </>
-        ) : (
-          user.name ?? "-"
-        )}
+        {isEditing ? <input {...register("name")} className="w-full p-1 border rounded" /> : user.name ?? "-"}
+        {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
       </td>
 
       <td className="p-2 border">
         {isEditing ? (
-          isProtectedAdmin ? (
-            <span className="font-semibold text-gray-600">{user.phoneNumber} (protected)</span>
+          canEditProtectedFields ? (
+            <input {...register("phoneNumber")} className="w-full p-1 border rounded" />
           ) : (
-            <>
-              <input {...register("phoneNumber")} className="w-full p-1 border rounded" />
-              {errors.phoneNumber && <p className="text-xs text-red-500">{errors.phoneNumber.message}</p>}
-            </>
+            <span className="font-semibold text-gray-600">{user.phoneNumber} (protected)</span>
           )
         ) : (
           user.phoneNumber
         )}
+        {errors.phoneNumber && <p className="text-xs text-red-500">{errors.phoneNumber.message}</p>}
       </td>
 
       <td className="p-2 border">
         {isEditing ? (
-          <>
-            <input {...register("address.0.value")} className="w-full p-1 border rounded" />
-            {errors.address?.[0]?.value && <p className="text-xs text-red-500">{errors.address[0].value.message}</p>}
-          </>
+          <input {...register("address.0.value")} className="w-full p-1 border rounded" />
         ) : (
           user.address?.[0]?.value ?? "-"
         )}
+        {errors.address?.[0]?.value && <p className="text-xs text-red-500">{errors.address[0].value.message}</p>}
+      </td>
+
+      <td className="p-2 border">
+        {isEditing ? <input {...register("email")} className="w-full p-1 border rounded" /> : user.email ?? "-"}
+        {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
       </td>
 
       <td className="p-2 border">
         {isEditing ? (
-          <>
-            <input {...register("email")} className="w-full p-1 border rounded" />
-            {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
-          </>
-        ) : (
-          user.email ?? "-"
-        )}
-      </td>
-
-      <td className="p-2 border">
-        {isEditing ? (
-          isProtectedAdmin ? (
-            <span className="font-semibold text-gray-600">{user.role} (protected)</span>
+          canEditProtectedFields ? (
+            <select {...register("role")} className="w-full p-1 border rounded">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
           ) : (
-            <>
-              <select {...register("role")} className="w-full p-1 border rounded">
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-              </select>
-              {errors.role && <p className="text-xs text-red-500">{errors.role.message}</p>}
-            </>
+            <span className="font-semibold text-gray-600">{user.role} (protected)</span>
           )
         ) : (
           user.role
         )}
+        {errors.role && <p className="text-xs text-red-500">{errors.role.message}</p>}
       </td>
 
       <td className="p-2 border">
         {isEditing ? (
           <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={handleSubmit(onSubmit)}
-              disabled={isSubmitting}
-              className="text-green-600"
-              aria-label="Save changes"
-            >
+            <button type="button" onClick={handleSubmit(onSubmit)} disabled={isSubmitting} className="text-green-600">
               <SaveIcon fontSize="small" />
             </button>
-            <button type="button" onClick={handleCancel} className="text-gray-600" aria-label="Cancel edit">
+            <button type="button" onClick={handleCancel} className="text-gray-600">
               <CloseIcon fontSize="small" />
             </button>
           </div>
         ) : (
           <div className="flex gap-2">
-            <button onClick={() => setIsEditing(true)} className="text-blue-600" aria-label="Edit user">
+            <button onClick={() => setIsEditing(true)} className="text-blue-600">
               <EditIcon fontSize="small" />
             </button>
-            {!isProtectedAdmin && (
-              <button onClick={() => onUserRemoved?.(user.id)} className="text-red-600" aria-label="Delete user">
+            {!isProtectedUser && onUserRemoved && (
+              <button onClick={() => onUserRemoved(user.id)} className="text-red-600">
                 <DeleteIcon fontSize="small" />
               </button>
             )}

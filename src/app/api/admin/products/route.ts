@@ -7,17 +7,13 @@ import { ProductCreateDtoSchema } from "@/application/dto/products/product.dto";
 
 /**
  * GET /api/admin/products
- * Fetch all products (admin only)
+ * Admin & Root: Fetch all products
  */
 export async function GET(req: NextRequest) {
   try {
-    // Admin authorization
-    await requireAdmin(req);
+    await requireAdmin(req); // Admin or root
 
-    // Fetch products via use-case
     const products = await fetchProducts();
-
-    // Return response
     return NextResponse.json({ result: products }, { status: 200 });
   } catch (error: unknown) {
     return apiErrorHandler(error, "Admin Products API - GET");
@@ -26,16 +22,14 @@ export async function GET(req: NextRequest) {
 
 /**
  * POST /api/admin/products
- * Create a new product (admin only)
+ * Admin & Root: Create new product
  */
 export async function POST(req: NextRequest) {
   try {
-    await requireAdmin(req);
+    await requireAdmin(req); // Admin or root
 
-    // Extract FormData
     const formData = await req.formData();
 
-    // Convert FormData to plain object for validation
     const fields: Record<string, unknown> = {};
     let imageFile: File | undefined;
 
@@ -47,7 +41,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Parse and validate using server-side DTO schema
     const validatedFields = ProductCreateDtoSchema.parse({
       ...fields,
       price: Number(fields.price),
@@ -56,7 +49,6 @@ export async function POST(req: NextRequest) {
       mostsale: fields.mostsale === "true" || fields.mostsale === true,
     });
 
-    // Call use-case with validated DTO + image
     const createdProduct = await createProductWithImageUseCase(validatedFields, imageFile);
 
     return NextResponse.json({ message: "Product created successfully", result: createdProduct }, { status: 201 });

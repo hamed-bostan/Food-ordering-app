@@ -5,8 +5,10 @@ import { toast } from "react-toastify";
 import { ProductType } from "@/application/schemas/product.schema";
 import { deleteProductAdmin } from "@/infrastructure/apis/admin/product.api";
 import ProductRow from "./ProductRow";
+import { useSession } from "next-auth/react";
 
 export default function ProductsTable({ initialProducts, token }: { initialProducts: ProductType[]; token: string }) {
+  const session = useSession();
   const [products, setProducts] = useState<ProductType[]>(initialProducts);
 
   // Update a product in the table after editing
@@ -42,6 +44,7 @@ export default function ProductsTable({ initialProducts, token }: { initialProdu
         {products.map((product) => (
           <ProductRow
             key={product.id}
+            userRole={session?.data?.user.role}
             product={product}
             token={token}
             onProductUpdated={handleProductUpdated}

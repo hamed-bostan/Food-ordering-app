@@ -6,7 +6,13 @@ import UserRow from "./UserRow";
 import { toast } from "react-toastify";
 import { deleteUserAdmin } from "@/infrastructure/apis/admin/user.api";
 
-export default function UsersTable({ initialUsers, token }: { initialUsers: UserType[]; token: string }) {
+type UsersTableProps = {
+  initialUsers: UserType[];
+  token: string;
+  currentUserRole: "admin" | "root";
+};
+
+export default function UsersTable({ initialUsers, token, currentUserRole }: UsersTableProps) {
   const [users, setUsers] = useState<UserType[]>(initialUsers);
 
   const handleUserUpdated = (updatedUser: UserType) => {
@@ -42,6 +48,7 @@ export default function UsersTable({ initialUsers, token }: { initialUsers: User
             key={user.id}
             user={user}
             token={token}
+            currentUserRole={currentUserRole}
             onUserUpdated={handleUserUpdated}
             onUserRemoved={handleUserRemoved}
           />

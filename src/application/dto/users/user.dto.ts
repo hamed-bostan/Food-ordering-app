@@ -1,7 +1,6 @@
 import { AddressCreateSchema } from "@/application/schemas/address.form.schema";
+import { UserRoleEnum } from "@/application/schemas/user.schema";
 import { z } from "zod";
-
-export const UserRoleEnum = z.enum(["user", "admin"]);
 
 const optionalString = (schema: z.ZodTypeAny) =>
   z.preprocess((val) => (val === "" ? null : val), schema.nullable().optional());

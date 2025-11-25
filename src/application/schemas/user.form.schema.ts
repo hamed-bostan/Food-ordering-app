@@ -1,6 +1,5 @@
 import { z } from "zod";
-
-export const UserRoleEnum = z.enum(["user", "admin"]);
+import { UserRoleEnum } from "./user.schema";
 
 const optionalString = (schema: z.ZodTypeAny) =>
   z.preprocess((val) => (val === "" ? null : val), schema.nullable().optional());

@@ -17,7 +17,7 @@ export const userProfileSchema = z.object({
 export type UserProfileType = z.infer<typeof userProfileSchema>;
 
 export const adminProfileSchema = userProfileSchema.extend({
-  role: z.enum(["user", "admin"]).optional(),
+  role: z.enum(["user", "admin", "root"]).optional(),
 });
 
 export type AdminProfileType = z.infer<typeof adminProfileSchema>;
@@ -32,7 +32,7 @@ export const adminFormProfileSchema = z.object({
   email: z.string().email("ایمیل معتبر وارد کنید").optional().or(z.literal("")),
   image: z.string().optional(),
   address: z.array(AddressCreateSchema).optional().nullable(),
-  role: z.enum(["user", "admin"]).optional(),
+  role: z.enum(["user", "admin", "root"]).optional(),
 });
 
 export type AdminFormProfileType = z.infer<typeof adminFormProfileSchema>;

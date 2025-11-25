@@ -12,14 +12,18 @@ export async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
-  // Protect /manage and /create (admin only)
+  // -------------------------------
+  // Protect /manage and /create (admin or root only)
+  // -------------------------------
   if (pathname.startsWith("/manage") || pathname.startsWith("/create")) {
-    if (!token || token.role !== "admin") {
+    if (!token || (token.role !== "admin" && token.role !== "root")) {
       return redirectToHome(req);
     }
   }
 
+  // -------------------------------
   // Protect /userpanel (any logged-in user)
+  // -------------------------------
   if (pathname.startsWith("/userpanel") && !token) {
     return redirectToHome(req);
   }
@@ -27,6 +31,9 @@ export async function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
+// -------------------------------
+// Middleware matcher
+// -------------------------------
 export const config = {
   matcher: ["/manage/:path*", "/create/:path*", "/userpanel/:path*"],
 };

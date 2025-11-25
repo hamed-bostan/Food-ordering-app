@@ -1,23 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdmin } from "@/middleware/requireAdmin";
 import { z } from "zod";
 import { updateProductUseCase } from "@/domain/use-cases/products/updateProduct.usecase";
 import { deleteProductUseCase } from "@/domain/use-cases/products/deleteProduct.usecase";
 import { fetchProductByIdUseCase } from "@/domain/use-cases/products/productById.usecase";
 import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 import { ProductUpdateDtoSchema } from "@/application/dto/products/product.dto";
+import { requireAdmin } from "@/middleware/requireAdmin";
+import { requireRoot } from "@/middleware/requireRoot";
 
 /**
  * GET /api/admin/products/:productId
- * Admin-only: Fetch single product
+ * Admin & Root: Fetch single product
  */
 export async function GET(req: NextRequest, context: { params: Promise<{ productId: string }> }) {
   try {
+    // Require admin or root
     await requireAdmin(req);
 
-    const params = await context.params;
-    const { productId } = params;
-
+    const { productId } = await context.params;
     const product = await fetchProductByIdUseCase(productId);
 
     return NextResponse.json({ result: product }, { status: 200 });
@@ -28,10 +28,13 @@ export async function GET(req: NextRequest, context: { params: Promise<{ product
 
 /**
  * PUT /api/admin/products/:productId
+ * Only root can update products
  */
 export async function PUT(req: NextRequest, context: { params: Promise<{ productId: string }> }) {
   try {
-    await requireAdmin(req);
+    // Require root
+    await requireRoot(req);
+
     const { productId } = await context.params;
 
     let validatedFields: z.infer<typeof ProductUpdateDtoSchema>;
@@ -45,19 +48,17 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ product
       for (const [key, value] of formData.entries()) {
         if (key !== "image" && typeof value === "string") rawFields[key] = value;
       }
-
       validatedFields = ProductUpdateDtoSchema.parse(rawFields);
 
       const imageFile = formData.get("image");
       if (imageFile instanceof File) newImage = imageFile;
     } else {
       const body = await req.json();
-      validatedFields = ProductUpdateDtoSchema.parse(body); // FIXED: use schema, not type
+      validatedFields = ProductUpdateDtoSchema.parse(body);
       newImage = undefined;
     }
 
     const updatedProduct = await updateProductUseCase(productId, validatedFields, newImage);
-
     return NextResponse.json({ message: "Product updated successfully", result: updatedProduct }, { status: 200 });
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
@@ -72,15 +73,14 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ product
 
 /**
  * DELETE /api/admin/products/:productId
- * Delete product (with optional image cleanup)
+ * Only root can delete products
  */
 export async function DELETE(req: NextRequest, context: { params: Promise<{ productId: string }> }) {
   try {
-    await requireAdmin(req);
+    // Require root
+    await requireRoot(req);
 
-    const params = await context.params;
-    const { productId } = params;
-
+    const { productId } = await context.params;
     await deleteProductUseCase(productId);
 
     return NextResponse.json({ message: "Product deleted successfully" }, { status: 200 });

@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
-import { verifyJWT } from "@/infrastructure/auth/jwt.util.ts";
 import { UnauthorizedError, ForbiddenError } from "@/domain/errors";
+import { verifyJWT } from "@/infrastructure/auth/jwt.util.ts";
 
-export async function requireAdmin(req: NextRequest) {
+export async function requireRoot(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
 
   if (!authHeader?.startsWith("Bearer ")) {
@@ -17,9 +17,9 @@ export async function requireAdmin(req: NextRequest) {
 
   const payload = verifyJWT(token);
 
-  // Allow both admin and root
-  if (payload.role !== "admin" && payload.role !== "root") {
-    throw new ForbiddenError("Access restricted to admin and root roles");
+  // Only root allowed
+  if (payload.role !== "root") {
+    throw new ForbiddenError("Only root can access this resource");
   }
 
   return payload;

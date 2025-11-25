@@ -8,7 +8,7 @@ import { ProductCreateDtoSchema } from "@/application/dto/products/product.dto";
 /**
  * GET /api/products
  */
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const products = await fetchProducts();
     return NextResponse.json({ message: "Products fetched successfully", result: products }, { status: 200 });
