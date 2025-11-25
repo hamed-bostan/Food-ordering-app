@@ -14,8 +14,7 @@ export default function Landing() {
       <MenuSection />
       <LandingDescriptionSection />
       <BranchOverview />
-      <ChatBox />
-      <h2>Welcome to NearFood App</h2>
+      {/* <ChatBox /> */}
     </>
   );
 }
