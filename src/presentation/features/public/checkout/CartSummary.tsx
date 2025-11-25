@@ -1,3 +1,5 @@
+"use client";
+
 import { useSelector, useDispatch } from "react-redux";
 import formatToPersianStyle from "@/lib/utils/formatToPersianStyle";
 import ItemsOverviewMobile from "./shared/cartItemsMobileView";
@@ -69,7 +71,7 @@ export default function CartSummary() {
     dispatch(clear());
   };
 
-  const buttonText = session ? "ثبت نام" : "ثبت سفارش";
+  const buttonText = session ? "ثبت سفارش" : "ثبت نام";
   const handleButtonClick = session ? handleSubmitOrder : () => router.push("/auth");
 
   return (
