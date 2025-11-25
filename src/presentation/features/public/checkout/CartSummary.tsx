@@ -16,7 +16,7 @@ import { useAddressLogic } from "@/hooks/useAddressLogic";
 import { calculateOrderTotal, calculateTotalDiscount } from "@/domain/order/order.rules";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function CartSummary() {
   const dispatch = useDispatch();
@@ -29,7 +29,6 @@ export default function CartSummary() {
   const { submitOrder } = useOrderSubmit();
 
   const { data: session } = useSession();
-  const router = useRouter();
 
   // Automatically handle address selection and validation
   useAddressLogic(addresses, isLoading);
@@ -72,7 +71,6 @@ export default function CartSummary() {
   };
 
   const buttonText = session ? "ثبت سفارش" : "ثبت نام";
-  const handleButtonClick = session ? handleSubmitOrder : () => router.push("/auth");
 
   return (
     <div
@@ -118,7 +116,14 @@ export default function CartSummary() {
         <span>مبلغ قابل پرداخت</span>
         <span className="text-[#417F56]">{formatToPersianStyle(totalPayable)} تومان</span>
       </div>
-      <CustomButton type="submit" onClick={handleButtonClick} size="medium" sx={{ width: "100%" }}>
+      <CustomButton
+        component={session ? "button" : Link}
+        href={session ? undefined : "/auth"}
+        type={session ? "submit" : undefined}
+        onClick={session ? handleSubmitOrder : undefined}
+        size="medium"
+        sx={{ width: "100%" }}
+      >
         {buttonText}
       </CustomButton>
     </div>
