@@ -54,7 +54,6 @@ export default function CartSummary({ phoneNumber }: { phoneNumber: string }) {
       try {
         await axios.post("/api/send-order-to-n8n", {
           customerPhone: phoneNumber,
-          orderId: result.orderId || Date.now(),
           totalPrice: calculateOrderTotal(selectedItems),
           orderSummary: selectedItems.map((i) => `${i.quantity}x ${i.title}`).join(", "),
         });
