@@ -21,9 +21,6 @@ export async function deleteImageFromStorage(imageUrl: string, bucket: string): 
     if (!match || !match[1]) throw new Error("Invalid image URL format");
 
     const path = decodeURIComponent(match[1]);
-    // e.g. "testimonials/1758607076896-Screenshot (1337).png"
-
-    console.log("🗑️ Deleting from Supabase:", { bucket, path });
 
     const { error } = await supabaseAdmin.storage.from(bucket).remove([path]);
     if (error) throw new Error(`Supabase delete failed: ${error.message}`);

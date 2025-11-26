@@ -71,8 +71,6 @@ export default function CartSummary({ phoneNumber }: { phoneNumber: string }) {
 
   const buttonText = session ? "ثبت سفارش" : "ثبت نام";
 
-  console.log("Users:", phoneNumber);
-
   return (
     <div
       className={`text-sm text-[#353535] md:border md:border-[#CBCBCB] md:p-4 lg:p-5 md:rounded-lg md:h-fit ${
