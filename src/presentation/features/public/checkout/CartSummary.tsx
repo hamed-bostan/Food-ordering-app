@@ -18,7 +18,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
-export default function CartSummary() {
+export default function CartSummary({ phoneNumber }: { phoneNumber: string }) {
   const dispatch = useDispatch();
   const { activeTab } = useCheckoutTab();
   const selectedItems = useSelector((state: RootState) => state.cart.selectedItems);
@@ -53,7 +53,7 @@ export default function CartSummary() {
     if (result) {
       try {
         await axios.post("/api/send-order-to-n8n", {
-          customerPhone: "09356776075",
+          customerPhone: phoneNumber,
           orderId: result.orderId || Date.now(),
           totalPrice: calculateOrderTotal(selectedItems),
           orderSummary: selectedItems.map((i) => `${i.quantity}x ${i.title}`).join(", "),
@@ -71,6 +71,8 @@ export default function CartSummary() {
   };
 
   const buttonText = session ? "ثبت سفارش" : "ثبت نام";
+
+  console.log("Users:", phoneNumber);
 
   return (
     <div

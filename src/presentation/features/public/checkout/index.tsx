@@ -1,32 +1,17 @@
 "use client";
 
-import Header from "./shared/header";
 import OrderOverview from "./orderOverview";
 import Payments from "./payments";
 import ShoppingCart from "./shoppingCart";
-import { CheckoutTabProvider, useCheckoutTab } from "@/context/checkout-tab.context";
-import { OrderProvider } from "@/context/OrderContext";
+import { useCheckoutTab } from "@/context/checkout-tab.context";
 
 export default function Checkout() {
-  return (
-    <CheckoutTabProvider>
-      <OrderProvider>
-        <CheckoutContent />
-      </OrderProvider>
-    </CheckoutTabProvider>
-  );
+  return <CheckoutContent />;
 }
 
 function CheckoutContent() {
   const { activeTab } = useCheckoutTab();
-
   const tabs: React.ComponentType[] = [ShoppingCart, OrderOverview, Payments];
-  const ActiveTabComponent = tabs[activeTab];
-
-  return (
-    <section className="px-5 py-6 lg:px-10 2xl:px-28">
-      <Header />
-      <ActiveTabComponent />
-    </section>
-  );
+  const ActiveComponent = tabs[activeTab];
+  return <ActiveComponent />;
 }
