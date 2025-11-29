@@ -5,9 +5,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import EmptyStateMessage from "@/presentation/components/EmptyStateMessage";
 import { CheckoutTabProvider, useCheckoutTab } from "@/context/checkout-tab.context";
-import { OrderProvider } from "@/context/OrderContext";
 import Header from "@/presentation/features/public/checkout/shared/header";
 import CartSummary from "@/presentation/features/public/checkout/CartSummary";
+import { OrderProvider } from "@/context/OrderContext";
 
 type ClientInnerLayoutProps = {
   children: ReactNode;

@@ -13,12 +13,12 @@ export type AddressFormProps = {
 };
 
 export default function AddressForm({ onSaveContactInfo, onClose, defaultValues }: AddressFormProps) {
-  const { address } = useContext(AddressContext)!;
+  const { tempAddress } = useContext(AddressContext)!;
 
   const [formData, setFormData] = useState<AddressType>({
     id: defaultValues?.id || crypto.randomUUID(),
-    value: defaultValues?.value || address?.value || "",
-    coords: defaultValues?.coords || address?.coords || [0, 0],
+    value: defaultValues?.value || tempAddress?.value || "",
+    coords: defaultValues?.coords || tempAddress?.coords || [0, 0],
   });
 
   useEffect(() => {

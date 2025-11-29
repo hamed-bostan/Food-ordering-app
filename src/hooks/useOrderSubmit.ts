@@ -13,35 +13,37 @@ import { calculateOrderTotal } from "@/domain/order/order.rules";
  */
 export function useOrderSubmit() {
   const { getOrderValidationError } = useOrderValidation();
-
   async function submitOrder({
     deliveryMethod,
     paymentMethod,
-    address,
+    selectedAddress,
     branch,
     notes,
     selectedItems,
-    addresses,
   }: {
     deliveryMethod: DeliveryMethodType;
     paymentMethod: PaymentMethodType;
-    address: AddressType | null;
+    selectedAddress: AddressType | null;
     branch: BranchType | null;
     notes: string | null;
     selectedItems: any[];
-    addresses: AddressType[];
   }) {
-    const error = getOrderValidationError({ deliveryMethod, paymentMethod, address, branch, selectedItems });
+    const error = getOrderValidationError({
+      deliveryMethod,
+      paymentMethod,
+      address: selectedAddress,
+      branch,
+      selectedItems,
+    });
     if (error) {
       toast.info(error);
       return;
     }
-
     const orderPayload: CreateOrderDtoType = {
       branch,
       deliveryMethod,
       paymentMethod,
-      address,
+      address: selectedAddress,
       notes,
       items: selectedItems.map((item) => ({
         productId: item.id,
@@ -52,7 +54,6 @@ export function useOrderSubmit() {
       })),
       totalPrice: calculateOrderTotal(selectedItems),
     };
-
     try {
       const { data } = await api.post("/orders", orderPayload);
       toast.success("سفارش شما با موفقیت ثبت شد.");
@@ -66,6 +67,5 @@ export function useOrderSubmit() {
       }
     }
   }
-
   return { submitOrder };
 }

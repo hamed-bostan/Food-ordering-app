@@ -11,7 +11,7 @@ type UserAddressListProps = {
 };
 
 export default function UserAddressList({ addresses, onDelete, onEdit }: UserAddressListProps) {
-  const { address: selectedAddress, setAddress } = useOrderContext();
+  const { selectedAddress, setSelectedAddress } = useOrderContext();
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
@@ -21,7 +21,7 @@ export default function UserAddressList({ addresses, onDelete, onEdit }: UserAdd
         return (
           <div
             key={index}
-            onClick={() => setAddress(address)}
+            onClick={() => setSelectedAddress(address)}
             className={`bg-[#F9F9F9] rounded-md p-4 text-xs text-[#717171] cursor-pointer transition border-2 
               ${isSelected ? "border-[#417F56]" : "border-[#CBCBCB]"} 
               hover:border-[#417F56]`}

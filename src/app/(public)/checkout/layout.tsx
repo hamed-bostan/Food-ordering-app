@@ -7,7 +7,7 @@ import ClientInnerLayout from "./ClientInnerLayout";
 export default async function CheckoutLayout({ children }: { children: ReactNode }) {
   const session = await getServerSession(authOptions);
 
-  if (!session?.user.phoneNumber || !session.accessToken) {
+  if (!session?.user?.phoneNumber || !session.accessToken) {
     redirect("/auth/otp");
   }
 

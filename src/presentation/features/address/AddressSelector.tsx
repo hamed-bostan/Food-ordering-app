@@ -20,13 +20,13 @@ type AddressSelectorProps = {
 };
 
 export default function AddressSelector({ onSubmitLocation }: AddressSelectorProps) {
-  const { address, setAddress } = useContext(AddressContext)!;
+  const { tempAddress, setTempAddress } = useContext(AddressContext)!;
 
   const setLocationAndAddress = async (lat: number, lng: number) => {
     const fetchedAddress = await getAddress(lat, lng);
 
-    setAddress({
-      ...(address ?? { id: crypto.randomUUID() }),
+    setTempAddress({
+      ...(tempAddress ?? { id: crypto.randomUUID() }),
       value: fetchedAddress,
       coords: [lat, lng],
     });
@@ -60,18 +60,18 @@ export default function AddressSelector({ onSubmitLocation }: AddressSelectorPro
       },
     });
 
-    return address ? <Marker position={address.coords} icon={customIcon} /> : null;
+    return tempAddress ? <Marker position={tempAddress.coords} icon={customIcon} /> : null;
   };
 
   const MapCenter = () => {
     const map = useMap();
-    if (address) map.setView(address.coords, 14);
+    if (tempAddress) map.setView(tempAddress.coords, 14);
     return null;
   };
 
   return (
     <div className="relative w-full">
-      <MapContainer center={address?.coords} zoom={12} className="h-96" style={{ zIndex: 0 }}>
+      <MapContainer center={tempAddress?.coords} zoom={12} className="h-96" style={{ zIndex: 0 }}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <LocationMarker />
         <MapCenter />
@@ -85,10 +85,10 @@ export default function AddressSelector({ onSubmitLocation }: AddressSelectorPro
         <span className="text-sm">موقعیت من</span>
       </button>
 
-      {address?.value && (
+      {tempAddress?.value && (
         <div className="absolute flex items-center p-2 text-sm bg-[#FFFFFF] rounded-md shadow-md select-none gap-x-1 bottom-16 right-4 left-4 text-[#353535] min-h-9">
           <Image src={locationIcon} alt="location icon" />
-          <p>{address.value}</p>
+          <p>{tempAddress.value}</p>
         </div>
       )}
 

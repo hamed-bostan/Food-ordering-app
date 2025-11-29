@@ -15,8 +15,8 @@ type OrderContextType = {
   paymentMethod: PaymentMethodType;
   setPaymentMethod: (m: PaymentMethodType) => void;
 
-  address: AddressType | null;
-  setAddress: (a: AddressType | null) => void;
+  selectedAddress: AddressType | null;
+  setSelectedAddress: (a: AddressType | null) => void;
 
   notes: string | null;
   setNotes: (n: string | null) => void;
@@ -30,14 +30,14 @@ export function OrderProvider({ children }: { children: ReactNode }) {
   const [branch, _setBranch] = useState<BranchType | null>(null);
   const [deliveryMethod, _setDeliveryMethod] = useState<DeliveryMethodType>("courier");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodType>("online");
-  const [address, _setAddress] = useState<AddressType | null>(null);
+  const [selectedAddress, _setSelectedAddress] = useState<AddressType | null>(null);
   const [notes, setNotes] = useState<string | null>(null);
 
   const setDeliveryMethod = (method: DeliveryMethodType) => {
     _setDeliveryMethod(method);
 
     // Reset state according to rules
-    if (method === "pickup") _setAddress(null);
+    if (method === "pickup") _setSelectedAddress(null);
     if (method === "courier") _setBranch(null);
   };
 
@@ -46,11 +46,11 @@ export function OrderProvider({ children }: { children: ReactNode }) {
     else _setBranch(null);
   };
 
-  const setAddress = (a: AddressType | null) => {
+  const setSelectedAddress = (a: AddressType | null) => {
     if (isOrderDeliveryValid("courier", null, a)) {
-      _setAddress((prev) => (prev?.id !== a?.id ? a : prev));
+      _setSelectedAddress((prev) => (prev?.id !== a?.id ? a : prev));
     } else {
-      _setAddress(null);
+      _setSelectedAddress(null);
     }
   };
 
@@ -58,7 +58,7 @@ export function OrderProvider({ children }: { children: ReactNode }) {
     _setBranch(null);
     _setDeliveryMethod("courier");
     setPaymentMethod("cash");
-    _setAddress(null);
+    _setSelectedAddress(null);
     setNotes(null);
   };
 
@@ -71,8 +71,8 @@ export function OrderProvider({ children }: { children: ReactNode }) {
         setDeliveryMethod,
         paymentMethod,
         setPaymentMethod,
-        address,
-        setAddress,
+        selectedAddress,
+        setSelectedAddress,
         notes,
         setNotes,
         resetOrder,

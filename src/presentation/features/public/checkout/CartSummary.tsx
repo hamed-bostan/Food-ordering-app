@@ -14,55 +14,49 @@ import { useUserAddresses } from "@/hooks/useUserAddresses";
 import { useOrderSubmit } from "@/hooks/useOrderSubmit";
 import { useAddressLogic } from "@/hooks/useAddressLogic";
 import { calculateOrderTotal, calculateTotalDiscount } from "@/domain/order/order.rules";
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { notifyOrderWorkflow } from "@/infrastructure/apis/notifyOrderWorkflow.api";
 
 export default function CartSummary({ phoneNumber }: { phoneNumber: string }) {
   const dispatch = useDispatch();
   const { activeTab } = useCheckoutTab();
   const selectedItems = useSelector((state: RootState) => state.cart.selectedItems);
   const itemsCounter = useSelector((state: RootState) => state.cart.itemsCounter);
-  const { deliveryMethod, branch, paymentMethod, address, notes } = useOrderContext();
+  const { deliveryMethod, branch, paymentMethod, selectedAddress, notes } = useOrderContext();
   const { addresses, isLoading } = useUserAddresses();
-
   const { submitOrder } = useOrderSubmit();
-
   const { data: session } = useSession();
-
   // Automatically handle address selection and validation
   useAddressLogic(addresses, isLoading);
-
   const hasBorder = activeTab === 1 || activeTab === 2;
   const hasQuantitySelector = activeTab === 1 || activeTab === 2;
-
   const totalDiscount = calculateTotalDiscount(selectedItems);
   const totalPayable = calculateOrderTotal(selectedItems);
 
   const handleSubmitOrder = async () => {
-    const result = await submitOrder({
+    const order = await submitOrder({
       deliveryMethod,
       paymentMethod,
-      address,
+      selectedAddress,
       branch,
       notes,
       selectedItems,
-      addresses,
     });
 
-    if (result) {
-      try {
-        await axios.post("/api/send-order-to-n8n", {
-          customerPhone: phoneNumber,
-          totalPrice: calculateOrderTotal(selectedItems),
-          orderSummary: selectedItems.map((i) => `${i.quantity}x ${i.title}`).join(", "),
-        });
-      } catch (error) {
-        console.error("❌ Error sending data to n8n:", error);
-      }
+    if (!order) return;
 
-      dispatch(clear());
+    try {
+      await notifyOrderWorkflow({
+        customerPhone: phoneNumber,
+        totalPrice: calculateOrderTotal(selectedItems),
+        orderSummary: selectedItems.map((i) => `${i.quantity}x ${i.title}`).join(", "),
+      });
+    } catch (error) {
+      console.error("❌ Error notifying workflow:", error);
     }
+
+    dispatch(clear());
   };
 
   const handleClearCart = () => {
