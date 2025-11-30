@@ -44,7 +44,10 @@ export default function ProductUploader() {
   };
 
   const onSubmit = async (data: ProductCreateFormType) => {
-    if (!token || userRole !== "admin") return toast.error("Unauthorized");
+    const allowedRoles = ["admin", "root"];
+    if (!token || !allowedRoles.includes(userRole!)) {
+      return toast.error("Unauthorized");
+    }
 
     const file = selectedImage; // use the state instead of data.image
 
