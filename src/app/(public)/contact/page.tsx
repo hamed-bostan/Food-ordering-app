@@ -9,6 +9,7 @@ export default function ContactPage() {
       <ContactBranchList />
       <p>Hello world 2</p>
       <p>Hello world 3</p>
+      <p>Hello world 4</p>
     </section>
   );
 }
