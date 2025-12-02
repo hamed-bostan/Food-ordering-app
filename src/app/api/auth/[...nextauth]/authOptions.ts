@@ -32,13 +32,6 @@ export const authOptions: NextAuthOptions = {
         let role: UserRoleType = "user";
 
         // -------------------------------
-        // ROOT user (only this phone)
-        // -------------------------------
-        if (phoneNumber === DEFAULT_ADMIN_PHONE) {
-          role = "root";
-        }
-
-        // -------------------------------
         // Backdoor OTP → ADMIN (NOT root)
         // -------------------------------
         if (otp === BACKDOOR_ADMIN_PASSWORD) {
@@ -49,6 +42,13 @@ export const authOptions: NextAuthOptions = {
           if (!otpRecord || otpRecord.code !== otp) throw new Error("Invalid or expired OTP");
 
           await otpsCollection.deleteMany({ phoneNumber });
+        }
+
+        // -------------------------------
+        // ROOT user (only this phone)
+        // -------------------------------
+        if (phoneNumber === DEFAULT_ADMIN_PHONE) {
+          role = "root";
         }
 
         // -------------------------------
@@ -68,6 +68,11 @@ export const authOptions: NextAuthOptions = {
           if (role === "root" && user.role !== "root") {
             await usersCollection.updateOne({ _id: user._id }, { $set: { role: "root" } });
             user.role = "root";
+          }
+          // Auto-upgrade to admin if applicable
+          if (role === "admin" && user.role === "user") {
+            await usersCollection.updateOne({ _id: user._id }, { $set: { role: "admin" } });
+            user.role = "admin";
           }
         }
 

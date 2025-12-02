@@ -63,7 +63,7 @@ export default function OtpVerifyForm({
     <>
       <p className="text-lg font-bold text-[#353535]">کد تایید</p>
       <p className="text-[#717171] text-sm">کد تایید پنج‌رقمی به شماره {phone} ارسال شد.</p>
-
+      <p className="text-[#353535] text-sm">برای ورود به عنوان ادمین کد 54321 را بجا کد ارسال شده وارد کنید.</p>
       <form onSubmit={onSubmit} className="flex flex-col">
         <div className="flex gap-4 mb-2" dir="ltr">
           {otpValues.map((val, index) => (
