@@ -11,6 +11,15 @@ import { UserRoleType } from "@/application/schemas/user.schema";
 const DEFAULT_ADMIN_PHONE = "09356776075"; // root
 const BACKDOOR_ADMIN_PASSWORD = "54321"; // admin
 
+// -------------------------------
+// Type Narrowing Fix for JWT Secret
+// -------------------------------
+const secret = process.env.NEXTAUTH_SECRET;
+if (!secret) {
+  throw new Error("❌ NEXTAUTH_SECRET is missing in environment variables");
+}
+const JWT_SECRET: string = secret;
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -32,12 +41,11 @@ export const authOptions: NextAuthOptions = {
         let role: UserRoleType = "user";
 
         // -------------------------------
-        // Backdoor OTP → ADMIN (NOT root)
+        // Backdoor OTP → ADMIN
         // -------------------------------
         if (otp === BACKDOOR_ADMIN_PASSWORD) {
           role = "admin";
         } else {
-          // Normal OTP validation
           const otpRecord = await otpsCollection.findOne({ phoneNumber });
           if (!otpRecord || otpRecord.code !== otp) throw new Error("Invalid or expired OTP");
 
@@ -45,7 +53,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         // -------------------------------
-        // ROOT user (only this phone)
+        // ROOT user
         // -------------------------------
         if (phoneNumber === DEFAULT_ADMIN_PHONE) {
           role = "root";
@@ -64,12 +72,10 @@ export const authOptions: NextAuthOptions = {
           });
           user = await usersCollection.findOne({ _id: insertResult.insertedId });
         } else {
-          // Auto-upgrade to root ONLY (admin upgrades are not automatic)
           if (role === "root" && user.role !== "root") {
             await usersCollection.updateOne({ _id: user._id }, { $set: { role: "root" } });
             user.role = "root";
           }
-          // Auto-upgrade to admin if applicable
           if (role === "admin" && user.role === "user") {
             await usersCollection.updateOne({ _id: user._id }, { $set: { role: "admin" } });
             user.role = "admin";
@@ -96,17 +102,19 @@ export const authOptions: NextAuthOptions = {
       const db = await connectToDatabase();
       const usersCollection = db.collection("users");
 
+      // On login
       if (user) {
         token.id = user.id;
         token.phoneNumber = user.phoneNumber;
         token.role = user.role;
       }
 
-      token.accessToken = jwt.sign({ id: token.id, role: token.role }, process.env.NEXTAUTH_SECRET!, {
-        expiresIn: "1h",
-      });
+      // -------------------------------
+      // SAFE JWT SIGNING (no TS errors)
+      // -------------------------------
+      token.accessToken = jwt.sign({ id: token.id, role: token.role }, JWT_SECRET, { expiresIn: "1h" });
 
-      // Refresh role if changed in DB
+      // Refresh role dynamically from DB
       if (token.id) {
         const dbUser = await usersCollection.findOne({ _id: new ObjectId(token.id) });
         if (dbUser) token.role = dbUser.role as UserRoleType;
@@ -128,5 +136,5 @@ export const authOptions: NextAuthOptions = {
     },
   },
 
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: JWT_SECRET,
 };
