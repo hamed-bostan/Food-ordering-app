@@ -1,16 +1,24 @@
 # syntax = docker/dockerfile:1
 
-FROM node:20-alpine AS builder
+FROM node:20-alpine AS base
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# Deps stage: Install prod deps only
+FROM base AS deps
 WORKDIR /app
-
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --production --ignore-scripts  # Prune devDeps and skip scripts that build tests
 
+# Builder stage: Build with prod deps
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+ENV NODE_ENV=production
 RUN npm run build
 
 # Production image (tiny + secure)
-FROM node:20-alpine AS runner
+FROM base AS runner
 WORKDIR /app
 
 RUN addgroup --system --gid 1001 nodejs
