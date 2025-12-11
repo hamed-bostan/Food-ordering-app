@@ -1,7 +1,7 @@
 import HeaderMobile from "./HeaderMobile";
 import HeaderDesktop from "./HeaderDesktop";
 
-export default function Header() {
+export default function Headers() {
   return (
     <>
       <HeaderMobile />

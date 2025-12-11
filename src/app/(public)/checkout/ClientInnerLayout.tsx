@@ -5,9 +5,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import EmptyStateMessage from "@/presentation/components/EmptyStateMessage";
 import { CheckoutTabProvider, useCheckoutTab } from "@/context/checkout-tab.context";
-import Header from "@/presentation/features/public/checkout/shared/header";
 import CartSummary from "@/presentation/features/public/checkout/CartSummary";
 import { OrderProvider } from "@/context/OrderContext";
+import Headers from "@/presentation/features/public/checkout/shared/headers";
 
 type ClientInnerLayoutProps = {
   children: ReactNode;
@@ -37,7 +37,7 @@ function CheckoutContent({ children, phoneNumber }: ClientInnerLayoutProps) {
 
   return (
     <section className="px-5 py-6 lg:px-10 2xl:px-28">
-      <Header />
+      <Headers />
       {isEmptyCart ? (
         <EmptyStateMessage
           button={true}
