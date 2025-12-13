@@ -1,3 +1,5 @@
+"use client";
+
 import CustomButton from "@/presentation/components/CustomButton";
 import Link from "next/link";
 
