@@ -6,7 +6,7 @@
     "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.9.1",
@@ -22,10 +22,10 @@
     "jsonwebtoken": "^9.0.2",
     "leaflet": "^1.9.4",
     "mongodb": "^6.16.0",
-    "next": "15.3.1",
+    "next": "16.0.10",
     "next-auth": "^4.24.11",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
     "react-hook-form": "^7.65.0",
     "react-leaflet": "^5.0.0",
     "react-redux": "^9.2.0",
@@ -47,18 +47,23 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/leaflet": "^1.9.17",
     "@types/node": "^20",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
     "@types/stylis": "^4.2.7",
     "@typescript-eslint/eslint-plugin": "^8.49.0",
     "@typescript-eslint/parser": "^8.49.0",
     "dotenv": "^17.2.3",
     "eslint": "^9.39.1",
+    "eslint-config-next": "^16.0.10",
     "eslint-define-config": "^2.1.0",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3"
   }
 }
