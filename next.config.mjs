@@ -6,12 +6,12 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "avatars.githubusercontent.com",
-        pathname: "/",
+        pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "ourbsjovbidvokapxslo.supabase.co",
-        pathname: "/storage/v1/object/public/",
+        pathname: "/storage/v1/object/public/**",
       },
     ],
   },
