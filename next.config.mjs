@@ -1,3 +1,4 @@
+import path from "path";
 const nextConfig = {
   output: "standalone",
   images: {
@@ -5,12 +6,12 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "avatars.githubusercontent.com",
-        pathname: "/**",
+        pathname: "/",
       },
       {
         protocol: "https",
         hostname: "ourbsjovbidvokapxslo.supabase.co",
-        pathname: "/storage/v1/object/public/**",
+        pathname: "/storage/v1/object/public/",
       },
     ],
   },
@@ -30,8 +31,9 @@ const nextConfig = {
         stream: false,
       };
     }
+    // Add alias for '@' to resolve to 'src' directory
+    config.resolve.alias["@"] = path.resolve("./src");
     return config;
   },
 };
-
 export default nextConfig;
