@@ -17,6 +17,7 @@ export default function Landing() {
       {/* <ChatBox /> */}
       <p>Hello world 87</p>
       <p>Hello world 100</p>
+      <p>Hello world 200</p>
     </>
   );
 }
