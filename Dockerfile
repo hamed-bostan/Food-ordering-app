@@ -7,7 +7,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 FROM base AS deps
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --production --ignore-scripts  # Prune devDeps and skip scripts that build tests
+RUN npm ci --production --ignore-scripts
 
 # Builder stage: Build with prod deps
 FROM base AS builder
