@@ -1,8 +1,12 @@
 import axios from "axios";
 
+const isServer = typeof window === "undefined";
+
 export const api = axios.create({
-  baseURL: typeof window !== "undefined" ? "/api" : process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true, // optional for JWT, harmless to leave
+  baseURL: isServer
+    ? "http://127.0.0.1:3000/api" // internal call inside container
+    : "/api", // browser
+  withCredentials: true,
 });
 
 // Optional: response interceptor
