@@ -5,13 +5,10 @@ ENV NEXT_TELEMETRY_DISABLED=1
 WORKDIR /app
 
 # -------------------------
-# Deps: install ALL deps
+# Dependencies
 # -------------------------
 FROM base AS deps
-
-# Add libc6-compat for Alpine compatibility with some Node packages
 RUN apk add --no-cache libc6-compat
-
 COPY package.json package-lock.json ./
 RUN npm ci
 
@@ -20,22 +17,30 @@ RUN npm ci
 # -------------------------
 FROM base AS builder
 
+# 🔑 Build-time secrets (required by NextAuth during build)
+ARG NEXTAUTH_SECRET
+ARG NEXTAUTH_URL
+
+ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+ENV NEXTAUTH_URL=$NEXTAUTH_URL
+ENV NODE_ENV=production
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-ENV NODE_ENV=production
+
 RUN npm run build
 
 # -------------------------
 # Runner (small & secure)
 # -------------------------
 FROM node:24-alpine AS runner
-
 WORKDIR /app
+
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs \
-  && adduser --system --uid 1001 nextjs
+ && adduser --system --uid 1001 nextjs
 
 # Standalone output
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
