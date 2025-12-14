@@ -8,6 +8,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       packages: write
@@ -28,6 +29,9 @@ jobs:
 
       - name: Build & Push Image
         uses: docker/build-push-action@v5
+        env:
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
         with:
           context: .
           push: true
@@ -43,18 +47,14 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # Login to GHCR on the server (using the same token that built the image)
             echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u hamed-bostan --password-stdin
 
-            # Go to app directory and update from repo
             cd /var/www/nearfood
-            git pull origin main  # Pull latest files (e.g., docker-compose.yml updates)
+            git pull origin main
 
-            # Pull new image and restart
             docker compose pull
             docker compose up -d --force-recreate --remove-orphans
 
-            # Clean old images
             docker image prune -f
 
-            echo "Deploy completed successfully!"
+            echo "✅ Deploy completed successfully!"
