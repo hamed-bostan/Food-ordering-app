@@ -2,9 +2,8 @@ import "@/app/globals.css";
 import AuthProvider from "@/app/_providers/AuthProvider";
 import ThemeRegistry from "@/lib/theme/ThemeRegistry";
 import { ReactNode } from "react";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { AppProviders } from "./_providers/AppProviders";
+import ToastProvider from "./_providers/ToastProvider";
 
 export const metadata = {
   title: "Food ordering app",
@@ -27,7 +26,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <AppProviders>{children}</AppProviders>
           </AuthProvider>
         </ThemeRegistry>
-        <ToastContainer rtl position="top-center" />
+        <ToastProvider />
       </body>
     </html>
   );
