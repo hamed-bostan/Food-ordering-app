@@ -3,6 +3,7 @@ name: Deploy Staging
 on:
   push:
     branches: [develop]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -20,21 +21,29 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: docker/setup-buildx-action@v3
+
       - uses: docker/build-push-action@v5
         with:
+          context: .
           push: true
           tags: ghcr.io/hamed-bostan/nearfood:staging
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           build-args: |
             NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
             NEXTAUTH_URL=https://staging.nearfood.ir
 
       - name: Deploy to VPS
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.VPS_HOST }}
           username: deploy
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u hamed-bostan --password-stdin
             cd /var/www/nearfood
+            git pull origin develop
             docker compose -f docker-compose.staging.yml pull
-            docker compose -f docker-compose.staging.yml up -d
+            docker compose -f docker-compose.staging.yml up -d --force-recreate --remove-orphans
+            docker image prune -f
