@@ -1,38 +1,37 @@
 import { z } from "zod";
+import { BaseUserSchema } from "./user.schema";
 import { AddressSchema } from "./address.schema";
-import { AddressCreateSchema } from "./address.form.schema";
+import { AddressUpdateSchema } from "./address.form.schema";
 
-export const userProfileSchema = z.object({
-  name: z.string().optional().or(z.literal("")),
-  phoneNumber: z
-    .string()
-    .regex(/^\d{11}$/, "شماره تماس باید 11 رقم عدد باشد.")
-    .optional()
-    .or(z.literal("")),
-  email: z.string().email("ایمیل معتبر وارد کنید").optional().or(z.literal("")),
-  image: z.string().optional(),
-  address: z.array(AddressSchema).optional().nullable(),
+export const userProfileSchema = BaseUserSchema.pick({
+  name: true,
+  phoneNumber: true,
+  email: true,
+  image: true,
+  address: true,
+}).extend({
+  name: BaseUserSchema.shape.name.or(z.literal("")),
+  phoneNumber: BaseUserSchema.shape.phoneNumber.optional().or(z.literal("")),
+  email: BaseUserSchema.shape.email
+    .or(z.literal(""))
+    .refine((val) => !val || z.string().email("Invalid email").safeParse(val).success, { message: "Invalid email" }),
+  image: BaseUserSchema.shape.image.optional(),
+  address: z.array(AddressSchema).optional(),
 });
-
 export type UserProfileType = z.infer<typeof userProfileSchema>;
 
 export const adminProfileSchema = userProfileSchema.extend({
   role: z.enum(["user", "admin", "root"]).optional(),
 });
-
 export type AdminProfileType = z.infer<typeof adminProfileSchema>;
 
-export const adminFormProfileSchema = z.object({
-  name: z.string().optional().or(z.literal("")),
+// Override phoneNumber to make it required (no empty allowed)
+export const adminFormProfileSchema = userProfileSchema.omit({ phoneNumber: true }).extend({
   phoneNumber: z
     .string()
-    .regex(/^\d{11}$/, "شماره تماس باید 11 رقم عدد باشد.")
-    .optional()
-    .or(z.literal("")),
-  email: z.string().email("ایمیل معتبر وارد کنید").optional().or(z.literal("")),
-  image: z.string().optional(),
-  address: z.array(AddressCreateSchema).optional().nullable(),
+    .min(1, "Phone number cannot be empty")
+    .regex(/^\d{11}$/, "Phone number must be 11 digits"),
+  address: z.array(AddressUpdateSchema).optional(),
   role: z.enum(["user", "admin", "root"]).optional(),
 });
-
 export type AdminFormProfileType = z.infer<typeof adminFormProfileSchema>;

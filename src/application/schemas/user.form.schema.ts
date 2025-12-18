@@ -1,18 +1,17 @@
 import { z } from "zod";
-import { UserRoleEnum } from "./user.schema";
+import { BaseUserSchema, UserRoleEnum } from "./user.schema";
+import { AddressCreateSchema, AddressUpdateSchema } from "./address.form.schema";
 
-const optionalString = (schema: z.ZodTypeAny) =>
-  z.preprocess((val) => (val === "" ? null : val), schema.nullable().optional());
-
-export const UserCreateFormSchema = z.object({
-  phoneNumber: z.string().min(10, "Phone number is required"),
-  role: UserRoleEnum.default("user"),
-  name: optionalString(z.string()),
-  email: optionalString(z.string().email("Invalid email")),
+export const UserCreateFormSchema = BaseUserSchema.extend({
   image: z.instanceof(File).optional(),
-});
+  address: z.array(AddressCreateSchema).optional(),
+})
+  .omit({ role: true })
+  .extend({ role: UserRoleEnum.default("user") });
 
-export const UserUpdateFormSchema = UserCreateFormSchema.partial();
+export const UserUpdateFormSchema = UserCreateFormSchema.partial().extend({
+  address: z.array(AddressUpdateSchema).optional(),
+});
 
 export type UserCreateFormType = z.infer<typeof UserCreateFormSchema>;
 export type UserUpdateFormType = z.infer<typeof UserUpdateFormSchema>;

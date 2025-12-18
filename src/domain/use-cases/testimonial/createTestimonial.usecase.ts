@@ -1,41 +1,39 @@
 import { TestimonialType } from "@/application/schemas/testimonial.schema";
-import { insertTestimonialToDb } from "@/infrastructure/repositories/testimonials.repository";
-import { uploadImageToStorage } from "../storage/uploadImage";
-import { TestimonialCreateDto } from "@/application/dto/testimonial/testimonial.dto";
+import { ITestimonialRepository } from "@/domain/interfaces/ITestimonialRepository";
+import { IImageStorageGateway } from "@/domain/interfaces/IImageStorageGateway";
+
+const TESTIMONIALS_BUCKET = "food-images";
+const TESTIMONIALS_FOLDER = "testimonials";
 
 export async function createTestimonialWithImageUseCase(
-  data: TestimonialCreateDto,
+  data: { name: string; comment: string },
+  repository: ITestimonialRepository,
+  storage: IImageStorageGateway,
   imageFile?: File
 ): Promise<TestimonialType> {
-  try {
-    // Upload image if provided
-    let imageUrl = "";
-    if (imageFile) {
-      imageUrl = await uploadImageToStorage(imageFile, "testimonials", "testimonials");
-    }
-
-    // Prepare testimonial to insert (DB stores createdAt as string)
-    const createdAt = new Date(); // keep Date object for domain entity
-    const testimonialToInsert = {
-      ...data,
-      image: imageUrl,
-      createdAt: createdAt.toISOString(), // store as string in DB
-    };
-
-    // Insert into DB
-    const insertedId = await insertTestimonialToDb(testimonialToInsert);
-
-    // Return fully typed domain entity with Date object
-    const testimonial: TestimonialType = {
-      ...data,
-      id: insertedId.toString(),
-      image: imageUrl,
-      createdAt, // keep as Date for domain
-    };
-
-    return testimonial;
-  } catch (error) {
-    console.error("❌ Error in createTestimonialWithImageUseCase:", error);
-    throw error;
+  let imageUrl = "";
+  if (imageFile) {
+    imageUrl = await storage.uploadImage(imageFile, TESTIMONIALS_BUCKET, TESTIMONIALS_FOLDER);
   }
+
+  const createdAt = new Date();
+
+  const testimonialToInsert = {
+    name: data.name,
+    comment: data.comment,
+    image: imageUrl,
+    createdAt: createdAt.toISOString(),
+  };
+
+  const insertedId = await repository.insertTestimonial(testimonialToInsert);
+
+  const testimonial: TestimonialType = {
+    id: insertedId,
+    name: data.name,
+    comment: data.comment,
+    image: imageUrl,
+    createdAt,
+  };
+
+  return testimonial;
 }

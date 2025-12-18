@@ -1,10 +1,12 @@
+import { z } from "zod";
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/middleware/requireAdmin";
 import { updateTestimonialUseCase } from "@/domain/use-cases/testimonial/updateTestimonial.usecase";
 import { deleteTestimonialUseCase } from "@/domain/use-cases/testimonial/deleteTestimonial.usecase";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 import { TestimonialUpdateFormSchema } from "@/application/schemas/testimonial.form.schema";
-import { TestimonialUpdateDto } from "@/application/dto/testimonial/testimonial.dto";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
+import { TestimonialRepository } from "@/infrastructure/repositories/testimonials.repository";
+import { ImageStorageGateway } from "@/infrastructure/storage/ImageStorageGateway";
 
 /**
  * PUT /api/admin/testimonials/:testimonialId
@@ -15,38 +17,39 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ testimo
     await requireAdmin(req);
     const { testimonialId } = await context.params;
 
-    let validatedFields: TestimonialUpdateDto;
+    let fields: { name?: string; comment?: string } = {};
     let newImage: File | undefined;
 
     const contentType = req.headers.get("content-type") ?? "";
 
     if (contentType.includes("multipart/form-data")) {
       const formData = await req.formData();
-      const rawFields: Record<string, unknown> = {};
+      const rawFields: Record<string, string> = {};
 
       for (const [key, value] of formData.entries()) {
         if (key !== "image" && typeof value === "string") rawFields[key] = value;
       }
 
-      validatedFields = TestimonialUpdateFormSchema.parse(rawFields);
+      fields = TestimonialUpdateFormSchema.parse(rawFields);
       const imageFile = formData.get("image");
       if (imageFile instanceof File) newImage = imageFile;
     } else {
       const body = await req.json();
-      validatedFields = TestimonialUpdateFormSchema.parse(body);
+      fields = TestimonialUpdateFormSchema.parse(body);
     }
 
-    const updated = await updateTestimonialUseCase(testimonialId, validatedFields, newImage);
+    const repository = new TestimonialRepository();
+    const storage = new ImageStorageGateway();
+    const updated = await updateTestimonialUseCase(testimonialId, fields, repository, storage, newImage);
     return NextResponse.json({ message: "Testimonial updated successfully", result: updated }, { status: 200 });
   } catch (error: unknown) {
-    if (error instanceof TestimonialUpdateFormSchema.constructor) {
-      // Or z.ZodError
+    if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: "ValidationError", message: "Invalid input", details: (error as any).errors },
+        { error: "ValidationError", message: "Invalid input", details: error.errors },
         { status: 400 }
       );
     }
-    return apiErrorHandler(error, "Admin Testimonials API - PUT");
+    return apiResponseErrorHandler(error, "Admin Testimonials API - PUT");
   }
 }
 
@@ -58,9 +61,11 @@ export async function DELETE(req: NextRequest, context: { params: Promise<{ test
     await requireAdmin(req);
     const { testimonialId } = await context.params;
 
-    await deleteTestimonialUseCase(testimonialId);
+    const repository = new TestimonialRepository();
+    const storage = new ImageStorageGateway();
+    await deleteTestimonialUseCase(testimonialId, repository, storage);
     return NextResponse.json({ message: "Testimonial deleted successfully" }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Admin Testimonials API - DELETE");
+    return apiResponseErrorHandler(error, "Admin Testimonials API - DELETE");
   }
 }

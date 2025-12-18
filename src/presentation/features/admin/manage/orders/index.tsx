@@ -4,24 +4,38 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { OrderType } from "@/application/schemas/order.schema";
 import OrderRow from "./OrderRow";
-import { deleteOrderAdmin } from "@/infrastructure/apis/admin/order.api";
+import { useSession } from "next-auth/react";
+import { UpdateOrderFormType } from "@/application/schemas/order.form.schema";
 
-type OrdersTableProps = {
+export default function OrdersTable({
+  initialOrders,
+  deleteAction,
+  updateAction,
+}: {
   initialOrders: OrderType[];
-  token: string;
-};
-
-export default function OrdersTable({ initialOrders, token }: OrdersTableProps) {
+  deleteAction: (orderId: string) => Promise<string>;
+  updateAction: (orderId: string, data: UpdateOrderFormType) => Promise<OrderType>;
+}) {
+  const session = useSession();
   const [orders, setOrders] = useState<OrderType[]>(initialOrders);
 
+  const handleOrderUpdated = (updatedOrder: OrderType) => {
+    setOrders((prev) => prev.map((o) => (o.id === updatedOrder.id ? updatedOrder : o)));
+  };
+
   const handleOrderRemoved = async (orderId: string) => {
+    const removedOrder = orders.find((o) => o.id === orderId);
+    setOrders((prev) => prev.filter((o) => o.id !== orderId)); // Optimistic
+
     try {
-      const res = await deleteOrderAdmin(orderId, token);
-      setOrders((prev) => prev.filter((o) => o.id !== orderId));
-      toast.success(res.message);
+      const message = await deleteAction(orderId);
+      toast.success(message);
     } catch (error: unknown) {
+      if (removedOrder) {
+        setOrders((prev) => [...prev, removedOrder].sort((a, b) => a.id.localeCompare(b.id))); // Rollback
+      }
       if (error instanceof Error) toast.error(error.message);
-      else toast.error("Failed to remove order");
+      else toast.error("Failed to delete order");
     }
   };
 
@@ -41,7 +55,14 @@ export default function OrdersTable({ initialOrders, token }: OrdersTableProps) 
       </thead>
       <tbody>
         {orders.map((order) => (
-          <OrderRow key={order.id} order={order} onOrderRemoved={handleOrderRemoved} />
+          <OrderRow
+            key={order.id}
+            userRole={session?.data?.user?.role ?? ""}
+            order={order}
+            updateAction={updateAction}
+            onOrderUpdated={handleOrderUpdated}
+            onOrderRemoved={handleOrderRemoved}
+          />
         ))}
       </tbody>
     </table>

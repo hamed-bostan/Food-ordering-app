@@ -3,7 +3,8 @@ import { z } from "zod";
 import { CreateOrderDtoSchema } from "@/application/dto/orders/order.dto";
 import { fetchOrdersUseCase } from "@/domain/use-cases/orders/fetchOrders.usecase";
 import { createOrderUseCase } from "@/domain/use-cases/orders/createOrder.usecase";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
+import { OrderRepository } from "@/infrastructure/repositories/order.repository";
 
 /**
  * POST /api/orders
@@ -16,8 +17,10 @@ export async function POST(req: NextRequest) {
     // Validate DTO
     const validated = CreateOrderDtoSchema.parse(body);
 
+    const repository = new OrderRepository();
+
     // Call domain use case
-    const newOrder = await createOrderUseCase(validated);
+    const newOrder = await createOrderUseCase(validated, repository);
 
     return NextResponse.json({ message: "Order created successfully", result: newOrder }, { status: 201 });
   } catch (error: unknown) {
@@ -27,7 +30,7 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    return apiErrorHandler(error, "Orders API - POST");
+    return apiResponseErrorHandler(error, "Orders API - POST");
   }
 }
 
@@ -37,9 +40,10 @@ export async function POST(req: NextRequest) {
  */
 export async function GET() {
   try {
-    const orders = await fetchOrdersUseCase();
+    const repository = new OrderRepository();
+    const orders = await fetchOrdersUseCase(repository);
     return NextResponse.json({ result: orders }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Orders API - GET");
+    return apiResponseErrorHandler(error, "Orders API - GET");
   }
 }

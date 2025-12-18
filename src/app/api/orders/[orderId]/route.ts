@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-
-import { fetchOrderByIdUseCase } from "@/domain/use-cases/orders/orderById.usecase";
 import { UpdateOrderDtoSchema } from "@/application/dto/orders/order.dto";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
+import { updateOrderUseCase } from "@/domain/use-cases/orders/updateOrder.usecase";
+import { OrderRepository } from "@/infrastructure/repositories/order.repository";
+import { fetchOrderByIdUseCase } from "@/domain/use-cases/orders/orderById.usecase";
 
 /**
  * GET /api/orders/:orderId
@@ -13,7 +14,8 @@ export async function GET(req: NextRequest, context: { params: Promise<{ orderId
   try {
     const { orderId } = await context.params;
 
-    const order = await fetchOrderByIdUseCase(orderId);
+    const repository = new OrderRepository();
+    const order = await fetchOrderByIdUseCase(orderId, repository);
 
     if (!order) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
@@ -21,7 +23,7 @@ export async function GET(req: NextRequest, context: { params: Promise<{ orderId
 
     return NextResponse.json({ result: order }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Orders API - GET /:orderId");
+    return apiResponseErrorHandler(error, "Orders API - GET /:orderId");
   }
 }
 
@@ -36,14 +38,14 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ orderId
 
     const validated = UpdateOrderDtoSchema.parse(body);
 
-    // TODO: implement updateOrderUseCase
-    // const updatedOrder = await updateOrderUseCase(orderId, validated);
+    const repository = new OrderRepository();
+    const updatedOrder = await updateOrderUseCase(orderId, validated, repository);
 
-    return NextResponse.json({ message: "Order update not yet implemented", result: validated }, { status: 200 });
+    return NextResponse.json({ message: "Order updated successfully", result: updatedOrder }, { status: 200 });
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: "ValidationError", details: error.errors }, { status: 400 });
     }
-    return apiErrorHandler(error, "Orders API - PUT /:orderId");
+    return apiResponseErrorHandler(error, "Orders API - PUT /:orderId");
   }
 }

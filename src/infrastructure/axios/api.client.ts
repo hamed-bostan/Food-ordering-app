@@ -4,7 +4,7 @@ const isServer = typeof window === "undefined";
 
 export const api = axios.create({
   baseURL: isServer
-    ? "http://127.0.0.1:3000/api" // internal call inside container
+    ? "http://localhost:3000/api" // internal call inside container
     : "/api", // browser
   withCredentials: true,
 });

@@ -1,29 +1,36 @@
 import { ProductType } from "@/application/schemas/product.schema";
-import { uploadImageToStorage } from "../storage/uploadImage";
-import { insertProductToDb } from "@/infrastructure/repositories/product.repository";
 import { ProductCreateDto } from "@/application/dto/products/product.dto";
-import { ProductRecordInsert } from "@/infrastructure/db/products/product.db.types";
+import { IProductRepository } from "@/domain/interfaces/IProductRepository";
+import { IImageStorageGateway } from "@/domain/interfaces/IImageStorageGateway";
 
-/**
- * Create product with image
- */
-export async function createProductWithImageUseCase(data: ProductCreateDto, imageFile?: File): Promise<ProductType> {
+const PRODUCTS_BUCKET = "food-images";
+const PRODUCTS_FOLDER = "products";
+
+export async function createProductWithImageUseCase(
+  data: ProductCreateDto,
+  repository: IProductRepository,
+  storage: IImageStorageGateway,
+  imageFile?: File // Optional last
+): Promise<ProductType> {
   let imageUrl = "";
   if (imageFile) {
-    imageUrl = await uploadImageToStorage(imageFile, "food-images", "products");
+    imageUrl = await storage.uploadImage(imageFile, PRODUCTS_BUCKET, PRODUCTS_FOLDER);
   }
 
   const createdAt = new Date();
-  const productToInsert: ProductRecordInsert = {
-    ...data,
+  // Omit 'image' (which could be File | undefined) to avoid type conflict
+  const { image, ...dataWithoutImage } = data;
+  const productToInsert = {
+    ...dataWithoutImage,
     image: imageUrl,
     createdAt: createdAt.toISOString(),
   };
 
-  const insertedId = await insertProductToDb(productToInsert);
+  const insertedId = await repository.insertProduct(productToInsert);
 
+  // Use dataWithoutImage for the final product to ensure no File type leaks in
   const product: ProductType = {
-    ...data,
+    ...dataWithoutImage,
     id: insertedId,
     image: imageUrl,
     createdAt,

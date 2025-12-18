@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EditIcon from "@mui/icons-material/Edit";
@@ -9,18 +8,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
 import { ProductType } from "@/application/schemas/product.schema";
-import { updateProductAdmin } from "@/infrastructure/apis/admin/product.api";
 import { ProductUpdateFormSchema, ProductUpdateFormType } from "@/application/schemas/product.form.schema";
 
 type ProductsRowProps = {
   product: ProductType;
-  token: string;
-  onProductUpdated: (product: ProductType) => void;
+  onUpdateRequest: (productId: string, data: ProductUpdateFormType) => Promise<void>;
   onProductRemoved: (productId: string) => void;
   userRole: string;
 };
 
-export default function ProductRow({ product, token, onProductUpdated, onProductRemoved, userRole }: ProductsRowProps) {
+export default function ProductRow({ product, onUpdateRequest, onProductRemoved, userRole }: ProductsRowProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
@@ -30,7 +27,7 @@ export default function ProductRow({ product, token, onProductUpdated, onProduct
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<ProductUpdateFormType>({
     resolver: zodResolver(ProductUpdateFormSchema),
     defaultValues: {
@@ -46,32 +43,16 @@ export default function ProductRow({ product, token, onProductUpdated, onProduct
   });
 
   const onSubmit = async (data: ProductUpdateFormType) => {
-    try {
-      if (!isRoot) return; // double protection
+    if (!isRoot) return;
 
-      const { image, ...fields } = data;
-      let payload: Omit<ProductUpdateFormType, "image"> | FormData = fields;
-
-      if (selectedImage) {
-        const formData = new FormData();
-        Object.entries(fields).forEach(([key, value]) => {
-          if (value !== undefined) formData.append(key, String(value));
-        });
-        formData.append("image", selectedImage);
-        payload = formData;
-      }
-
-      const updated = await updateProductAdmin(product.id, payload, token);
-
-      onProductUpdated(updated.result);
-      setIsEditing(false);
-      setSelectedImage(null);
-      reset();
-      toast.success("Product updated successfully");
-    } catch (error: unknown) {
-      if (error instanceof Error) toast.error(error.message);
-      else toast.error("Failed to update product");
+    const payload = { ...data };
+    if (selectedImage) {
+      payload.image = selectedImage; // File for upload
     }
+    await onUpdateRequest(product.id, payload);
+    setIsEditing(false); // Toggle off on success (error handled in table)
+    setSelectedImage(null);
+    reset();
   };
 
   const handleCancel = () => {
@@ -97,7 +78,6 @@ export default function ProductRow({ product, token, onProductUpdated, onProduct
         )}
       </td>
 
-      {/* Title */}
       <td className="p-2 border">
         {isEditing ? (
           <>
@@ -109,7 +89,6 @@ export default function ProductRow({ product, token, onProductUpdated, onProduct
         )}
       </td>
 
-      {/* Price */}
       <td className="p-2 border">
         {isEditing ? (
           <>
@@ -125,7 +104,6 @@ export default function ProductRow({ product, token, onProductUpdated, onProduct
         )}
       </td>
 
-      {/* Discount */}
       <td className="p-2 border">
         {isEditing ? (
           <>
@@ -141,7 +119,6 @@ export default function ProductRow({ product, token, onProductUpdated, onProduct
         )}
       </td>
 
-      {/* Category */}
       <td className="p-2 border">
         {isEditing ? (
           <>
@@ -156,7 +133,7 @@ export default function ProductRow({ product, token, onProductUpdated, onProduct
       <td className="p-2 text-center border">
         {isRoot && isEditing && (
           <form onSubmit={handleSubmit(onSubmit)} className="flex gap-2">
-            <button type="submit" disabled={isSubmitting} className="text-green-600">
+            <button type="submit" className="text-green-600">
               <SaveIcon fontSize="small" />
             </button>
             <button type="button" onClick={handleCancel} className="text-gray-600">

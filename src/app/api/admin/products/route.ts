@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 import { requireAdmin } from "@/middleware/requireAdmin";
 import { createProductWithImageUseCase } from "@/domain/use-cases/products/createProduct.usecase";
 import { fetchProducts } from "@/domain/use-cases/products/fetchProducts.usecase";
 import { ProductCreateDtoSchema } from "@/application/dto/products/product.dto";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
+import { ProductRepository } from "@/infrastructure/repositories/product.repository";
+import { ImageStorageGateway } from "@/infrastructure/storage/ImageStorageGateway";
 
 /**
  * GET /api/admin/products
@@ -13,10 +15,11 @@ export async function GET(req: NextRequest) {
   try {
     await requireAdmin(req); // Admin or root
 
-    const products = await fetchProducts();
+    const repository = new ProductRepository();
+    const products = await fetchProducts(repository);
     return NextResponse.json({ result: products }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Admin Products API - GET");
+    return apiResponseErrorHandler(error, "Admin Products API - GET");
   }
 }
 
@@ -49,10 +52,12 @@ export async function POST(req: NextRequest) {
       mostsale: fields.mostsale === "true" || fields.mostsale === true,
     });
 
-    const createdProduct = await createProductWithImageUseCase(validatedFields, imageFile);
+    const repository = new ProductRepository();
+    const storage = new ImageStorageGateway();
+    const createdProduct = await createProductWithImageUseCase(validatedFields, repository, storage, imageFile);
 
     return NextResponse.json({ message: "Product created successfully", result: createdProduct }, { status: 201 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Admin Products API - POST");
+    return apiResponseErrorHandler(error, "Admin Products API - POST");
   }
 }

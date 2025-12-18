@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 import { fetchTestimonialsUseCase } from "@/domain/use-cases/testimonial/fetchTestimonials.usecase";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
+import { TestimonialRepository } from "@/infrastructure/repositories/testimonials.repository";
 
 /**
  * GET /api/testimonials
@@ -8,9 +9,10 @@ import { fetchTestimonialsUseCase } from "@/domain/use-cases/testimonial/fetchTe
 
 export async function GET() {
   try {
-    const testimonials = await fetchTestimonialsUseCase();
+    const repository = new TestimonialRepository();
+    const testimonials = await fetchTestimonialsUseCase(repository);
     return NextResponse.json({ message: "Testimonials fetched successfully", result: testimonials }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Testimonials API - GET");
+    return apiResponseErrorHandler(error, "Testimonials API - GET");
   }
 }

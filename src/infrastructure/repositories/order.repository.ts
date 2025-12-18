@@ -1,94 +1,51 @@
 import { ObjectId } from "mongodb";
 import { connectToDatabase } from "@/infrastructure/db/mongodb";
 import { mapDbOrderToDomain } from "../mappers/order.mapper";
-import { CreateOrderDtoType } from "@/application/dto/orders/order.dto";
 import { OrderType } from "@/application/schemas/order.schema";
+import { IOrderRepository } from "@/domain/interfaces/IOrderRepository";
+import {
+  CreateOrderDtoType as OrderCreateInput,
+  UpdateOrderDtoType as OrderUpdateInput,
+} from "@/application/dto/orders/order.dto";
 
-export const collectionName = "orders";
+export class OrderRepository implements IOrderRepository {
+  private collectionName = "orders";
 
-type NewOrderForDb = Omit<CreateOrderDtoType, "id"> & {
-  _id?: ObjectId;
-  createdAt: string;
-};
-
-/**
- * Insert a new order into MongoDB
- */
-export async function insertOrderToDb(order: NewOrderForDb): Promise<string> {
-  try {
+  async insertOrder(order: OrderCreateInput): Promise<string> {
     const db = await connectToDatabase();
-    const result = await db.collection(collectionName).insertOne(order);
-    return result.insertedId.toString(); // Convert ObjectId to string
-  } catch (error) {
-    console.error("❌ [Repository] Failed to insert order:", error);
-    throw new Error("Database error while inserting order");
+    const insertData = { ...order, createdAt: new Date().toISOString() };
+    const result = await db.collection(this.collectionName).insertOne(insertData);
+    return result.insertedId.toString();
   }
-}
 
-/**
- * Fetch all orders
- */
-export async function fetchOrdersFromDb(): Promise<OrderType[]> {
-  try {
+  async fetchOrders(): Promise<OrderType[]> {
     const db = await connectToDatabase();
-    const docs = await db.collection(collectionName).find({}).toArray();
-
+    const docs = await db.collection(this.collectionName).find({}).toArray();
     return docs.map(mapDbOrderToDomain);
-  } catch (error) {
-    console.error("❌ [Repository] Failed to fetch orders:", error);
-    throw new Error("Database error while fetching orders");
   }
-}
 
-/**
- * Fetch a single order by ID
- */
-export async function findOrderByIdInDb(orderId: string): Promise<OrderType | null> {
-  try {
-    if (!ObjectId.isValid(orderId)) throw new Error("Invalid order ID");
-
+  async fetchOrderById(id: string): Promise<OrderType | null> {
+    if (!ObjectId.isValid(id)) throw new Error("Invalid order ID");
     const db = await connectToDatabase();
-    const doc = await db.collection(collectionName).findOne({ _id: new ObjectId(orderId) });
-
+    const doc = await db.collection(this.collectionName).findOne({ _id: new ObjectId(id) });
     return doc ? mapDbOrderToDomain(doc) : null;
-  } catch (error) {
-    console.error(`❌ [Repository] Failed to fetch order with ID ${orderId}:`, error);
-    throw new Error("Database error while fetching order by ID");
-  }
-}
-
-/**
- * Update an existing order by ID
- */
-export async function updateOrderInDb(orderId: string, updatedFields: Partial<OrderType>): Promise<OrderType> {
-  if (!ObjectId.isValid(orderId)) throw new Error("Invalid ObjectId");
-
-  const db = await connectToDatabase();
-
-  const result = await db.collection(collectionName).updateOne({ _id: new ObjectId(orderId) }, { $set: updatedFields });
-
-  if (result.matchedCount === 0) {
-    throw new Error("Record not found in database");
   }
 
-  const updatedDoc = await db.collection(collectionName).findOne({ _id: new ObjectId(orderId) });
-  if (!updatedDoc) {
-    throw new Error("Failed to retrieve updated record");
+  async updateOrder(id: string, update: OrderUpdateInput): Promise<OrderType> {
+    if (!ObjectId.isValid(id)) throw new Error("Invalid order ID");
+    const db = await connectToDatabase();
+    const result = await db.collection(this.collectionName).updateOne({ _id: new ObjectId(id) }, { $set: update });
+    if (result.matchedCount === 0) throw new Error("Order not found");
+    const updatedDoc = await db.collection(this.collectionName).findOne({ _id: new ObjectId(id) });
+    if (!updatedDoc) throw new Error("Order not found after update");
+    return mapDbOrderToDomain(updatedDoc);
   }
 
-  return mapDbOrderToDomain(updatedDoc);
-}
-
-/**
- * Delete an order by ID
- */
-export async function deleteOrderFromDb(orderId: string): Promise<boolean> {
-  if (!ObjectId.isValid(orderId)) throw new Error("Invalid order ID");
-
-  const db = await connectToDatabase();
-  const result = await db.collection(collectionName).deleteOne({ _id: new ObjectId(orderId) });
-
-  if (result.deletedCount === 0) throw new Error("Order not found or already deleted");
-
-  return true;
+  async deleteOrder(id: string): Promise<boolean> {
+    if (!ObjectId.isValid(id)) throw new Error("Invalid order ID");
+    const db = await connectToDatabase();
+    const result = await db.collection(this.collectionName).deleteOne({ _id: new ObjectId(id) });
+    if (result.deletedCount === 0) throw new Error("Order not found or already deleted");
+    return true;
+  }
 }

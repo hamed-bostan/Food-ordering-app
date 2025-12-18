@@ -1,33 +1,25 @@
-import { findUserByIdInDb, updateUserInDb } from "@/infrastructure/repositories/user.repository";
 import { ValidationError } from "@/domain/errors";
-import { mapDbUserToDomain } from "@/infrastructure/mappers/user.mapper";
 import { UserUpdateDto, UserUpdateDtoSchema } from "@/application/dto/users/user.dto";
 import { UserSchema, UserType } from "@/application/schemas/user.schema";
-import { ObjectId } from "mongodb"; // Add this import for generating IDs
-
-/**
- * Protect a specific super admin account
- */
-const PROTECTED_ADMIN_PHONE = "09356776075";
+import { randomUUID } from "crypto"; // For generating IDs in domain
+import { IUserRepository } from "@/domain/interfaces/iuser-repository";
 
 /**
  * Use case: Update a user by ID (admin-only)
  */
-export async function updateUserById(userId: string, fields: UserUpdateDto): Promise<UserType> {
+export async function updateUserByIdUseCase(
+  repo: IUserRepository,
+  userId: string,
+  fields: UserUpdateDto
+): Promise<UserType> {
   // Validate incoming update DTO
   const validatedFields = UserUpdateDtoSchema.parse(fields);
 
-  // Fetch existing user
-  const existingUser = await findUserByIdInDb(userId);
+  // Fetch existing user (domain entity)
+  const existingUser = await repo.findById(userId);
   if (!existingUser) throw new ValidationError("User not found");
 
-  let safeFields: UserUpdateDto = { ...validatedFields };
-
-  // Protect super admin from role/phone changes
-  if (existingUser.phoneNumber === PROTECTED_ADMIN_PHONE) {
-    delete safeFields.phoneNumber;
-    if (safeFields.role && safeFields.role !== "admin") delete safeFields.role;
-  }
+  const safeFields: UserUpdateDto = { ...validatedFields };
 
   // Merge addresses if provided
   if (safeFields.address) {
@@ -43,7 +35,7 @@ export async function updateUserById(userId: string, fields: UserUpdateDto): Pro
       // Generate id if missing
       const finalAddr = {
         ...addr,
-        id: addr.id || new ObjectId().toString(),
+        id: addr.id || randomUUID(),
       };
 
       if (finalAddr.id && addr.id) {
@@ -57,11 +49,8 @@ export async function updateUserById(userId: string, fields: UserUpdateDto): Pro
     safeFields.address = updatedAddresses;
   }
 
-  // Update user in DB
-  const updatedDbUser = await updateUserInDb(userId, safeFields);
-
-  // Map DB object to domain entity
-  const updatedUser = mapDbUserToDomain(updatedDbUser);
+  // Update user via repository
+  const updatedUser = await repo.update(userId, safeFields);
 
   // Final domain validation
   return UserSchema.parse(updatedUser);

@@ -1,41 +1,36 @@
-import { findTestimonialByIdInDb, updateTestimonialInDb } from "@/infrastructure/repositories/testimonials.repository";
 import { ValidationError } from "@/domain/errors";
-import { uploadImageToStorage } from "../storage/uploadImage";
-import { deleteImageFromStorage } from "../storage/deleteImage";
-import { TestimonialSchema, TestimonialType } from "@/application/schemas/testimonial.schema";
-import { TestimonialUpdateDto } from "@/application/dto/testimonial/testimonial.dto";
-import { TestimonialRecordUpdate } from "@/infrastructure/db/testimonial/testimonial.db.types";
+import { TestimonialType } from "@/application/schemas/testimonial.schema";
+import { TestimonialUpdateInput } from "@/application/dto/testimonial/testimonial.dto";
+import { ITestimonialRepository } from "@/domain/interfaces/ITestimonialRepository";
+import { IImageStorageGateway } from "@/domain/interfaces/IImageStorageGateway";
 
-const TESTIMONIALS_BUCKET = "testimonials";
+const TESTIMONIALS_BUCKET = "food-images";
 const TESTIMONIALS_FOLDER = "testimonials";
 
 export async function updateTestimonialUseCase(
   testimonialId: string,
-  fields: TestimonialUpdateDto,
+  fields: { name?: string; comment?: string },
+  repository: ITestimonialRepository,
+  storage: IImageStorageGateway,
   newImage?: File
 ): Promise<TestimonialType> {
-  // Fetch existing testimonial if we need to replace the image
-  let imageUrl: string | undefined;
+  const existing = await repository.fetchTestimonialById(testimonialId);
+  if (!existing) throw new ValidationError("Testimonial not found");
 
+  let imageUrl = existing.image ?? "";
   if (newImage) {
-    const existing = await findTestimonialByIdInDb(testimonialId);
-    if (!existing) throw new ValidationError("Testimonial not found");
-
     if (existing.image) {
-      await deleteImageFromStorage(existing.image, TESTIMONIALS_BUCKET);
+      await storage.deleteImage(existing.image, TESTIMONIALS_BUCKET);
     }
-
-    imageUrl = await uploadImageToStorage(newImage, TESTIMONIALS_BUCKET, TESTIMONIALS_FOLDER);
+    imageUrl = await storage.uploadImage(newImage, TESTIMONIALS_BUCKET, TESTIMONIALS_FOLDER);
   }
 
-  // Map client DTO → DB-safe type
-  const dbUpdate: TestimonialRecordUpdate = {
-    name: fields.name,
-    comment: fields.comment,
-    ...(imageUrl ? { image: imageUrl } : {}), // only string here
+  const dbUpdate: TestimonialUpdateInput = {
+    ...fields,
+    ...(newImage ? { image: imageUrl } : {}),
   };
 
-  const updated = await updateTestimonialInDb(testimonialId, dbUpdate);
+  const updated = await repository.updateTestimonial(testimonialId, dbUpdate);
 
-  return TestimonialSchema.parse(updated);
+  return updated;
 }

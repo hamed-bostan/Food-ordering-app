@@ -1,11 +1,8 @@
 import { ProductType } from "@/application/schemas/product.schema";
-import { findProductByIdInDb } from "@/infrastructure/repositories/product.repository";
+import { IProductRepository } from "@/domain/interfaces/IProductRepository";
 
-/**
- * Fetch a single product by ID
- */
-export async function fetchProductByIdUseCase(productId: string): Promise<ProductType> {
-  const product = await findProductByIdInDb(productId);
+export async function fetchProductByIdUseCase(productId: string, repository: IProductRepository): Promise<ProductType> {
+  const product = await repository.fetchProductById(productId);
   if (!product) throw new Error("Product not found");
   return product;
 }

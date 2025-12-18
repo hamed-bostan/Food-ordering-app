@@ -1,25 +1,21 @@
 import { OrderType } from "@/application/schemas/order.schema";
-import { CreateOrderDtoType } from "@/application/dto/orders/order.dto";
-import { insertOrderToDb } from "@/infrastructure/repositories/order.repository";
+import { CreateOrderDtoType as CreateOrderDto } from "@/application/dto/orders/order.dto";
+import { IOrderRepository } from "@/domain/interfaces/IOrderRepository";
 
-export async function createOrderUseCase(order: CreateOrderDtoType): Promise<OrderType> {
-  // Step 1: ensure required domain fields
-  const newOrder: OrderType = {
-    ...order,
-    status: order.status ?? "تعیین وضعیت نشده",
-    createdAt: new Date(),
-    id: "",
+export async function createOrderUseCase(data: CreateOrderDto, repository: IOrderRepository): Promise<OrderType> {
+  const createdAt = new Date();
+  const orderToInsert = {
+    ...data,
+    createdAt: createdAt.toISOString(),
   };
 
-  // Step 2: map domain model to DB model
-  const orderForDb = {
-    ...newOrder,
-    createdAt: newOrder.createdAt.toISOString(), // convert to string
+  const insertedId = await repository.insertOrder(orderToInsert);
+
+  const order: OrderType = {
+    ...data,
+    id: insertedId,
+    createdAt,
   };
 
-  // Step 3: insert into DB
-  const insertedId = await insertOrderToDb(orderForDb);
-
-  // Step 4: return full domain model
-  return { ...newOrder, id: insertedId.toString() };
+  return order;
 }

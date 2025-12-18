@@ -1,9 +1,6 @@
-import { fetchTestimonialsFromDb } from "@/infrastructure/repositories/testimonials.repository";
 import { TestimonialType } from "@/application/schemas/testimonial.schema";
+import { ITestimonialRepository } from "@/domain/interfaces/ITestimonialRepository";
 
-/**
- * Fetch all testimonials (admin only in routes)
- */
-export async function fetchTestimonialsUseCase(): Promise<TestimonialType[]> {
-  return fetchTestimonialsFromDb();
+export async function fetchTestimonialsUseCase(repository: ITestimonialRepository): Promise<TestimonialType[]> {
+  return await repository.fetchTestimonials();
 }

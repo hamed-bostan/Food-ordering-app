@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { ObjectId } from "mongodb";
 import { requireAdmin } from "@/middleware/requireAdmin";
-import { updateUserById } from "@/domain/use-cases/user/updateUserById.usecase";
-import { deleteUserById } from "@/domain/use-cases/user/deleteUserById.usecase";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
+import { updateUserByIdUseCase } from "@/domain/use-cases/user/updateUserById.usecase";
+import { deleteUserByIdUseCase } from "@/domain/use-cases/user/deleteUserById.usecase";
 import { UserUpdateDtoSchema } from "@/application/dto/users/user.dto";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
+import { UserRepository } from "@/infrastructure/repositories/user.repository";
 
 /**
  * PUT /api/admin/users/:userId
@@ -20,8 +21,11 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ userId:
     const body = await req.json();
     const validatedBody = UserUpdateDtoSchema.parse(body);
 
+    // Inject repository
+    const repo = new UserRepository();
+
     // Update user via use case (domain logic)
-    const updatedUser = await updateUserById(userId, validatedBody);
+    const updatedUser = await updateUserByIdUseCase(repo, userId, validatedBody);
 
     // Convert Dates to ISO strings at API boundary
     const responseUser = {
@@ -41,7 +45,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ userId:
         { status: 400 }
       );
     }
-    return apiErrorHandler(error, "Admin Users API - PUT");
+    return apiResponseErrorHandler(error, "Admin Users API - PUT");
   }
 }
 
@@ -58,10 +62,13 @@ export async function DELETE(req: NextRequest, context: { params: Promise<{ user
       return NextResponse.json({ error: "ValidationError", message: "Invalid user ID" }, { status: 400 });
     }
 
-    await deleteUserById(userId);
+    // Inject repository
+    const repo = new UserRepository();
+
+    await deleteUserByIdUseCase(repo, userId);
 
     return NextResponse.json({ message: "User deleted successfully" }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Admin Users API - DELETE");
+    return apiResponseErrorHandler(error, "Admin Users API - DELETE");
   }
 }

@@ -1,12 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { NextRequest, NextResponse } from "next/server";
 import { updateProductUseCase } from "@/domain/use-cases/products/updateProduct.usecase";
 import { deleteProductUseCase } from "@/domain/use-cases/products/deleteProduct.usecase";
 import { fetchProductByIdUseCase } from "@/domain/use-cases/products/productById.usecase";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 import { ProductUpdateDtoSchema } from "@/application/dto/products/product.dto";
 import { requireAdmin } from "@/middleware/requireAdmin";
 import { requireRoot } from "@/middleware/requireRoot";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
+import { ProductRepository } from "@/infrastructure/repositories/product.repository";
+import { ImageStorageGateway } from "@/infrastructure/storage/ImageStorageGateway";
 
 /**
  * GET /api/admin/products/:productId
@@ -18,11 +20,12 @@ export async function GET(req: NextRequest, context: { params: Promise<{ product
     await requireAdmin(req);
 
     const { productId } = await context.params;
-    const product = await fetchProductByIdUseCase(productId);
+    const repository = new ProductRepository();
+    const product = await fetchProductByIdUseCase(productId, repository);
 
     return NextResponse.json({ result: product }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Admin Products API - GET");
+    return apiResponseErrorHandler(error, "Admin Products API - GET");
   }
 }
 
@@ -58,7 +61,9 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ product
       newImage = undefined;
     }
 
-    const updatedProduct = await updateProductUseCase(productId, validatedFields, newImage);
+    const repository = new ProductRepository();
+    const storage = new ImageStorageGateway();
+    const updatedProduct = await updateProductUseCase(productId, validatedFields, repository, storage, newImage);
     return NextResponse.json({ message: "Product updated successfully", result: updatedProduct }, { status: 200 });
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
@@ -67,7 +72,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ product
         { status: 400 }
       );
     }
-    return apiErrorHandler(error, "Admin Products API - PUT");
+    return apiResponseErrorHandler(error, "Admin Products API - PUT");
   }
 }
 
@@ -81,10 +86,12 @@ export async function DELETE(req: NextRequest, context: { params: Promise<{ prod
     await requireRoot(req);
 
     const { productId } = await context.params;
-    await deleteProductUseCase(productId);
+    const repository = new ProductRepository();
+    const storage = new ImageStorageGateway();
+    await deleteProductUseCase(productId, repository, storage);
 
     return NextResponse.json({ message: "Product deleted successfully" }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Admin Products API - DELETE");
+    return apiResponseErrorHandler(error, "Admin Products API - DELETE");
   }
 }

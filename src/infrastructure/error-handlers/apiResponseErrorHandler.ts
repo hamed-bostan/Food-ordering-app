@@ -2,8 +2,8 @@ import { ForbiddenError, UnauthorizedError, ValidationError } from "@/domain/err
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
-export function apiErrorHandler(error: unknown, context: string) {
-  console.error(`❌ [${context}]`, error);
+export function apiResponseErrorHandler(error: unknown, context: string) {
+  console.error(`❌ [${context}]`, error); // Consistent logging
 
   if (error instanceof ZodError) {
     return NextResponse.json(

@@ -9,3 +9,4 @@ export const TestimonialCreateFormSchema = z.object({
 export const TestimonialUpdateFormSchema = TestimonialCreateFormSchema.partial();
 
 export type TestimonialCreateFormType = z.infer<typeof TestimonialCreateFormSchema>;
+export type TestimonialUpdateFormType = z.infer<typeof TestimonialUpdateFormSchema>;

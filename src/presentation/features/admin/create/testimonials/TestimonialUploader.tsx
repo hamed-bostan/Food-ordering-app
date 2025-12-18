@@ -5,21 +5,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Typography } from "@mui/material";
 import Input from "@/presentation/components/Input";
 import { toast } from "react-toastify";
-import { createTestimonialAdmin } from "@/infrastructure/apis/admin/testimonial.api";
 import { TestimonialCreateFormSchema, TestimonialCreateFormType } from "@/application/schemas/testimonial.form.schema";
 import { useState } from "react";
+import { TestimonialType } from "@/application/schemas/testimonial.schema";
 
-type Props = {
-  accessToken: string;
-};
-
-// Default form values
 export const defaultTestimonial: Partial<TestimonialCreateFormType> = {
   name: "محمد محمدی",
   comment: "نظر شما در مورد تجربه خودتان...",
 };
 
-export default function TestimonialUploader({ accessToken }: Props) {
+export default function TestimonialUploader({
+  createAction,
+}: {
+  createAction: (data: TestimonialCreateFormType) => Promise<TestimonialType>;
+}) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
   const {
@@ -32,37 +31,29 @@ export default function TestimonialUploader({ accessToken }: Props) {
     defaultValues: defaultTestimonial,
   });
 
-  // <-- handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setSelectedImage(e.target.files[0]); // selectedImage: File | null
+      setSelectedImage(e.target.files[0]);
     }
   };
 
   const onSubmit = async (data: TestimonialCreateFormType) => {
-    const file = selectedImage; // use the state instead of data.image
+    const file = selectedImage;
 
     if (!file) {
       toast.error("لطفا تصویر را انتخاب کنید");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("image", file); // append single File
-    Object.entries(data).forEach(([key, value]) => {
-      if (key !== "image" && value != null) {
-        formData.append(key, value.toString());
-      }
-    });
+    const testimonialData = { ...data, image: file };
 
     try {
-      const testimonial = await createTestimonialAdmin(formData, accessToken);
-      toast.success(`نظر "${testimonial.result.name}" با موفقیت ثبت شد!`);
+      const createdTestimonial = await createAction(testimonialData);
+      toast.success(`نظر "${createdTestimonial.name}" با موفقیت ثبت شد!`);
       reset();
-      setSelectedImage(null); // reset file after submission
+      setSelectedImage(null);
     } catch (error: unknown) {
-      console.error("❌ [TestimonialUploadPanel] onSubmit error:", error);
-      if (error instanceof Error) toast.error(error.message || "خطا در ثبت نظر");
+      if (error instanceof Error) toast.error(error.message);
       else toast.error("خطای ناشناخته هنگام ثبت نظر رخ داد");
     }
   };

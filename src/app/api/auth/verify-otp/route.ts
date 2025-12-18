@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { otpSchema } from "@/application/schemas/otpSchema";
 import { verifyOtpUseCase } from "@/domain/use-cases/auth/verifyOtp.usecase";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
 
 /**
  * POST /api/auth/verify-otp
@@ -25,6 +25,6 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Verify OTP API - POST");
+    return apiResponseErrorHandler(error, "Verify OTP API - POST");
   }
 }

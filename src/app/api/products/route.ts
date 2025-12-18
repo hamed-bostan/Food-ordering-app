@@ -1,19 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/middleware/requireAdmin";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 import { fetchProducts } from "@/domain/use-cases/products/fetchProducts.usecase";
 import { createProductWithImageUseCase } from "@/domain/use-cases/products/createProduct.usecase";
 import { ProductCreateDtoSchema } from "@/application/dto/products/product.dto";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
+import { ProductRepository } from "@/infrastructure/repositories/product.repository";
+import { ImageStorageGateway } from "@/infrastructure/storage/ImageStorageGateway";
 
 /**
  * GET /api/products
  */
 export async function GET(req: NextRequest) {
   try {
-    const products = await fetchProducts();
+    const repository = new ProductRepository();
+    const products = await fetchProducts(repository);
     return NextResponse.json({ message: "Products fetched successfully", result: products }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Products API - GET");
+    return apiResponseErrorHandler(error, "Products API - GET");
   }
 }
 
@@ -49,11 +52,13 @@ export async function POST(req: NextRequest) {
     });
 
     // 4. Call use-case with DTO + image
-    const createdProduct = await createProductWithImageUseCase(validatedFields, imageFile);
+    const repository = new ProductRepository();
+    const storage = new ImageStorageGateway();
+    const createdProduct = await createProductWithImageUseCase(validatedFields, repository, storage, imageFile);
 
     // 5. Return response
     return NextResponse.json({ message: "Product created successfully", result: createdProduct }, { status: 201 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Products API - POST");
+    return apiResponseErrorHandler(error, "Products API - POST");
   }
 }

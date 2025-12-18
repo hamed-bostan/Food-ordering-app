@@ -1,5 +1,5 @@
 import { notifyOrderWorkflowUseCase } from "@/domain/use-cases/n8n/notifyOrderWorkflow.usecase";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
@@ -14,6 +14,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: "Workflow notified successfully" }, { status: 200 });
   } catch (error) {
-    return apiErrorHandler(error, "NotifyOrderWorkflow API - POST");
+    return apiResponseErrorHandler(error, "NotifyOrderWorkflow API - POST");
   }
 }

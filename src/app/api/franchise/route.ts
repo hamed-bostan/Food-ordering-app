@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { insertFranchise } from "@/domain/use-cases/franchise/insertFranchise.usecase";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
 
 /**
  * POST /api/franchise
@@ -19,6 +19,6 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Franchise API - POST");
+    return apiResponseErrorHandler(error, "Franchise API - POST");
   }
 }

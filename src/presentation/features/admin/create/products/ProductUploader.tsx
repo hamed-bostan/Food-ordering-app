@@ -5,10 +5,9 @@ import { Box, Typography, Checkbox, FormControlLabel } from "@mui/material";
 import { toast } from "react-toastify";
 import Input from "@/presentation/components/Input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSession } from "next-auth/react";
-import { createProductAdmin } from "@/infrastructure/apis/admin/product.api";
 import { ProductCreateFormSchema, ProductCreateFormType } from "@/application/schemas/product.form.schema";
 import { useState } from "react";
+import { ProductType } from "@/application/schemas/product.schema";
 
 export const defaultProduct: Partial<ProductCreateFormType> = {
   category: "پیتزاها",
@@ -21,11 +20,12 @@ export const defaultProduct: Partial<ProductCreateFormType> = {
   mostsale: false,
 };
 
-export default function ProductUploader() {
-  const { data: session } = useSession();
+export default function ProductUploader({
+  createAction,
+}: {
+  createAction: (data: ProductCreateFormType) => Promise<ProductType>;
+}) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const token = session?.accessToken;
-  const userRole = session?.user?.role;
 
   const {
     register,
@@ -39,34 +39,23 @@ export default function ProductUploader() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setSelectedImage(e.target.files[0]); // selectedImage: File | null
+      setSelectedImage(e.target.files[0]);
     }
   };
 
   const onSubmit = async (data: ProductCreateFormType) => {
-    const allowedRoles = ["admin", "root"];
-    if (!token || !allowedRoles.includes(userRole!)) {
-      return toast.error("Unauthorized");
-    }
-
-    const file = selectedImage; // use the state instead of data.image
+    const file = selectedImage;
 
     if (!file) {
       toast.error("لطفا تصویر را انتخاب کنید");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("image", file); // append single File
-    Object.entries(data).forEach(([key, value]) => {
-      if (key !== "image" && value != null) {
-        formData.append(key, value.toString());
-      }
-    });
+    const productData = { ...data, image: file };
 
     try {
-      const product = await createProductAdmin(formData, token);
-      toast.success(`Product "${product.result.title}" uploaded!`);
+      const createdProduct = await createAction(productData);
+      toast.success(`Product "${createdProduct.title}" uploaded!`);
       reset();
     } catch (error: unknown) {
       if (error instanceof Error) toast.error(error.message);

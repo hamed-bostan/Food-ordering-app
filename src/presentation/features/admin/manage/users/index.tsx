@@ -4,15 +4,15 @@ import { UserType } from "@/application/schemas/user.schema";
 import { useState } from "react";
 import UserRow from "./UserRow";
 import { toast } from "react-toastify";
-import { deleteUserAdmin } from "@/infrastructure/apis/admin/user.api";
 
 type UsersTableProps = {
   initialUsers: UserType[];
-  token: string;
   currentUserRole: "admin" | "root";
+  deleteAction: (userId: string) => Promise<string>;
+  updateAction: (userId: string, data: any) => Promise<UserType>; // Adjust type as needed
 };
 
-export default function UsersTable({ initialUsers, token, currentUserRole }: UsersTableProps) {
+export default function UsersTable({ initialUsers, currentUserRole, deleteAction, updateAction }: UsersTableProps) {
   const [users, setUsers] = useState<UserType[]>(initialUsers);
 
   const handleUserUpdated = (updatedUser: UserType) => {
@@ -21,9 +21,9 @@ export default function UsersTable({ initialUsers, token, currentUserRole }: Use
 
   const handleUserRemoved = async (userId: string) => {
     try {
-      const res = await deleteUserAdmin(userId, token);
+      const message = await deleteAction(userId);
       setUsers((prev) => prev.filter((u) => u.id !== userId));
-      toast.success(res.message);
+      toast.success(message);
     } catch (error: unknown) {
       if (error instanceof Error) toast.error(error.message);
       else toast.error("Failed to delete user");
@@ -47,10 +47,10 @@ export default function UsersTable({ initialUsers, token, currentUserRole }: Use
           <UserRow
             key={user.id}
             user={user}
-            token={token}
             currentUserRole={currentUserRole}
             onUserUpdated={handleUserUpdated}
             onUserRemoved={handleUserRemoved}
+            updateAction={updateAction}
           />
         ))}
       </tbody>

@@ -1,15 +1,15 @@
 import { ObjectId } from "mongodb";
-import { UserCreateDto, UserUpdateDto } from "@/application/dto/users/user.dto";
+import { AddressType } from "@/application/schemas/address.schema";
+import { AddressCreateType, AddressUpdateType } from "@/application/schemas/address.form.schema";
 
-/**
- * Normalizes an address array — ensures each address has a unique `id`.
- */
-export function normalizeAddress(address?: UserCreateDto["address"] | UserUpdateDto["address"]) {
-  return (
-    address?.map((addr) => ({
-      id: addr.id ?? new ObjectId().toString(),
-      value: addr.value,
-      coords: addr.coords,
-    })) ?? null
-  );
+export function normalizeAddress(
+  address: AddressCreateType[] | AddressUpdateType[] | undefined
+): AddressType[] | undefined {
+  if (!address) return undefined;
+
+  return address.map((addr) => ({
+    id: "id" in addr && addr.id ? addr.id : new ObjectId().toString(),
+    value: addr.value,
+    coords: addr.coords,
+  }));
 }

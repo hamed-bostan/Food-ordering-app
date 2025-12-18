@@ -1,6 +1,6 @@
-import { findOrderByIdInDb } from "@/infrastructure/repositories/order.repository";
 import { OrderType } from "@/application/schemas/order.schema";
+import { IOrderRepository } from "@/domain/interfaces/IOrderRepository";
 
-export async function fetchOrderByIdUseCase(orderId: string): Promise<OrderType | null> {
-  return await findOrderByIdInDb(orderId);
+export async function fetchOrderByIdUseCase(orderId: string, repository: IOrderRepository): Promise<OrderType | null> {
+  return await repository.fetchOrderById(orderId);
 }

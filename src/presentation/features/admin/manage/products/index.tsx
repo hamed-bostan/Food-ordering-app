@@ -3,28 +3,60 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { ProductType } from "@/application/schemas/product.schema";
-import { deleteProductAdmin } from "@/infrastructure/apis/admin/product.api";
 import ProductRow from "./ProductRow";
 import { useSession } from "next-auth/react";
+import { ProductUpdateFormType } from "@/application/schemas/product.form.schema";
 
-export default function ProductsTable({ initialProducts, token }: { initialProducts: ProductType[]; token: string }) {
+
+export default function ProductsTable({
+  initialProducts,
+  deleteAction,
+  updateAction,
+}: {
+  initialProducts: ProductType[];
+  deleteAction: (productId: string) => Promise<string>;
+  updateAction: (productId: string, data: ProductUpdateFormType) => Promise<ProductType>;
+}) {
   const session = useSession();
   const [products, setProducts] = useState<ProductType[]>(initialProducts);
 
-  // Update a product in the table after editing
-  const handleProductUpdated = (updatedProduct: ProductType) => {
+  const updateProductInList = (updatedProduct: ProductType) => {
     setProducts((prev) => prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)));
   };
 
-  // Remove a product from the table after deletion
   const handleProductRemoved = async (productId: string) => {
+    const removedProduct = products.find((p) => p.id === productId);
+    setProducts((prev) => prev.filter((p) => p.id !== productId)); // Optimistic
+
     try {
-      const res = await deleteProductAdmin(productId, token);
-      setProducts((prev) => prev.filter((p) => p.id !== productId));
-      toast.success(res.message);
+      const message = await deleteAction(productId);
+      toast.success(message);
     } catch (error: unknown) {
+      if (removedProduct) {
+        setProducts((prev) => [...prev, removedProduct].sort((a, b) => a.id.localeCompare(b.id))); // Rollback
+      }
       if (error instanceof Error) toast.error(error.message);
       else toast.error("Failed to delete product");
+    }
+  };
+
+ 
+  const handleUpdateRequest = async (productId: string, data: ProductUpdateFormType) => {
+    const originalProduct = products.find((p) => p.id === productId);
+    if (!originalProduct) return;
+
+    // Optimistic: Merge without image (keep old string URL)
+    const optimisticProduct = { ...originalProduct, ...data, image: originalProduct.image };
+    updateProductInList(optimisticProduct);
+
+    try {
+      const updated = await updateAction(productId, data);
+      updateProductInList(updated); // Sync with server (new image URL)
+      toast.success("Product updated successfully");
+    } catch (error: unknown) {
+      updateProductInList(originalProduct); // Rollback
+      if (error instanceof Error) toast.error(error.message);
+      else toast.error("Failed to update product");
     }
   };
 
@@ -44,10 +76,9 @@ export default function ProductsTable({ initialProducts, token }: { initialProdu
         {products.map((product) => (
           <ProductRow
             key={product.id}
-            userRole={session?.data?.user.role}
+            userRole={session?.data?.user?.role ?? ""}
             product={product}
-            token={token}
-            onProductUpdated={handleProductUpdated}
+            onUpdateRequest={handleUpdateRequest}
             onProductRemoved={handleProductRemoved}
           />
         ))}

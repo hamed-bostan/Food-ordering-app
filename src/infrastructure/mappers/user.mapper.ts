@@ -9,15 +9,15 @@ export function mapDbUserToDomain(user: DbUser): UserType {
     id: user._id.toHexString(),
     phoneNumber: user.phoneNumber,
     role: user.role,
-    name: user.name ?? null,
-    email: user.email ?? null,
+    name: user.name ?? undefined,
+    email: user.email ?? undefined,
     image: user.image ?? undefined,
     address:
       user.address?.map((addr) => ({
         id: addr.id ?? crypto.randomUUID(),
         value: addr.value,
         coords: addr.coords,
-      })) ?? null,
+      })) ?? undefined,
     createdAt: new Date(user.createdAt), // always cast to Date
   };
 }

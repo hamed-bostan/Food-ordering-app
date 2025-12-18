@@ -1,10 +1,9 @@
-import { findUserByIdInDb } from "@/infrastructure/repositories/user.repository";
-import { mapDbUserToDomain } from "@/infrastructure/mappers/user.mapper";
 import { UserType } from "@/application/schemas/user.schema";
+import { IUserRepository } from "@/domain/interfaces/iuser-repository";
 
-export async function getUserById(userId: string): Promise<UserType> {
-  const dbUser = await findUserByIdInDb(userId);
-  if (!dbUser) throw new Error("User not found");
+export async function getUserByIdUseCase(repo: IUserRepository, userId: string): Promise<UserType> {
+  const user = await repo.findById(userId);
+  if (!user) throw new Error("User not found");
 
-  return mapDbUserToDomain(dbUser);
+  return user;
 }

@@ -12,7 +12,7 @@ import { UserProfileType } from "@/application/schemas/profile-schema";
 import { AddressType } from "@/application/schemas/address.schema";
 
 type UserIdProps = {
-  userId: string; // pass logged-in user's id here
+  userId: string;
 };
 
 // Type guard for AddressType[]
@@ -41,12 +41,14 @@ export default function UserProfileForm({ userId }: UserIdProps) {
 
       const { message, result } = await updateUserProfile(userId, data, token);
 
-      const normalizedUser = {
+      // Normalize the returned user to exactly match UserProfileType (form shape)
+      const normalizedUser: UserProfileType = {
         name: result.name ?? undefined,
-        phoneNumber: result.phoneNumber ?? undefined,
+        phoneNumber: result.phoneNumber,
         email: result.email ?? undefined,
         image: result.image ?? undefined,
-        address: result.address ?? null,
+        // Convert null → undefined to match schema (address?: AddressType[] | undefined)
+        address: result.address ?? undefined,
       };
 
       toast.success(message);
@@ -61,7 +63,7 @@ export default function UserProfileForm({ userId }: UserIdProps) {
   };
 
   const onSubmit = (data: UserProfileType) => {
-    const filtered: UserProfileType = {};
+    const filtered: Partial<UserProfileType> = {};
 
     Object.entries(data).forEach(([key, value]) => {
       if (key === "address") {
@@ -72,12 +74,12 @@ export default function UserProfileForm({ userId }: UserIdProps) {
             filtered.address = filteredAddresses;
           }
         }
-      } else if (typeof value === "string" && value.trim()) {
-        filtered[key as Exclude<keyof UserProfileType, "address">] = value;
+      } else if (typeof value === "string" && value.trim() !== "") {
+        filtered[key as keyof Omit<UserProfileType, "address">] = value;
       }
     });
 
-    updateUser(filtered);
+    updateUser(filtered as UserProfileType); // Safe cast: empty object is valid partial
   };
 
   return (

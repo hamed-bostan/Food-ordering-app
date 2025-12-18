@@ -19,5 +19,22 @@ export type NotFoundErrorResponse = {
   message: string;
 };
 
+// Unauthorized error
+export type UnauthorizedErrorResponse = {
+  error: "Unauthorized";
+  message: string;
+};
+
+// Forbidden error
+export type ForbiddenErrorResponse = {
+  error: "Forbidden";
+  message: string;
+};
+
 // Extend ApiErrorResponse to include all known API errors
-export type ApiErrorResponse = ValidationErrorResponse | ServerErrorResponse | NotFoundErrorResponse;
+export type ApiErrorResponse =
+  | ValidationErrorResponse
+  | ServerErrorResponse
+  | NotFoundErrorResponse
+  | UnauthorizedErrorResponse
+  | ForbiddenErrorResponse;

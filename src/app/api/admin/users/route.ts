@@ -1,18 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/middleware/requireAdmin";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
-import { getAllUsers } from "@/domain/use-cases/user/getAllUsers.usecase";
+import { getAllUsersUseCase } from "@/domain/use-cases/user/getAllUsers.usecase";
+import { UserRepository } from "@/infrastructure/repositories/user.repository";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
 
 export async function GET(req: NextRequest) {
   try {
     // Centralized admin check
     await requireAdmin(req);
 
-    // Use-case directly
-    const users = await getAllUsers();
+    // Inject repository dependency
+    const repo = new UserRepository();
+
+    // Use-case with injected repo
+    const users = await getAllUsersUseCase(repo);
 
     return NextResponse.json({ message: "Users fetched successfully", result: users }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Admin Users API - GET");
+    return apiResponseErrorHandler(error, "Admin Users API - GET");
   }
 }

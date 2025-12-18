@@ -2,20 +2,20 @@ import { z } from "zod";
 import { AddressSchema } from "./address.schema";
 
 export const UserRoleEnum = z.enum(["root", "admin", "user"]);
+export type UserRoleType = z.infer<typeof UserRoleEnum>;
 
-const optionalString = (schema: z.ZodTypeAny) =>
-  z.preprocess((val) => (val === "" ? null : val), schema.nullable().optional());
-
-export const UserSchema = z.object({
-  id: z.string(),
-  phoneNumber: z.string().min(10, "Phone number is required"),
+export const BaseUserSchema = z.object({
+  name: z.string().optional(),
+  email: z.string().email("Invalid email").optional(),
+  phoneNumber: z.string().regex(/^\d{11}$/, "Phone number must be 11 digits"),
   role: UserRoleEnum,
-  name: optionalString(z.string()),
-  email: optionalString(z.string().email("Invalid email")),
-  image: optionalString(z.string().url("Invalid URL")),
-  address: z.array(AddressSchema).nullable().optional(),
+  image: z.string().url("Invalid URL").optional(),
+  address: z.array(AddressSchema).optional(),
+});
+
+export const UserSchema = BaseUserSchema.extend({
+  id: z.string(),
   createdAt: z.coerce.date(),
 });
 
-export type UserRoleType = z.infer<typeof UserRoleEnum>;
 export type UserType = z.infer<typeof UserSchema>;

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserById } from "@/domain/use-cases/user/getUserById.usecase";
-import { updateUserById } from "@/domain/use-cases/user/updateUserById.usecase";
-import { adminProfileSchema } from "@/application/schemas/profile-schema";
+import { getUserByIdUseCase } from "@/domain/use-cases/user/getUserById.usecase";
+import { updateUserByIdUseCase } from "@/domain/use-cases/user/updateUserById.usecase";
+import { adminFormProfileSchema } from "@/application/schemas/profile-schema";
 import { requireSelfOrAdmin } from "@/middleware/requireSelfOrAdmin";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
+import { UserRepository } from "@/infrastructure/repositories/user.repository";
 
 /**
  * GET /api/user/:id
@@ -16,10 +17,13 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
 
     await requireSelfOrAdmin(req, id);
 
-    const user = await getUserById(id);
+    // Inject repository
+    const repo = new UserRepository();
+
+    const user = await getUserByIdUseCase(repo, id);
     return NextResponse.json({ message: "User fetched successfully", result: user }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "User API - GET");
+    return apiResponseErrorHandler(error, "User API - GET");
   }
 }
 
@@ -37,12 +41,15 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
     const body = await req.json();
     delete body._id;
 
-    const validatedData = adminProfileSchema.parse(body);
+    const validatedData = adminFormProfileSchema.parse(body);
 
-    const updatedUser = await updateUserById(id, validatedData);
+    // Inject repository
+    const repo = new UserRepository();
+
+    const updatedUser = await updateUserByIdUseCase(repo, id, validatedData);
 
     return NextResponse.json({ message: "User updated successfully", result: updatedUser }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "User API - PUT");
+    return apiResponseErrorHandler(error, "User API - PUT");
   }
 }

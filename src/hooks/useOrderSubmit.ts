@@ -43,6 +43,7 @@ export function useOrderSubmit() {
       branch,
       deliveryMethod,
       paymentMethod,
+      status: "تعیین وضعیت نشده",
       address: selectedAddress,
       notes,
       items: selectedItems.map((item) => ({

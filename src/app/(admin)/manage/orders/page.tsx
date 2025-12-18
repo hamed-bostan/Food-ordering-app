@@ -1,35 +1,19 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions";
 import { redirect } from "next/navigation";
-import { OrderType } from "@/application/schemas/order.schema";
 import { getOrdersAdmin } from "@/infrastructure/apis/admin/order.api";
 import OrdersTable from "@/presentation/features/admin/manage/orders";
+import { deleteOrderAction, updateOrderAction } from "@/application/orders.action";
 
 export default async function OrdersPage() {
   const session = await getServerSession(authOptions);
 
-  if (!session || !session.user?.id || !session.accessToken) {
-    redirect("/auth/otp");
-  }
-
   const allowedRoles = ["admin", "root"];
-  if (!allowedRoles.includes(session.user.role)) {
-    redirect("/403");
+  if (!session?.user?.id || !session.accessToken || !allowedRoles.includes(session.user.role)) {
+    redirect(session ? "/403" : "/auth/otp");
   }
 
-  let initialOrders: OrderType[] = [];
+  const { result } = await getOrdersAdmin(session.accessToken);
 
-  try {
-    const response = await getOrdersAdmin(session.accessToken);
-    initialOrders = response.result;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error("❌ Error fetching orders:", error.message);
-    } else {
-      console.error("❌ Unexpected error fetching orders:", error);
-    }
-    redirect("/403");
-  }
-
-  return <OrdersTable initialOrders={initialOrders} token={session.accessToken} />;
+  return <OrdersTable initialOrders={result} deleteAction={deleteOrderAction} updateAction={updateOrderAction} />;
 }

@@ -1,20 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/middleware/requireAdmin";
-import { apiErrorHandler } from "@/infrastructure/apis/apiErrorHandler.ts";
 import { fetchOrdersUseCase } from "@/domain/use-cases/orders/fetchOrders.usecase";
+import { apiResponseErrorHandler } from "@/infrastructure/error-handlers/apiResponseErrorHandler";
+import { OrderRepository } from "@/infrastructure/repositories/order.repository";
 
 /**
- * GET /api/admin/order
- * Fetch all orders for admin
+ * GET /api/admin/orders
+ * Admin & Root: Fetch all orders
  */
 export async function GET(req: NextRequest) {
   try {
-    await requireAdmin(req);
+    await requireAdmin(req); // Admin or root
 
-    const orders = await fetchOrdersUseCase();
-
-    return NextResponse.json({ message: "Orders fetched successfully", result: orders }, { status: 200 });
+    const repository = new OrderRepository();
+    const orders = await fetchOrdersUseCase(repository);
+    return NextResponse.json({ result: orders }, { status: 200 });
   } catch (error: unknown) {
-    return apiErrorHandler(error, "Orders API - GET");
+    return apiResponseErrorHandler(error, "Admin Orders API - GET");
   }
 }
